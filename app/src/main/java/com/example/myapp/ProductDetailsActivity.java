@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
@@ -36,45 +35,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     int mCartItemCount = 0;
 
 
-    public void qtyCheck (){
 
-
-
-        try {
-
-            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
-
-
-            Cursor c = cartDB.rawQuery("SELECT * FROM newCart", null);
-
-            mCartItemCount = c.getCount();
-
-            c.moveToFirst();
-
-
-
-
-            Log.i("UserResults - one", Integer.toString(mCartItemCount));
-
-
-            c.close();
-
-
-
-
-        }
-
-        catch (Exception error) {
-
-            error.printStackTrace();
-        }
-
-        if (mCartItemCount > 0) {
-
-            setupBadge();
-
-        }
-    }
 
 
 
@@ -284,7 +245,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
 
-        qtyCheck();
+        CartQty.qtyCheck();
 
 
 

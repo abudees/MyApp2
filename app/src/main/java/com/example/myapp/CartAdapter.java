@@ -1,53 +1,30 @@
 package com.example.myapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 
-import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<com.example.myapp.CartAdapter.ViewHolder> {
 
-    private LayoutInflater inflater;
 
-    private Context context;
-
-    List<String> url;
-
-    List<String> title;
-
-    List<Integer> price;
-
-    List<Integer> qty;
-
-    List<Integer> ptoductId;
-
-    String currency;
+    Context c;
+    ArrayList<Cart> players;
 
 
 
 
-    public CartAdapter(Context mContext, List<String> mUrl,  List<String> mTitle , List<Integer> mQty, List<Integer> mPrice ){
+    public CartAdapter(Context ctx, ArrayList<Cart> players){
 
-        inflater = LayoutInflater.from(context);
+        //ASSIGN THEM LOCALLY
+        this.c=ctx;
+        this.players=players;
 
-        this.url =  mUrl;
-
-        this.title  =  mTitle;
-
-        this.qty = mQty;
-
-        this.price = mPrice;
-
-        this.context = mContext;
     }
 
 
@@ -55,14 +32,12 @@ public class CartAdapter extends RecyclerView.Adapter<com.example.myapp.CartAdap
     @Override
     public com.example.myapp.CartAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
-        View view = inflater.inflate(R.layout.single_item_layout, viewGroup, false);
-        com.example.myapp.CartAdapter.ViewHolder holder = new com.example.myapp.CartAdapter.ViewHolder(view);
 
+        //VIEW OBJ FROM XML
+        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.model,null);
 
-        View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.single_item_layout, viewGroup, false);
-        CartAdapter.ViewHolder viewHolder = new CartAdapter.ViewHolder(v);
-
+        //holder
+        MyHolder holder=new MyHolder(v);
 
         return holder;
     }
@@ -70,82 +45,38 @@ public class CartAdapter extends RecyclerView.Adapter<com.example.myapp.CartAdap
 
 
 
+    //BIND DATA TO VIEWS
     @Override
     public void onBindViewHolder(final com.example.myapp.CartAdapter.ViewHolder holder, final int position) {
 
+        holder.posTxt.setText(players.get(position).getPosition());
+        holder.nameTxt.setText(players.get(position).getName());
 
-        String currentURL = url.get(position);
-
-
-        Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.imageView);
-
-
-        //  String currentPrice = String.valueOf(price.get(position));
-        // String currenQty = String.valueOf(qty.get(position));
-
-
-
-        String currenTitle = title.get(position);
-        int currentPrice = price.get(position);
-        int currentQty = price.get(position);
-
-
-
-
-        Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.imageView);
-
-        holder.cartTitle.setText(currenTitle);
-
-        holder.cartPrice.setText(Integer.toString(currentPrice));
-
-        holder.cartQty.setText(Integer.toString(currentQty));
-
-
-
-
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-
+        //HANDLE ITEMCLICKS
+        holder.setItemClickListener(new ItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(View v, int pos) {
+                //OPEN DETAIL ACTIVITY
+                //PASS DATA
 
-                Context c = v.getContext();
+                //CREATE INTENT
+                Intent i=new Intent(c, DetailActivity.class);
+
+                //LOAD DATA
+                i.putExtra("NAME",players.get(pos).getName());
+                i.putExtra("POSITION",players.get(pos).getPosition());
+                i.putExtra("ID",players.get(pos).getId());
+
+                //START ACTIVITY
+                c.startActivity(i);
 
             }
-
         });
 
     }
 
     @Override
     public int getItemCount() {
-
-
-        return price.size();
-    }
-
-
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView imageView;
-        TextView cartPrice , cartQty , cartTitle;
-
-
-
-        private ViewHolder(View itemView) {
-            super(itemView);
-
-            imageView = itemView.findViewById(R.id.imageView8);
-
-            cartPrice = itemView.findViewById(R.id.itemprice);
-
-            cartQty = itemView.findViewById(R.id.qty2);
-
-            cartTitle = itemView.findViewById(R.id.title);
-
-
-        }
-
+        return players.size();
     }
 }
