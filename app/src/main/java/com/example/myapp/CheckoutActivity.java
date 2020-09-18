@@ -1,6 +1,7 @@
 package com.example.myapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -9,15 +10,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,9 +32,12 @@ import java.util.List;
 
 public class CheckoutActivity extends AppCompatActivity {
 
-    RecyclerView mRecyclerView;
 
-    DataBeanAdapter dbAdapter;
+
+    private SqliteDatabase mDatabase;
+
+
+
 
 
 
@@ -86,40 +94,11 @@ public class CheckoutActivity extends AppCompatActivity {
 
 */
 
-    public DataBean getData(String name){
 
-        DataBean bean = null;
-        if (cursor.moveToFirst()) {
-            int index = cursor.getColumnIndex(DataBaseHelper.UID);
-            int index2 = cursor.getColumnIndex(DataBaseHelper.NAME);
-            int index3 = cursor.getColumnIndex(DataBaseHelper.CARD);
-            int index4 = cursor.getColumnIndex(DataBaseHelper.CODE);
-            int id = cursor.getInt(index);
-            String personName = cursor.getString(index2);
-            String card = cursor.getString(index3);
-            String code = cursor.getString(index4);
-            bean = new DataBean(id, name, card, code);
-        }
-        return bean;
-    }
 
-    public List<DataBean> getAllData() {
-        List<DataBean> list = new ArrayList<>();
 
-        while (cursor.moveToNext()) {
-            int index = cursor.getColumnIndex(DataBaseHelper.UID);
-            int index2 = cursor.getColumnIndex(DataBaseHelper.NAME);
-            int index3 = cursor.getColumnIndex(DataBaseHelper.CARD);
-            int index4 = cursor.getColumnIndex(DataBaseHelper.CODE);
-            int cid = cursor.getInt(index);
-            String name = cursor.getString(index2);
-            String card = cursor.getString(index3);
-            String code = cursor.getString(index4);
-            DataBean bean = new DataBean(cid, name, card, code);
-            list.add(bean);
-        }
-        return list;
-    }
+
+
 
 
 
@@ -139,11 +118,8 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        mRecyclerView = findViewById(R.id.cartRecycler);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(new DataBeanAdapter(dbAdapter.getAllData(), R.layout.cart_card));
+
+
 
 
 
@@ -258,5 +234,67 @@ public class CheckoutActivity extends AppCompatActivity {
 
 */
 
+        RecyclerView contactView = findViewById(R.id.myContactList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        contactView.setLayoutManager(linearLayoutManager);
+        contactView.setHasFixedSize(true);
+        mDatabase = new SqliteDatabase(this);
+        ArrayList<Contacts> allContacts = mDatabase.listContacts();
+        if (allContacts.size() > 0) {
+            contactView.setVisibility(View.VISIBLE);
+            ContactAdapter mAdapter = new ContactAdapter(this, allContacts);
+            contactView.setAdapter(mAdapter);
+        }
+        else {
+            contactView.setVisibility(View.GONE);
+            Toast.makeText(this, "There is no contact in the database. Start adding now", Toast.LENGTH_LONG).show();
+        }
+        Button btnAdd = findViewById(R.id.btnAdd);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addTaskDialog();
+            }
+        });
+    }
+    private void addTaskDialog() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View subView = inflater.inflate(R.layout.add_contacts, null);
+        final EditText nameField = subView.findViewById(R.id.enterName);
+        final EditText noField = subView.findViewById(R.id.enterPhoneNum);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add new CONTACT");
+        builder.setView(subView);
+        builder.create();
+        builder.setPositiveButton("ADD CONTACT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final String name = nameField.getText().toString();
+                final String ph_no = noField.getText().toString();
+                if (TextUtils.isEmpty(name)) {
+                    Toast.makeText(CheckoutActivity.this, "Something went wrong. Check your input values", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Contacts newContact = new Contacts(name, ph_no);
+                    mDatabase.addContacts(newContact);
+                    finish();
+                    startActivity(getIntent());
+                }
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(CheckoutActivity.this, "Task cancelled", Toast.LENGTH_LONG).show();
+            }
+        });
+        builder.show();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDatabase != null) {
+            mDatabase.close();
+        }
     }
 }
