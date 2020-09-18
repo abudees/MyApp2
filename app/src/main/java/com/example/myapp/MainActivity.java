@@ -44,11 +44,11 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
     TextView languageTextView ;
 
-    Button redirectButton ;
+    Button redirectButton, retry ;
 
-    TextView redirectToLogin , logout, noConnection;
+    TextView redirectToLogin , logout, noConnection ;
 
-    Spinner spinner;
+    Spinner spinner, spinner1;
 
 
 
@@ -73,16 +73,16 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
         if (area.matches("Please select your Area")) {
 
-            if (englishLanguageActive) {
+         //   if (englishLanguageActive) {
 
                 Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
-
+/*
             } else {
 
                 Toast.makeText(this, "يرجى اختيار منطقةالتوصيل!", Toast.LENGTH_LONG).show();
             }
 
-
+*/
         } else {
 
 
@@ -100,6 +100,12 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
         intent = new Intent(getApplicationContext(), LoginActivity.class);
 
         startActivity(intent);
+    }
+
+    public void retryInternet (View view){
+
+        finish();
+        startActivity(getIntent());
     }
 
 
@@ -134,6 +140,11 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
     private boolean isNetworkAvailable() throws InterruptedException, IOException {
         final String command = "ping -c 1 google.com";
         return Runtime.getRuntime().exec(command).waitFor() == 0;
+
+       // ConnectivityManager connectivityManager
+         //       = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        //NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        //return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
@@ -175,6 +186,10 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
         // spinner
         spinner = findViewById(R.id.areaSelect);
 
+
+        spinner1 = findViewById(R.id.spinner);
+
+
         final ArrayList<String> areaList = new ArrayList<>();
 
         languageTextView = findViewById(R.id.languageTextView);
@@ -187,16 +202,23 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
         logout = findViewById(R.id.logout1);
 
+        retry = findViewById(R.id.button3);
 
-/*
-        try {
-            if (isNetworkAvailable()) {
+        retry.setVisibility(View.INVISIBLE);
+
+
+
+
+
+       // try {
+         //   if (isNetworkAvailable()) {
                 //internet is connected do something
-*/
+
         if (ParseUser.getCurrentUser() != null) {
 
             redirectToLogin.setVisibility(View.INVISIBLE);
             logout.setVisibility(View.VISIBLE);
+
 
             Toast.makeText(this, ParseUser.getCurrentUser().getUsername(), Toast.LENGTH_SHORT).show();
 
@@ -254,12 +276,18 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
                     spinner.setOnItemSelectedListener(new mySpinnerListener());
 
+                    ArrayAdapter adapter1 = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
+
+                    spinner1.setAdapter(adapter1);
+
+                    spinner1.setOnItemSelectedListener(new mySpinnerListener());
+
                 }
             }
         });
-/*
 
-            } else {
+
+        /*    } else {
                 //do something, net is not connected
 
                 //Toast.makeText(this, "Please check your internet connection", Toast.LENGTH_LONG).show();
@@ -276,10 +304,10 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
                 logout.setVisibility(View.INVISIBLE);
 
+                retry.setVisibility(View.VISIBLE);
+
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }*/
     }

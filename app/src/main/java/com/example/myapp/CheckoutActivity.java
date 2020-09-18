@@ -27,6 +27,13 @@ import java.util.List;
 
 public class CheckoutActivity extends AppCompatActivity {
 
+    RecyclerView mRecyclerView;
+
+    DataBeanAdapter dbAdapter;
+
+
+
+
 /*
     public ArrayList<Integer> orderItems ;
 
@@ -79,6 +86,44 @@ public class CheckoutActivity extends AppCompatActivity {
 
 */
 
+    public DataBean getData(String name){
+
+        DataBean bean = null;
+        if (cursor.moveToFirst()) {
+            int index = cursor.getColumnIndex(DataBaseHelper.UID);
+            int index2 = cursor.getColumnIndex(DataBaseHelper.NAME);
+            int index3 = cursor.getColumnIndex(DataBaseHelper.CARD);
+            int index4 = cursor.getColumnIndex(DataBaseHelper.CODE);
+            int id = cursor.getInt(index);
+            String personName = cursor.getString(index2);
+            String card = cursor.getString(index3);
+            String code = cursor.getString(index4);
+            bean = new DataBean(id, name, card, code);
+        }
+        return bean;
+    }
+
+    public List<DataBean> getAllData() {
+        List<DataBean> list = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(DataBaseHelper.UID);
+            int index2 = cursor.getColumnIndex(DataBaseHelper.NAME);
+            int index3 = cursor.getColumnIndex(DataBaseHelper.CARD);
+            int index4 = cursor.getColumnIndex(DataBaseHelper.CODE);
+            int cid = cursor.getInt(index);
+            String name = cursor.getString(index2);
+            String card = cursor.getString(index3);
+            String code = cursor.getString(index4);
+            DataBean bean = new DataBean(cid, name, card, code);
+            list.add(bean);
+        }
+        return list;
+    }
+
+
+
+
 
 
 
@@ -93,6 +138,12 @@ public class CheckoutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+
+        mRecyclerView = findViewById(R.id.cartRecycler);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(new DataBeanAdapter(dbAdapter.getAllData(), R.layout.cart_card));
 
 
 

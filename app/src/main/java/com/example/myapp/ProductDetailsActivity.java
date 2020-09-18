@@ -245,7 +245,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
 
-        CartQty.qtyCheck();
+//        CartQty.qtyCheck();
 
 
 
