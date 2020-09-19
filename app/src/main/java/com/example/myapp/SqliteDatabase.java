@@ -5,67 +5,70 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.util.ArrayList;
 
 public class SqliteDatabase extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 5;
-    private static final String DATABASE_NAME = "Contacts";
-    private static final String TABLE_CONTACTS = "Contacts";
-    private static final String COLUMN_ID = "_id";
-    private static final String COLUMN_NAME = "contactName";
-    private static final String COLUMN_NO = "phoneNumber";
+    private static final String DATABASE_NAME = "Cart";
+    private static final String TABLE_CART = "Cart";
+    private static final String COLUMN_ID = "productId";
+    private static final String COLUMN_QTY = "qtySelected";
+
+
     SqliteDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE "
-                + TABLE_CONTACTS + "(" + COLUMN_ID
-                + " INTEGER PRIMARY KEY,"
-                + COLUMN_NAME + " TEXT,"
-                + COLUMN_NO + " INTEGER" + ")";
-        db.execSQL(CREATE_CONTACTS_TABLE);
+        String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART
+                + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_QTY + " INTEGER" + ")";
+        db.execSQL(CREATE_CART_TABLE);
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+        db.execSQL("SELECT  " + TABLE_CART);
         onCreate(db);
     }
-    ArrayList<Contacts> listContacts() {
-        String sql = "select * from " + TABLE_CONTACTS;
+
+    ArrayList<Products> listProducts() {
+        String sql = "select * from " + TABLE_CART;
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Contacts> storeContacts = new ArrayList<>();
+        ArrayList<Products> storeCart = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             do {
                 int id = Integer.parseInt(cursor.getString(0));
-                String name = cursor.getString(1);
-                String phno = cursor.getString(2);
-                storeContacts.add(new Contacts(id, name, phno));
+                int qty = cursor.getInt(1);
+                storeCart.add(new Products(id,qty));
             }
             while (cursor.moveToNext());
         }
         cursor.close();
-        return storeContacts;
+        return storeCart;
     }
-    void addContacts(Contacts contacts) {
+
+    void addProduct(Products products) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, contacts.getName());
-        values.put(COLUMN_NO, contacts.getPhno());
+        values.put(COLUMN_ID, products.getProductId());
+        values.put(COLUMN_QTY, products.getQty());
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABLE_CONTACTS, null, values);
+        db.insert(TABLE_CART, null, values);
     }
-    void updateContacts(Contacts contacts) {
+
+    void updateProduct(Products products) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, contacts.getName());
-        values.put(COLUMN_NO, contacts.getPhno());
+        values.put(COLUMN_ID, products.getProductId());
+        values.put(COLUMN_QTY, products.getQty());
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TABLE_CONTACTS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(contacts.getId())});
+        db.update(TABLE_CART, values, COLUMN_ID + " = ?", new String[]{String.valueOf(products.getId())});
     }
+
     void deleteContact(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CONTACTS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        db.delete(TABLE_CART, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
 }

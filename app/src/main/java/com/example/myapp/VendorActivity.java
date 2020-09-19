@@ -155,10 +155,7 @@ public class VendorActivity extends AppCompatActivity {
 
                         vOrders.add("No active orders ");
                     }
-
-
                     arrayAdapter.notifyDataSetChanged();
-
                 }
             }
         });

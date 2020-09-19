@@ -14,16 +14,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class ContactAdapter extends RecyclerView.Adapter<ProductViewHolder> implements Filterable {
+public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> implements Filterable {
 
     private Context context;
     private ArrayList<Products> listProducts;
     private ArrayList<Products> mArrayList;
     private SqliteDatabase mDatabase;
 
-    ContactAdapter(Context context, ArrayList<Products> listProducts) {
+    ProductCartAdapter(Context context, ArrayList<Products> listProducts) {
         this.context = context;
         this.listProducts = listProducts;
         this.mArrayList = listProducts;
@@ -113,7 +112,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ProductViewHolder> impl
                 if (TextUtils.isEmpty(name)) {
                     Toast.makeText(context, "Something went wrong. Check your input values", Toast.LENGTH_LONG).show();
                 } else {
-                //    mDatabase.updateProduct(new Products(Objects.requireNonNull(listProducts.get(), name, ph_no));
+                    //    mDatabase.updateProduct(new Products(Objects.requireNonNull(listProducts.get(), name, ph_no));
                     ((Activity) context).finish();
                     context.startActivity(((Activity)
                             context).getIntent());

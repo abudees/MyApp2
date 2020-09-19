@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -33,6 +31,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     TextView textCartItemCount;
     int mCartItemCount = 0;
+
+    private SqliteDatabase mDatabase;
 
 
 
