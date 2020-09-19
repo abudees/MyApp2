@@ -6,6 +6,7 @@ public class Products {
     private int productId;
     private int qty;
 
+
     Products(int pId, int pQty) {
 
         this.productId = pId;

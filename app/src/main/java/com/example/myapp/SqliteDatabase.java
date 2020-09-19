@@ -71,4 +71,6 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CART, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
+
+
 }
