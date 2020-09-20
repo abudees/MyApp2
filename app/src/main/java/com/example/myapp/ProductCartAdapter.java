@@ -38,7 +38,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         final Products products = listProducts.get(position);
-        holder.tvPId.setText(products.getId());
+        holder.tvPId.setText(products.getCartId());
         holder.tvQty.setText(products.getProductId());
        /* holder.editProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +49,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
         holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDatabase.deleteContact(products.getId());
+                mDatabase.deleteProduct(products.getCartId());
                 ((Activity) context).finish();
                 context.startActivity(((Activity) context).getIntent());
             }

@@ -43,9 +43,9 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             do {
-                int id = Integer.parseInt(cursor.getString(0));
-                int pId = cursor.getInt(cursor.getInt(1));
-                int qty = cursor.getInt(2);
+                int id = cursor.getInt(0);
+                int pId = cursor.getInt((1));
+                int qty = cursor.getInt((2));
                 storeCart.add(new Products(id,pId,qty));
             }
             while (cursor.moveToNext());
@@ -67,10 +67,10 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_ID, products.getProductId());
         values.put(COLUMN_QTY, products.getQty());
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TABLE_CART, values, COLUMN_ID + " = ?", new String[]{String.valueOf(products.getId())});
+        db.update(TABLE_CART, values, COLUMN_ID + " = ?", new String[]{String.valueOf(products.getCartId())});
     }
 
-    void deleteContact(int id) {
+    void deleteProduct(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CART, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
