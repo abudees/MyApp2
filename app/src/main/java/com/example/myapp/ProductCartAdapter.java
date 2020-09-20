@@ -89,15 +89,15 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
     public int getItemCount() {
         return listProducts.size();
     }
-    private void editTaskDialog(final Contacts contacts) {
+    private void editTaskDialog(final Products products) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View subView = inflater.inflate(R.layout.add_contacts, null);
         final EditText nameField = subView.findViewById(R.id.enterName);
         final EditText contactField = subView.findViewById(R.id.enterPhoneNum);
 
-        if (contacts != null) {
-            nameField.setText(contacts.getName());
-            contactField.setText(String.valueOf(contacts.getPhno()));
+        if (products != null) {
+            nameField.setText(products.getProductId());
+            contactField.setText(String.valueOf(products.getQty()));
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

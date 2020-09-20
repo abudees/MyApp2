@@ -10,9 +10,10 @@ import java.util.ArrayList;
 public class SqliteDatabase extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 5;
-    private static final String DATABASE_NAME = "Cart";
+    private static final String DATABASE_NAME = "CartDB";
     private static final String TABLE_CART = "Cart";
-    private static final String COLUMN_ID = "productId";
+    private static final String COLUMN_ID = "cartId";
+    private static final String COLUMN_PID = "productId";
     private static final String COLUMN_QTY = "qtySelected";
 
 
@@ -24,6 +25,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART
                 + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_PID + " INTEGER,"
                 + COLUMN_QTY + " INTEGER" + ")";
         db.execSQL(CREATE_CART_TABLE);
     }
@@ -42,8 +44,9 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 int id = Integer.parseInt(cursor.getString(0));
-                int qty = cursor.getInt(1);
-                storeCart.add(new Products(id,qty));
+                int pId = cursor.getInt(cursor.getInt(1));
+                int qty = cursor.getInt(2);
+                storeCart.add(new Products(id,pId,qty));
             }
             while (cursor.moveToNext());
         }
