@@ -17,6 +17,8 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
@@ -26,13 +28,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     int productSelected;
 
-    TextView productTitle, productDescription, productPrice;
+    TextView productTitle, productDescription, productPrice, textCartItemCount;
 
-
-    TextView textCartItemCount;
     int mCartItemCount = 0;
 
-    private SqliteDatabase mDatabase;
+    public SqliteDatabase mDatabase;
 
 
 
@@ -47,7 +47,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         textCartItemCount.setText(String.valueOf(mCartItemCount));
 
-        Log.i("quantity is ", String.valueOf(mCartItemCount));
+        mDatabase.addProduct();
+
 
         ParseQuery<ParseObject> query = new ParseQuery<>("Product");
 
@@ -172,10 +173,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), CheckoutActivity.class);
 
-
-        //  intent.putExtra("categoryNumber", id.get(position));
-
-
         startActivity(intent);
 
 
@@ -245,17 +242,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
 
-//        CartQty.qtyCheck();
-
-
-
-
-
 
         linearLayout = findViewById(R.id.productDetailImage);
         productTitle = findViewById(R.id.productTitle);
         productDescription = findViewById(R.id.productDescription);
         productPrice = findViewById(R.id.productPrice);
+
+
+        mDatabase = new SqliteDatabase(this);
+        ArrayList<Products> allProducts = mDatabase.listProducts();
 
 
         //retrive selected product
