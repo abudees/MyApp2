@@ -5,17 +5,16 @@ public class Products {
 
     private int cartId;
     private int productId;
-
     private int qty;
 
 
-    Products(int pId, int pPrice, int pQty) {
+    Products(int Id, int pQty) {
 
         this.productId = pId;
         this.qty = pQty;
     }
 
-    Products(int pCartId ,int pId, String pTitle, String pURL, int pPrice , int pQty) {
+    Products(int pCartId ,int pId,   int pQty) {
 
         this.cartId = pCartId;
         this.productId = pId;

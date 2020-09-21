@@ -47,7 +47,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         textCartItemCount.setText(String.valueOf(mCartItemCount));
 
-        mDatabase.addProduct();
+        mDatabase.addProduct(productSelected,mCartItemCount);
 
 
         ParseQuery<ParseObject> query = new ParseQuery<>("Product");
@@ -266,7 +266,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
 
 
+        Toast.makeText(ProductDetailsActivity.this, String.valueOf(productSelected), Toast.LENGTH_LONG).show();
 
+/*
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");
 
         query.whereEqualTo("productId", productSelected);
@@ -292,7 +294,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
 
-
+*/
     }
 
     @Override
