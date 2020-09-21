@@ -68,6 +68,12 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
+
+        //super.onResume();
+
+
+
+
         cartView = findViewById(R.id.myCartList);
 
         linearLayoutManager = new LinearLayoutManager(this);
@@ -79,19 +85,24 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+        try {
 
-        if (allProducts.size() > 0) {
 
-            cartView.setVisibility(View.VISIBLE);
-            mAdapter = new ProductCartAdapter(CheckoutActivity.this, allProducts);
-            cartView.setAdapter(mAdapter);
+            if (allProducts.size() > 0) {
 
-        } else {
-            cartView.setVisibility(View.GONE);
-            Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
-                    Toast.LENGTH_LONG).show();
+                cartView.setVisibility(View.VISIBLE);
+                mAdapter = new ProductCartAdapter(CheckoutActivity.this, allProducts);
+                cartView.setAdapter(mAdapter);
+
+            } else {
+                cartView.setVisibility(View.GONE);
+                Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            System.out.println("Error " + e.getMessage());
         }
-
+/*
         Button btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(new View.OnClickListener() {
 
@@ -132,7 +143,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
         catch(Exception e) {
             System.out.println("Error " + e.getMessage());
-        }
+        }*/
 
     }
 

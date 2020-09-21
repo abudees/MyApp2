@@ -32,7 +32,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     int mCartItemCount = 0;
 
-    public SqliteDatabase mDatabase;
+    SqliteDatabase mDB;
 
 
 
@@ -47,8 +47,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         textCartItemCount.setText(String.valueOf(mCartItemCount));
 
-        mDatabase.addProduct(productSelected,mCartItemCount);
+        Products newProducts = new Products(productSelected, mCartItemCount);
 
+        mDB.addProduct(newProducts);
+/*
 
         ParseQuery<ParseObject> query = new ParseQuery<>("Product");
 
@@ -111,10 +113,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
+        });*/
     }
 
-
+/*
     public void removeItemToCart(View view) {
 
         Log.i("quantity is ", String.valueOf(mCartItemCount));
@@ -167,7 +169,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         }
     }
-
+*/
 
     public void checkOut (View view){
 
@@ -175,7 +177,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         startActivity(intent);
 
+       // super.onPause();
 
+
+
+/*
         if (mCartItemCount > 0) {
 
 
@@ -212,7 +218,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 error.printStackTrace();
             }
         }
-
+*/
   }
 
     public void clearCart(){
@@ -243,14 +249,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
+
+
+
+
         linearLayout = findViewById(R.id.productDetailImage);
         productTitle = findViewById(R.id.productTitle);
         productDescription = findViewById(R.id.productDescription);
         productPrice = findViewById(R.id.productPrice);
 
 
-        mDatabase = new SqliteDatabase(this);
-        ArrayList<Products> allProducts = mDatabase.listProducts();
+        mDB = new SqliteDatabase(this);
+        ArrayList<Products> allProducts = mDB.listProducts();
 
 
         //retrive selected product
@@ -350,4 +360,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDB != null) {
+            mDB.close();
+        }
+
+
+    }
+
+
 }
