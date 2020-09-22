@@ -81,6 +81,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
         cartView = findViewById(R.id.myCartList);
 
+        final List<String> images = new ArrayList<>();
+
         linearLayoutManager = new LinearLayoutManager(this);
         cartView.setLayoutManager(linearLayoutManager);
         cartView.setHasFixedSize(true);
@@ -88,27 +90,7 @@ public class CheckoutActivity extends AppCompatActivity {
         allProducts = mDatabase.listProducts();
 
 
-        if (allProducts.size() > 0) {
 
-
-            cartView.setVisibility(View.VISIBLE);
-            mAdapter = new ProductCartAdapter(CheckoutActivity.this, allProducts, url);
-            cartView.setAdapter(mAdapter);
-
-
-
-
-
-
-        } else {
-
-            cartView.setVisibility(View.GONE);
-            Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
-                    Toast.LENGTH_LONG).show();
-
-
-
-        }
 
 
 
@@ -146,6 +128,25 @@ public class CheckoutActivity extends AppCompatActivity {
                             url.add(object.getString("imageURL"));
 
                             Log.i("url", object.getString("imageURL"));
+                        }
+
+                        if (allProducts.size() > 0) {
+
+
+                            cartView.setVisibility(View.VISIBLE);
+                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, images, allProducts);
+                            cartView.setAdapter(mAdapter);
+
+
+
+                        } else {
+
+                            cartView.setVisibility(View.GONE);
+                            Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
+                                    Toast.LENGTH_LONG).show();
+
+
+
                         }
                     }
                 }
