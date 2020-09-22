@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -37,6 +38,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ProductCartAdapter mAdapter;
 
+    Button btnAdd;
+
 
 
 
@@ -54,6 +57,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
     final List<Integer> qty = new ArrayList<>();
 
+    ArrayList<Products> allProducts;
+
 
 
 
@@ -68,10 +73,10 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
+        ParseAnalytics.trackAppOpenedInBackground(getIntent());
+
 
         //super.onResume();
-
-
 
 
         cartView = findViewById(R.id.myCartList);
@@ -80,30 +85,36 @@ public class CheckoutActivity extends AppCompatActivity {
         cartView.setLayoutManager(linearLayoutManager);
         cartView.setHasFixedSize(true);
         mDatabase = new SqliteDatabase(this);
-        ArrayList<Products> allProducts = mDatabase.listProducts();
+        allProducts = mDatabase.listProducts();
+
+
+        if (allProducts.size() > 0) {
+
+
+            cartView.setVisibility(View.VISIBLE);
+            mAdapter = new ProductCartAdapter(CheckoutActivity.this, allProducts, url);
+            cartView.setAdapter(mAdapter);
 
 
 
 
-        try {
 
 
-            if (allProducts.size() > 0) {
+        } else {
 
-                cartView.setVisibility(View.VISIBLE);
-                mAdapter = new ProductCartAdapter(CheckoutActivity.this, allProducts);
-                cartView.setAdapter(mAdapter);
+            cartView.setVisibility(View.GONE);
+            Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
+                    Toast.LENGTH_LONG).show();
 
-            } else {
-                cartView.setVisibility(View.GONE);
-                Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
-                        Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            System.out.println("Error " + e.getMessage());
+
+
         }
-/*
-        Button btnAdd = findViewById(R.id.btnAdd);
+
+
+
+
+
+        btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -143,7 +154,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
         catch(Exception e) {
             System.out.println("Error " + e.getMessage());
-        }*/
+        }
 
     }
 

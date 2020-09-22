@@ -221,7 +221,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 */
   }
 
-    public void clearCart(){
+  /*  public void clearCart(){
 
         try {
 
@@ -238,7 +238,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
 
-
+*/
 
 
 

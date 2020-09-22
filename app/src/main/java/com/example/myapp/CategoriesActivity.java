@@ -47,19 +47,20 @@ public class CategoriesActivity extends FragmentActivity {
 
 
 
+        viewpager =  findViewById(R.id.pager);
+
         recyclerView = findViewById(R.id.recyclerview);
 
         recyclerView.setHasFixedSize(true);
 
         //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerView.setHasFixedSize(true);
+
 
         recyclerView.setAdapter(adapter);
 
         loadData();
 
-        viewpager =  findViewById(R.id.pager);
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 

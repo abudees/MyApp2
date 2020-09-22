@@ -10,51 +10,79 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
 
-public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> implements Filterable {
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProductCartAdapter extends RecyclerView.Adapter<com.example.myapp.ProductCartAdapter.ViewHolder>  {
 
     private Context context;
     private ArrayList<Products> listProducts;
     private ArrayList<Products> mArrayList;
     private SqliteDatabase mDatabase;
 
-    ProductCartAdapter(Context context, ArrayList<Products> listProducts) {
+    private LayoutInflater inflater;
+
+    List<String> url;
+
+    public ProductCartAdapter(Context context, ArrayList<Products> listProducts, List<String> url) {
         this.context = context;
         this.listProducts = listProducts;
         this.mArrayList = listProducts;
         mDatabase = new SqliteDatabase(context);
+        this.url = url;
     }
 
+    @NonNull
     @Override
-    public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_list_layout, parent, false);
-        return new ProductViewHolder(view);
+    public com.example.myapp.ProductCartAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view  = inflater.inflate(R.layout.single_item_layout, viewGroup, false);
+
+        com.example.myapp.ProductCartAdapter.ViewHolder holder = new com.example.myapp.ProductCartAdapter.ViewHolder(view);
+
+
+
+        View v = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.category_card, viewGroup, false);
+        ViewHolder viewHolder = new ViewHolder(v);
+        return holder;
     }
 
+
+
     @Override
-    public void onBindViewHolder(ProductViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         final Products products = listProducts.get(position);
-        holder.tvPId.setText(products.getCartId());
-        holder.tvQty.setText(products.getProductId());
-       /* holder.editProduct.setOnClickListener(new View.OnClickListener() {
+       // holder.tvPId.setText(products.getCartId());
+       // holder.tvQty.setText(products.getProductId());
+
+        String currentURL = url.get(position);
+        Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.productImage);
+        holder.editProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTaskDialog(Products);
+             //   editTaskDialog(Products);
             }
-        }); */
+        });
         holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDatabase.deleteProduct(products.getCartId());
+               /* mDatabase.deleteProduct(products.getCartId());
                 ((Activity) context).finish();
                 context.startActivity(((Activity) context).getIntent());
-            }
+            */}
         });
     }
+    /*
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -84,12 +112,12 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
                 notifyDataSetChanged();
             }
         };
-    }
+    }*/
     @Override
     public int getItemCount() {
         return listProducts.size();
     }
-    private void editTaskDialog(final Products products) {
+   /* private void editTaskDialog(final Products products) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View subView = inflater.inflate(R.layout.add_contacts, null);
         final EditText nameField = subView.findViewById(R.id.enterName);
@@ -98,7 +126,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
         if (products != null) {
             nameField.setText(products.getProductId());
             contactField.setText(String.valueOf(products.getQty()));
-        }
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Edit contact");
@@ -125,6 +153,27 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
                 Toast.makeText(context, "Task cancelled",Toast.LENGTH_LONG).show();
             }
         });
-        builder.show();
+        builder.show();*/
+
+
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView tvPId, tvQty;
+
+        ImageView imageView;
+        ImageView deleteProduct;
+        ImageView editProduct;
+        ImageView productImage;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            //   tvPId = itemView.findViewById(R.id.contactName);
+            //   tvQty = itemView.findViewById(R.id.phoneNum);
+            deleteProduct = itemView.findViewById(R.id.deleteContact);
+            editProduct = itemView.findViewById(R.id.editContact);
+
+            productImage = itemView.findViewById(R.id.imageView3);
+        }
     }
 }
