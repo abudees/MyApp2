@@ -30,7 +30,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     TextView productTitle, productDescription, productPrice, textCartItemCount;
 
-    int mCartItemCount;
+
 
     SqliteDatabase mDB;
 
@@ -43,15 +43,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     public void addItemToCart(View view) {
 
-        mCartItemCount++;
+        Products newProducts = new Products(productSelected, 1);
+        mDB.addProduct(newProducts);
+       
 
         textCartItemCount.setVisibility(View.VISIBLE);
 
-        textCartItemCount.setText(String.valueOf(mCartItemCount+mDB.listProducts().size()));
+        textCartItemCount.setText(String.valueOf(mDB.listProducts().size()));
 
-        Products newProducts = new Products(productSelected, mCartItemCount);
 
-        mDB.addProduct(newProducts);
+
+
 
         Toast.makeText(ProductDetailsActivity.this, "Item added successfully", Toast.LENGTH_LONG).show();
 
