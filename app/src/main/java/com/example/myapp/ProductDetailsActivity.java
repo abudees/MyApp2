@@ -41,7 +41,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     public void addItemToCart(View view) {
 
-        mCartItemCount = mCartItemCount + 1;
+        mCartItemCount++;
 
         textCartItemCount.setVisibility(View.VISIBLE);
 
@@ -50,90 +50,21 @@ public class ProductDetailsActivity extends AppCompatActivity {
         Products newProducts = new Products(productSelected, mCartItemCount);
 
         mDB.addProduct(newProducts);
-/*
 
-        ParseQuery<ParseObject> query = new ParseQuery<>("Product");
+        Toast.makeText(ProductDetailsActivity.this, "Item added successfully", Toast.LENGTH_LONG).show();
 
-        query.whereEqualTo("productId", productSelected);
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null && objects.size() > 0) {
-
-                    for (ParseObject object : objects) {
-
-                        try {
-
-                            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
-
-                            Cursor checkC = cartDB.rawQuery("SELECT * FROM newCart WHERE tProductId = " + productSelected + " ", null);
-
-                            checkC.moveToFirst();
-
-                            cartDB.execSQL("UPDATE newCart SET tQty = " + mCartItemCount + " WHERE tProductId = " + productSelected);
-
-                            Log.i("product is there", "true");
-
-                            if (checkC.getColumnIndex("tProductId") == 0) {
-
-                                cartDB.execSQL("INSERT INTO newCart (tProductId, tPrice, tQty) VALUES (" + object.getInt("productId") + ", " + object.getInt("price") + ", " + mCartItemCount + ")");
-
-                                Log.i("product is there", "false");
-                            }
-
-                            checkC.moveToNext();
-
-                            checkC.close();
-
-                            Cursor c = cartDB.rawQuery("SELECT * FROM newCart", null);
-
-                            int tOne = c.getColumnIndex("tProductId");
-
-                            int tTwo = c.getColumnIndex("tPrice");
-
-                            int tThree = c.getColumnIndex("tQty");
-
-                            c.moveToFirst();
-
-                            Log.i("UserResults - one", Integer.toString(c.getInt(tOne)));
-
-                            Log.i("UserResults - two", Integer.toString(c.getInt(tTwo)));
-
-                            Log.i("UserResults - three", Integer.toString(c.getInt(tThree)));
-
-                            c.moveToNext();
-
-
-                        } catch (Exception error) {
-
-                            error.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });*/
     }
 
-/*
+
     public void removeItemToCart(View view) {
 
-        Log.i("quantity is ", String.valueOf(mCartItemCount));
+
 
         try {
 
-            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
 
-            Cursor checkC = cartDB.rawQuery("SELECT * FROM newCart WHERE tProductId = " + productSelected + " ", null);
 
-            Log.i("product selected", String.valueOf(productSelected));
 
-            checkC.moveToFirst();
-
-            int nameIndex = checkC.getColumnIndex("tQty");
-
-            mCartItemCount =  checkC.getInt(nameIndex);
 
             if (mCartItemCount > 0) {
 
@@ -148,9 +79,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     textCartItemCount.setVisibility(View.VISIBLE);
                     textCartItemCount.setText(String.valueOf(mCartItemCount));
                 }
-                cartDB.execSQL("UPDATE newCart SET tQty = " + mCartItemCount + " WHERE tProductId = " + productSelected);
 
-                Log.i("qty was", String.valueOf(checkC.getColumnIndex("tQty")));
 
                 Toast.makeText(this, "Item removed" + mCartItemCount, Toast.LENGTH_LONG).show();
 
@@ -159,9 +88,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 Toast.makeText(this, "Cart is Empty!" + mCartItemCount, Toast.LENGTH_LONG).show();
             }
 
-            checkC.moveToNext();
 
-            checkC.close();
 
         } catch (Exception error) {
 
@@ -169,7 +96,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         }
     }
-*/
+
 
     public void checkOut (View view){
 
@@ -177,7 +104,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         startActivity(intent);
 
-       // super.onPause();
+
 
 
 
@@ -278,7 +205,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         Toast.makeText(ProductDetailsActivity.this, String.valueOf(productSelected), Toast.LENGTH_LONG).show();
 
-/*
+
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");
 
         query.whereEqualTo("productId", productSelected);
@@ -304,7 +231,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
 
-*/
+
     }
 
     @Override

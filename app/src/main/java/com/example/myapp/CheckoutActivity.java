@@ -96,6 +96,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+
         btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(new View.OnClickListener() {
 
@@ -114,9 +115,11 @@ public class CheckoutActivity extends AppCompatActivity {
             final List<String> title = new ArrayList<>();
 
 
+
+
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
 
-            query.whereEqualTo("status", true);
+
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
@@ -131,33 +134,29 @@ public class CheckoutActivity extends AppCompatActivity {
                         }
 
                         if (allProducts.size() > 0) {
-
-
                             cartView.setVisibility(View.VISIBLE);
-                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, images, allProducts);
+                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, url,  allProducts);
                             cartView.setAdapter(mAdapter);
-
-
 
                         } else {
 
                             cartView.setVisibility(View.GONE);
                             Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
                                     Toast.LENGTH_LONG).show();
-
-
-
                         }
+
+
                     }
                 }
             });
         }
 
-        catch(Exception e) {
+        catch(Throwable  e) {
             System.out.println("Error " + e.getMessage());
         }
 
     }
+
 
 
 

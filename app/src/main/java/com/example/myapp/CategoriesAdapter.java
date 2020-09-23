@@ -80,7 +80,7 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<com.example.myapp.C
 
 
 
-     /*   holder.itemView.setOnClickListener(new View.OnClickListener() {
+       holder.itemView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -95,7 +95,7 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<com.example.myapp.C
 
             }
 
-        });*/
+        });
 
     }
 

@@ -26,7 +26,7 @@ public class CategoriesActivity extends FragmentActivity {
 
     private CategoriesAdapter adapter;
 
-    private ImageAdapter imageAdapter;
+  //  private ImageAdapter imageAdapter;
 
     ViewPager viewpager ;
 
@@ -127,28 +127,7 @@ public class CategoriesActivity extends FragmentActivity {
 
 
 
-        ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Product");
 
-
-        query1.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null && objects.size() > 0) {
-
-                    for (ParseObject object : objects) {
-
-                        images.add(object.getString("imageURL"));
-                    }
-
-
-                    imageAdapter = new ImageAdapter (CategoriesActivity.this, images);
-
-                    viewpager.setAdapter(imageAdapter);
-
-                }
-            }
-        });
     }
 
 }

@@ -29,7 +29,6 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
     private Context context;
     private ArrayList<Products> listProducts;
     private ArrayList<Products> mArrayList;
-    private SqliteDatabase mDatabase;
     private List<String> url ;
 
 
@@ -38,7 +37,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
         this.url = url;
         this.listProducts = listProducts;
         this.mArrayList = listProducts;
-        mDatabase = new SqliteDatabase(context);
+        SqliteDatabase mDatabase = new SqliteDatabase(context);
 
     }
 
@@ -46,7 +45,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_list_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_list_item, parent, false);
 
         return new ProductViewHolder(view);
     }
