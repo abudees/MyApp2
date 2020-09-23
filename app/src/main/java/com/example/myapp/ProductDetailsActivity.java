@@ -30,9 +30,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     TextView productTitle, productDescription, productPrice, textCartItemCount;
 
-    int mCartItemCount = 0;
+    int mCartItemCount;
 
     SqliteDatabase mDB;
+
+    ArrayList<Products> allProducts ;
 
 
 
@@ -45,7 +47,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         textCartItemCount.setVisibility(View.VISIBLE);
 
-        textCartItemCount.setText(String.valueOf(mCartItemCount));
+        textCartItemCount.setText(String.valueOf(mCartItemCount+mDB.listProducts().size()));
 
         Products newProducts = new Products(productSelected, mCartItemCount);
 
@@ -56,46 +58,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
 
-    public void removeItemToCart(View view) {
 
 
-
-        try {
-
-
-
-
-
-            if (mCartItemCount > 0) {
-
-                mCartItemCount = mCartItemCount - 1;
-
-                if (mCartItemCount == 0){
-
-                    textCartItemCount.setVisibility(View.INVISIBLE);
-
-                } else {
-
-                    textCartItemCount.setVisibility(View.VISIBLE);
-                    textCartItemCount.setText(String.valueOf(mCartItemCount));
-                }
-
-
-                Toast.makeText(this, "Item removed" + mCartItemCount, Toast.LENGTH_LONG).show();
-
-            } else {
-
-                Toast.makeText(this, "Cart is Empty!" + mCartItemCount, Toast.LENGTH_LONG).show();
-            }
-
-
-
-        } catch (Exception error) {
-
-            error.printStackTrace();
-
-        }
-    }
 
 
     public void checkOut (View view){
@@ -104,68 +68,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         startActivity(intent);
 
+    }
+
+    public void clearCart() {
 
 
-
-
-/*
-        if (mCartItemCount > 0) {
-
-
-            try {
-                SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
-
-                Cursor c = cartDB.rawQuery("SELECT * FROM newCart", null);
-
-                int tOne = c.getColumnIndex("tProductId");
-
-                int tTwo = c.getColumnIndex("tPrice");
-
-                int tThree = c.getColumnIndex("tQty");
-
-                c.moveToFirst();
-
-                ParseObject object = new ParseObject("Order_items");
-
-                object.put("productId", c.getInt(tOne));
-
-                object.put("price", c.getInt(tTwo));
-
-                object.put("qty", c.getInt(tThree));
-
-                object.saveInBackground();
-
-                c.moveToNext();
-
-                c.close();
-
-
-            } catch (Exception error) {
-
-                error.printStackTrace();
-            }
-        }
-*/
-  }
-
-  /*  public void clearCart(){
-
-        try {
-
-            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
-
-            cartDB.execSQL("CREATE TABLE IF NOT EXISTS newCart (tProductId INTEGER(5), tPrice INTEGER(8), tQty INTEGER(5))");
-
-            // to clear cart DB
-            // cartDB.execSQL("DELETE FROM newCart");
-        } catch (Exception error) {
-
-            error.printStackTrace();
-        }
     }
 
 
-*/
+
 
 
 
@@ -175,19 +86,19 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
 
-
-
-
-
-
         linearLayout = findViewById(R.id.productDetailImage);
         productTitle = findViewById(R.id.productTitle);
         productDescription = findViewById(R.id.productDescription);
         productPrice = findViewById(R.id.productPrice);
 
+       // allProducts = mDB.listProducts();
 
         mDB = new SqliteDatabase(this);
-        ArrayList<Products> allProducts = mDB.listProducts();
+
+        //  mCartItemCount = allProducts.size();
+
+
+        Toast.makeText(ProductDetailsActivity.this, String.valueOf(mDB.listProducts().size()), Toast.LENGTH_LONG).show();
 
 
         //retrive selected product
@@ -203,7 +114,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
 
 
-        Toast.makeText(ProductDetailsActivity.this, String.valueOf(productSelected), Toast.LENGTH_LONG).show();
+
+
 
 
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");
@@ -230,8 +142,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     @Override
@@ -242,6 +152,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         View actionView = menuItem.getActionView();
         textCartItemCount =  actionView.findViewById(R.id.cart_badge);
+
 
         setupBadge();
 
@@ -272,20 +183,22 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void setupBadge() {
 
         if (textCartItemCount != null) {
-            if (mCartItemCount == 0) {
+            if (mDB.listProducts().size() == 0) {
                 if (textCartItemCount.getVisibility() != View.GONE) {
 
                     textCartItemCount.setVisibility(View.GONE);
                 }
             } else {
 
-                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+                textCartItemCount.setText(String.valueOf(Math.min(mDB.listProducts().size(), 99)));
 
                 if (textCartItemCount.getVisibility() != View.VISIBLE) {
                     textCartItemCount.setVisibility(View.VISIBLE);
+                    textCartItemCount.setText(String.valueOf(mDB.listProducts().size()));
                 }
             }
         }
+
     }
 
     @Override
