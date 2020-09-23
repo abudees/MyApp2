@@ -24,72 +24,106 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductCartAdapter extends RecyclerView.Adapter<CartViewHolder> implements Filterable {
+public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.ViewHolder> implements Filterable {
+
+    // define all adapter items and then uncomment the onclick listiner 23/9/2020
+
 
     private Context context;
     private ArrayList<Products> listProducts;
     private ArrayList<Products> mArrayList;
     private List<String> url ;
+    private SqliteDatabase mDatabase;
 
+    private LayoutInflater inflater;
+    List<Integer> id;
 
     ProductCartAdapter(Context context, List<String> url, ArrayList<Products> listProducts) {
         this.context = context;
         this.url = url;
         this.listProducts = listProducts;
         this.mArrayList = listProducts;
-        SqliteDatabase mDatabase = new SqliteDatabase(context);
+        inflater = LayoutInflater.from(context);
+        mDatabase = new SqliteDatabase(context);
 
     }
 
 
     @NonNull
     @Override
-    public CartViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_list_item, parent, false);
+    public ProductCartAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        return new CartViewHolder(view);
+        View view = inflater.inflate(R.layout.cart_list_item, parent, false);
+
+        ProductCartAdapter.ViewHolder holder = new ProductCartAdapter.ViewHolder(view);
+
+
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.cart_list_item, parent, false);
+        ViewHolder viewHolder = new ViewHolder(v);
+
+        return  holder;
     }
 
     @Override
-    public void onBindViewHolder(CartViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         String currentURL = url.get(position);
 
 
 
-        Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.imageView);
+        Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.productImage);
 
         final Products products = listProducts.get(position);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.getAdapterPosition();
 
-            @Override
-            public void onClick(View v) {
-
-                Context c = v.getContext();
+        holder.productName.setText(products.getCartId());
+        holder.price.setText(products.getProductId());
 
 
 
-            }
 
-        });
-       // holder.tvPId.setText(products.getCartId());
-       // holder.tvQty.setText(products.getProductId());
-       /* holder.editProduct.setOnClickListener(new View.OnClickListener() {
+     /*   holder.addQty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editTaskDialog(Products);
-            }
-        });
-        holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDatabase.deleteProduct(products.getCartId());
-                ((Activity) context).finish();
-                context.startActivity(((Activity) context).getIntent());
+
+
+
+
+                Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
+
+             //   mDatabase.addQty(products.getProductId(position),products.getQty()+1);
+
             }
         });*/
+
+      /*  holder.decreaseQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                Toast.makeText(context, "Qty removed successfully", Toast.LENGTH_LONG).show();
+
+
+            //    mDatabase.deleteProduct(products.getCartId());
+
+
+            }
+        });*/
+
+
+
+
+
+
+
+
+
+
     }
+
+
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -122,42 +156,37 @@ public class ProductCartAdapter extends RecyclerView.Adapter<CartViewHolder> imp
     public int getItemCount() {
         return listProducts.size();
     }
-   /* private void editTaskDialog(final Products products) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View subView = inflater.inflate(R.layout.add_contacts, null);
-        final EditText nameField = subView.findViewById(R.id.enterName);
-        final EditText contactField = subView.findViewById(R.id.enterPhoneNum);
 
-        if (products != null) {
-            nameField.setText(products.getProductId());
-            contactField.setText(String.valueOf(products.getQty()));
-        }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Edit contact");
-        builder.setView(subView);
-        builder.create();
-        builder.setPositiveButton("EDIT CONTACT", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                final String name = nameField.getText().toString();
-                final String ph_no = contactField.getText().toString();
-                  if (TextUtils.isEmpty(name)) {
-                    Toast.makeText(context, "Something went wrong. Check your input values", Toast.LENGTH_LONG).show();
-                } else {
-                    //    mDatabase.updateProduct(new Products(Objects.requireNonNull(listProducts.get(), name, ph_no));
-                    ((Activity) context).finish();
-                    context.startActivity(((Activity)
-                            context).getIntent());
-                }
-            }
-        });
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "Task cancelled",Toast.LENGTH_LONG).show();
-            }
-        });
-        builder.show();
-    }*/
+
+
+
+
+
+
+
+
+
+   static class ViewHolder extends RecyclerView.ViewHolder {
+
+
+       TextView productName, price;
+       ImageView decreaseQty, addQty, productImage;
+
+
+       private ViewHolder(View itemView) {
+
+           super(itemView);
+
+
+           productName = itemView.findViewById(R.id.productName);
+           price = itemView.findViewById(R.id.price);
+           decreaseQty = itemView.findViewById(R.id.decreaseQty);
+           addQty = itemView.findViewById(R.id.addQty);
+           productImage = itemView.findViewById(R.id.productImage);
+       }
+
+
+   }
+
 }

@@ -62,10 +62,9 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         db.insert(TABLE_CART, null, values);
     }
 
-    void updateProduct(Products products) {
+    void addQty(Products products, int qty) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, products.getProductId());
-        values.put(COLUMN_QTY, products.getQty());
+        values.put(COLUMN_QTY, qty);
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(TABLE_CART, values, COLUMN_ID + " = ?", new String[]{String.valueOf(products.getCartId())});
     }

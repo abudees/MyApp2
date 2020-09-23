@@ -17,7 +17,7 @@
             app:layout_constraintGuide_percent=".7" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/productImage"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginStart="8dp"
@@ -46,7 +46,7 @@
             app:layout_constraintGuide_percent=".85" />
 
         <ImageView
-            android:id="@+id/editContact"
+            android:id="@+id/addQty"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
@@ -63,7 +63,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline43" />
 
         <ImageView
-            android:id="@+id/deleteContact"
+            android:id="@+id/decreaseQty"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_gravity="center"
@@ -80,7 +80,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline43" />
 
         <TextView
-            android:id="@+id/contactName"
+            android:id="@+id/productName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="12sp"
@@ -91,7 +91,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/phoneNum"
+            android:id="@+id/price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"

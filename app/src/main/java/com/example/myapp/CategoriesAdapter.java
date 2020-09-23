@@ -51,10 +51,11 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
 
     @NonNull
     @Override
-    public com.example.myapp.CategoriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public CategoriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
         View view = inflater.inflate(R.layout.category_card, viewGroup, false);
-        com.example.myapp.CategoriesAdapter.ViewHolder holder = new com.example.myapp.CategoriesAdapter.ViewHolder(view);
+
+        CategoriesAdapter.ViewHolder holder = new CategoriesAdapter.ViewHolder(view);
 
 
         View v = LayoutInflater.from(viewGroup.getContext())
@@ -80,7 +81,8 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
 
 
 
-       holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {

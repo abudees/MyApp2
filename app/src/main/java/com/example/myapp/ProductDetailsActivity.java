@@ -37,10 +37,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
     ArrayList<Products> allProducts ;
 
 
-
-
-
-
     public void addItemToCart(View view) {
 
         Products newProducts = new Products(productSelected, 1);
@@ -50,9 +46,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
         textCartItemCount.setVisibility(View.VISIBLE);
 
         textCartItemCount.setText(String.valueOf(mDB.listProducts().size()));
-
-
-
 
 
         Toast.makeText(ProductDetailsActivity.this, "Item added successfully", Toast.LENGTH_LONG).show();
