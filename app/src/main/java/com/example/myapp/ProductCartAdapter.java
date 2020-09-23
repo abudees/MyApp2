@@ -24,7 +24,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> implements Filterable {
+public class ProductCartAdapter extends RecyclerView.Adapter<CartViewHolder> implements Filterable {
 
     private Context context;
     private ArrayList<Products> listProducts;
@@ -44,14 +44,14 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductViewHolder> 
 
     @NonNull
     @Override
-    public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CartViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_list_item, parent, false);
 
-        return new ProductViewHolder(view);
+        return new CartViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ProductViewHolder holder, final int position) {
+    public void onBindViewHolder(CartViewHolder holder, final int position) {
 
         String currentURL = url.get(position);
 

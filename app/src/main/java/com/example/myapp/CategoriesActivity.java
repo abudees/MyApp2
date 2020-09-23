@@ -26,11 +26,13 @@ public class CategoriesActivity extends FragmentActivity {
 
     private CategoriesAdapter adapter;
 
-  //  private ImageAdapter imageAdapter;
+    private ViewPagerAdapter viewPagerAdapter;
 
     ViewPager viewpager ;
 
     private RecyclerView recyclerView;
+
+
 
 
 
@@ -44,10 +46,7 @@ public class CategoriesActivity extends FragmentActivity {
         setContentView(R.layout.activity_categories);
 
 
-
-
-
-        viewpager =  findViewById(R.id.pager);
+        viewpager = findViewById(R.id.pager);
 
         recyclerView = findViewById(R.id.recyclerview);
 
@@ -56,22 +55,11 @@ public class CategoriesActivity extends FragmentActivity {
         //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-
         recyclerView.setAdapter(adapter);
-
-        loadData();
 
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
-
-
-
-
-    }
-
-
-    public void loadData() {
 
         final List<String> url = new ArrayList<>();
 
@@ -79,11 +67,7 @@ public class CategoriesActivity extends FragmentActivity {
 
         final List<Integer> id = new ArrayList<>();
 
-        final List<String> images=new ArrayList<>();
-
-
-
-
+        final List<String> images = new ArrayList<>();
 
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Categories");
@@ -123,11 +107,27 @@ public class CategoriesActivity extends FragmentActivity {
         recyclerView.setLayoutManager(mLayoutManager);
 
 
+        ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Product");
 
 
+        query1.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                if (e == null && objects.size() > 0) {
+
+                    for (ParseObject object : objects) {
+
+                        images.add(object.getString("imageURL"));
+                    }
 
 
+                    viewPagerAdapter = new ViewPagerAdapter(CategoriesActivity.this, images);
 
+                    viewpager.setAdapter(viewPagerAdapter);
+
+                }
+            }
+        });
     }
-
 }

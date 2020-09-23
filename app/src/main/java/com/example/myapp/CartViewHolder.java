@@ -6,7 +6,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ProductViewHolder extends RecyclerView.ViewHolder {
+public class CartViewHolder extends RecyclerView.ViewHolder {
+
 
     TextView tvName, tvPhoneNum;
     ImageView deleteContact;
@@ -18,11 +19,12 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
 
 
 
-    ProductViewHolder(View itemView) {
+    CartViewHolder(View itemView) {
         super(itemView);
         tvName = itemView.findViewById(R.id.contactName);
         tvPhoneNum = itemView.findViewById(R.id.phoneNum);
         deleteContact = itemView.findViewById(R.id.deleteContact);
         editContact = itemView.findViewById(R.id.editContact);
         imageView = itemView.findViewById(R.id.imageView3);
-    }}
+    }
+}

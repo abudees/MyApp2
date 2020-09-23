@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 
-public class CategoriesAdapter extends  RecyclerView.Adapter<com.example.myapp.CategoriesAdapter.ViewHolder> {
+public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
 
     private LayoutInflater inflater;
 

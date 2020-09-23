@@ -21,7 +21,6 @@
         <activity android:name=".ProductsActivity" />
         <activity android:name=".ProductDetailsActivity" />
         <activity android:name=".PreparingCheckListActivity" />
-        <activity android:name=".PreparerActivity" />
         <activity android:name=".PasswordResetActivity" />
         <activity android:name=".ManagerActivity" />
         <activity android:name=".LoginActivity" />
