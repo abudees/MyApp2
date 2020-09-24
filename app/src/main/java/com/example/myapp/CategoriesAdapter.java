@@ -58,9 +58,8 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
         CategoriesAdapter.ViewHolder holder = new CategoriesAdapter.ViewHolder(view);
 
 
-        View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.category_card, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(v);
+
+
 
         return holder;
     }

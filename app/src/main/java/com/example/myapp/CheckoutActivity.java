@@ -49,11 +49,11 @@ public class CheckoutActivity extends AppCompatActivity {
 
     final ArrayList<Integer> price = new ArrayList<>();;
 
-    final List<String> url = new ArrayList<>();
+    List<String> url = new ArrayList<>();
 
     final ArrayList<String> size = new ArrayList<>();
 
-    final List<String> title = new ArrayList<>();
+    List<String> productTitle = new ArrayList<>();
 
     final List<Integer> qty = new ArrayList<>();
 
@@ -76,12 +76,9 @@ public class CheckoutActivity extends AppCompatActivity {
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
 
-        //super.onResume();
 
 
         cartView = findViewById(R.id.myCartList);
-
-        final List<String> images = new ArrayList<>();
 
         linearLayoutManager = new LinearLayoutManager(this);
         cartView.setLayoutManager(linearLayoutManager);
@@ -110,9 +107,10 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
         try {
-            final List<String> url = new ArrayList<>();
 
-            final List<String> title = new ArrayList<>();
+            url = new ArrayList<>();
+
+            productTitle = new ArrayList<>();
 
 
 
@@ -130,12 +128,14 @@ public class CheckoutActivity extends AppCompatActivity {
 
                             url.add(object.getString("imageURL"));
 
+                            productTitle.add(object.getString("title"));
+
                             Log.i("url", object.getString("imageURL"));
                         }
 
                         if (allProducts.size() > 0) {
                             cartView.setVisibility(View.VISIBLE);
-                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, url,  allProducts);
+                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle,allProducts);
                             cartView.setAdapter(mAdapter);
 
                         } else {

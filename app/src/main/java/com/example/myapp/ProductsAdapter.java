@@ -25,7 +25,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
     List<Integer> price;
 
-    List<Integer> ptoductId;
+    List<Integer> productId;
 
     String currency;
 
@@ -37,7 +37,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         this.url = mUrl;
         this.title = mTitle;
         this.price = mPrice;
-        this.ptoductId = mProductId;
+        this.productId = mProductId;
         this.currency = mCurrency;
         this.context = context;
 
@@ -84,7 +84,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
                 Intent intent = new Intent(c, ProductDetailsActivity.class);
 
-                intent.putExtra("productId", ptoductId.get(position));
+                intent.putExtra("productId", productId.get(position));
 
 
                 c.startActivity(intent);

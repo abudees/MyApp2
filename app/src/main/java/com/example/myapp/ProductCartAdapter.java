@@ -33,16 +33,17 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     private ArrayList<Products> listProducts;
     private ArrayList<Products> mArrayList;
     private List<String> url ;
+    private List<String> productTitle;
     private SqliteDatabase mDatabase;
-
     private LayoutInflater inflater;
-    List<Integer> id;
 
-    ProductCartAdapter(Context context, List<String> url, ArrayList<Products> listProducts) {
+
+    ProductCartAdapter(Context context, List<String> url, List<String> productTitle, ArrayList<Products> listProducts ) {
         this.context = context;
-        this.url = url;
         this.listProducts = listProducts;
         this.mArrayList = listProducts;
+        this.url = url;
+        this.productTitle = productTitle;
         inflater = LayoutInflater.from(context);
         mDatabase = new SqliteDatabase(context);
 
@@ -51,16 +52,12 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
     @NonNull
     @Override
-    public ProductCartAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = inflater.inflate(R.layout.cart_list_item, parent, false);
 
-        ProductCartAdapter.ViewHolder holder = new ProductCartAdapter.ViewHolder(view);
+        ViewHolder holder = new ProductCartAdapter.ViewHolder(view);
 
-
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cart_list_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(v);
 
         return  holder;
     }
@@ -69,6 +66,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         String currentURL = url.get(position);
+        String currenName = productTitle.get(position);
 
 
 
@@ -78,13 +76,13 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
         holder.getAdapterPosition();
 
-        holder.productName.setText(products.getCartId());
+        holder.productName.setText(currenName);
         holder.price.setText(products.getProductId());
 
 
 
 
-     /*   holder.addQty.setOnClickListener(new View.OnClickListener() {
+        holder.addQty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -96,9 +94,9 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
              //   mDatabase.addQty(products.getProductId(position),products.getQty()+1);
 
             }
-        });*/
+        });
 
-      /*  holder.decreaseQty.setOnClickListener(new View.OnClickListener() {
+        holder.decreaseQty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -106,11 +104,11 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
                 Toast.makeText(context, "Qty removed successfully", Toast.LENGTH_LONG).show();
 
 
-            //    mDatabase.deleteProduct(products.getCartId());
+               mDatabase.deleteProduct(products.getCartId());
 
 
             }
-        });*/
+        });
 
 
 
