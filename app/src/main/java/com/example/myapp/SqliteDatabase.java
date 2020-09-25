@@ -54,6 +54,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         return storeCart;
     }
 
+
+
     void addProduct(Products products) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, products.getProductId());

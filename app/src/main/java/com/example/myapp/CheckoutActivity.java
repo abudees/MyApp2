@@ -47,7 +47,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     public ArrayList<Integer> orderItems ;
 
-    final ArrayList<Integer> price = new ArrayList<>();;
+    final List<Integer> price = new ArrayList<>();
 
     List<String> url = new ArrayList<>();
 
@@ -130,12 +130,14 @@ public class CheckoutActivity extends AppCompatActivity {
 
                             productTitle.add(object.getString("title"));
 
+                            price.add(object.getInt("price"));
+
                             Log.i("url", object.getString("imageURL"));
                         }
 
                         if (allProducts.size() > 0) {
                             cartView.setVisibility(View.VISIBLE);
-                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts);
+                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts, price);
                             cartView.setAdapter(mAdapter);
 
                         } else {

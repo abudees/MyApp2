@@ -34,18 +34,22 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     private ArrayList<Products> mArrayList;
     private List<String> url ;
     private List<String> productTitle;
+    private List<Integer> price;
 
 
     private SqliteDatabase mDatabase;
     private LayoutInflater inflater;
 
+    int maxQty =25;
 
-    ProductCartAdapter(Context context, List<String> url, List<String> productTitle, ArrayList<Products> listProducts ) {
+
+    ProductCartAdapter(Context context, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price) {
         this.context = context;
         this.listProducts = listProducts;
         this.mArrayList = listProducts;
         this.url = url;
         this.productTitle = productTitle;
+        this.price =price;
         inflater = LayoutInflater.from(context);
         mDatabase = new SqliteDatabase(context);
 
@@ -69,19 +73,23 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
         String currentURL = url.get(position);
         String currenName = productTitle.get(position);
+        int currentPrice = price.get(position);
+        final Products products = listProducts.get(position);
 
 
 
 
         Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.productImage);
 
-        final Products products = listProducts.get(position);
+
+
 
         holder.getAdapterPosition();
 
-        holder.productName.setText(currenName);
-        holder.price.setText(String.valueOf(products.getProductId()));
         holder.qty.setText(String.valueOf(products.getQty()));
+        holder.productName.setText(currenName);
+        holder.price.setText( String.valueOf(currentPrice));
+
 
 
 
@@ -90,13 +98,11 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             @Override
             public void onClick(View view) {
 
+                mDatabase.addQty(products, products.getQty()+1);
 
-
+                holder.qty.setText(String.valueOf(products.getQty()));
 
                 Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
-
-             //   mDatabase.addQty(products.getProductId(position),products.getQty()+1);
-
             }
         });
 

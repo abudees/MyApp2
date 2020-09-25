@@ -41,7 +41,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         Products newProducts = new Products(productSelected, 1);
         mDB.addProduct(newProducts);
-       
+
 
         textCartItemCount.setVisibility(View.VISIBLE);
 
