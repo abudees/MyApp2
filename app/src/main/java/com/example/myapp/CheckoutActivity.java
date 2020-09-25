@@ -55,7 +55,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     List<String> productTitle = new ArrayList<>();
 
-    final List<Integer> qty = new ArrayList<>();
+
 
     ArrayList<Products> allProducts;
 
@@ -135,7 +135,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
                         if (allProducts.size() > 0) {
                             cartView.setVisibility(View.VISIBLE);
-                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle,allProducts);
+                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts);
                             cartView.setAdapter(mAdapter);
 
                         } else {

@@ -34,6 +34,8 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     private ArrayList<Products> mArrayList;
     private List<String> url ;
     private List<String> productTitle;
+
+
     private SqliteDatabase mDatabase;
     private LayoutInflater inflater;
 
@@ -70,6 +72,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
 
 
+
         Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.productImage);
 
         final Products products = listProducts.get(position);
@@ -77,7 +80,8 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         holder.getAdapterPosition();
 
         holder.productName.setText(currenName);
-        holder.price.setText(products.getProductId());
+        holder.price.setText(String.valueOf(products.getProductId()));
+        holder.qty.setText(String.valueOf(products.getQty()));
 
 
 
@@ -168,7 +172,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
    static class ViewHolder extends RecyclerView.ViewHolder {
 
 
-       TextView productName, price;
+       TextView productName, price, qty;
        ImageView decreaseQty, addQty, productImage;
 
 
@@ -182,6 +186,8 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
            decreaseQty = itemView.findViewById(R.id.decreaseQty);
            addQty = itemView.findViewById(R.id.addQty);
            productImage = itemView.findViewById(R.id.productImage);
+
+           qty = itemView.findViewById(R.id.qty);
        }
 
 
