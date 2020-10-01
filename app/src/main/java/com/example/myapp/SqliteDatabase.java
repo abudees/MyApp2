@@ -64,11 +64,11 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         db.insert(TABLE_CART, null, values);
     }
 
-    void addQty(Products products, int qty) {
+    void addQty(int id,  int qty) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_QTY, qty);
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TABLE_CART, values, COLUMN_ID + " = ?", new String[]{String.valueOf(products.getCartId())});
+        db.update(TABLE_CART, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
 
     void deleteProduct(int id) {

@@ -139,6 +139,7 @@ public class CheckoutActivity extends AppCompatActivity {
                             cartView.setVisibility(View.VISIBLE);
                             mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts, price);
                             cartView.setAdapter(mAdapter);
+                            mAdapter.notifyDataSetChanged();
 
                         } else {
 

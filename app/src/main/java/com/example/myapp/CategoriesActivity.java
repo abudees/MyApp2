@@ -5,9 +5,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
@@ -24,13 +30,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CategoriesActivity extends FragmentActivity {
 
-    private CategoriesAdapter adapter;
+     CategoriesAdapter adapter;
 
-    private ViewPagerAdapter viewPagerAdapter;
+     ViewPagerAdapter viewPagerAdapter;
 
     ViewPager viewpager ;
 
-    private RecyclerView recyclerView;
+     RecyclerView recyclerView;
+
+     List<String> url ;
+
+     Context listContext;
+
+     String a;
+
+
+
+
 
 
 
@@ -45,6 +61,10 @@ public class CategoriesActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
 
+      //  return inflater.inflate(R.layout.category_card, container, false);
+
+
+
 
         viewpager = findViewById(R.id.pager);
 
@@ -52,10 +72,8 @@ public class CategoriesActivity extends FragmentActivity {
 
         recyclerView.setHasFixedSize(true);
 
-        //  recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
         recyclerView.setAdapter(adapter);
+
 
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
@@ -91,6 +109,10 @@ public class CategoriesActivity extends FragmentActivity {
 
                         Log.i("url", object.getString("imageURL"));
 
+                      //  a = object.getString("imageURL");
+
+                       // Toast.makeText(CategoriesActivity.this, a, Toast.LENGTH_LONG).show();
+
                     }
 
 
@@ -98,13 +120,15 @@ public class CategoriesActivity extends FragmentActivity {
 
                     recyclerView.setAdapter(adapter);
 
+                    GridLayoutManager mLayoutManager = new GridLayoutManager(CategoriesActivity.this, 2);
+
+                    recyclerView.setLayoutManager(mLayoutManager);
+
                 }
             }
         });
 
-        GridLayoutManager mLayoutManager = new GridLayoutManager(CategoriesActivity.this, 2);
 
-        recyclerView.setLayoutManager(mLayoutManager);
 
 
         ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Product");
@@ -121,13 +145,20 @@ public class CategoriesActivity extends FragmentActivity {
                         images.add(object.getString("imageURL"));
                     }
 
-
                     viewPagerAdapter = new ViewPagerAdapter(CategoriesActivity.this, images);
 
                     viewpager.setAdapter(viewPagerAdapter);
 
+
+
                 }
             }
         });
+
+        viewPagerAdapter = new ViewPagerAdapter(CategoriesActivity.this, images);
+
+        viewpager.setAdapter(viewPagerAdapter);
     }
+
+
 }

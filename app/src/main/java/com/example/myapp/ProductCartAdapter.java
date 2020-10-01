@@ -35,10 +35,10 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     private List<String> url ;
     private List<String> productTitle;
     private List<Integer> price;
-
-
     private SqliteDatabase mDatabase;
     private LayoutInflater inflater;
+
+
 
     int maxQty =25;
 
@@ -53,7 +53,14 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         inflater = LayoutInflater.from(context);
         mDatabase = new SqliteDatabase(context);
 
+
     }
+
+
+
+
+
+
 
 
     @NonNull
@@ -81,12 +88,9 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
         Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.productImage);
 
-
-
-
         holder.getAdapterPosition();
 
-        holder.qty.setText(String.valueOf(products.getQty()));
+
         holder.productName.setText(currenName);
         holder.price.setText( String.valueOf(currentPrice));
 
@@ -94,17 +98,31 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
 
 
+
+
+
+
+
+        holder.qty.setText(String.valueOf(products.getQty()));
+
+
         holder.addQty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                mDatabase.addQty(products, products.getQty()+1);
-
-                holder.qty.setText(String.valueOf(products.getQty()));
-
+                holder.qty.setText(String.valueOf(products.getQty()+1));
+                mDatabase.addQty(products.getCartId(),products.getQty()+1);
                 Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
+
             }
         });
+
+
+
+
+
+
+
 
         holder.decreaseQty.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,6 +213,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
            qty = itemView.findViewById(R.id.qty);
        }
+
 
 
    }

@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,12 +58,10 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
 
         CategoriesAdapter.ViewHolder holder = new CategoriesAdapter.ViewHolder(view);
 
-
-
-
-
         return holder;
     }
+
+
 
 
 
