@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -21,6 +23,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -38,21 +41,16 @@ public class CategoriesActivity extends FragmentActivity {
 
      RecyclerView recyclerView;
 
-     List<String> url ;
 
-     Context listContext;
+    TextView  noConnection ;
 
-     String a;
+    Button  retry ;
 
+    public void retryInternet (View view){
 
-
-
-
-
-
-
-
-
+        finish();
+        startActivity(getIntent());
+    }
 
 
 
@@ -61,104 +59,95 @@ public class CategoriesActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
 
-      //  return inflater.inflate(R.layout.category_card, container, false);
+        noConnection = findViewById(R.id.textView4);
 
+        retry = findViewById(R.id.button3);
 
-
-
-        viewpager = findViewById(R.id.pager);
-
-        recyclerView = findViewById(R.id.recyclerview);
-
-        recyclerView.setHasFixedSize(true);
-
-        recyclerView.setAdapter(adapter);
+        retry.setVisibility(View.INVISIBLE);
 
 
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
+        try {
+            CheckConnection checkConnection = new CheckConnection();
 
-        final List<String> url = new ArrayList<>();
-
-        final List<String> title = new ArrayList<>();
-
-        final List<Integer> id = new ArrayList<>();
-
-        final List<String> images = new ArrayList<>();
+            if (checkConnection.isNetworkAvailable()) {
 
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Categories");
+                viewpager = findViewById(R.id.pager);
 
-        query.whereEqualTo("status", true);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
+                recyclerView = findViewById(R.id.recyclerview);
 
-                if (e == null && objects.size() > 0) {
+                recyclerView.setHasFixedSize(true);
 
-                    for (ParseObject object : objects) {
+                recyclerView.setAdapter(adapter);
 
 
-                        url.add(object.getString("imageURL"));
+                final List<String> url = new ArrayList<>();
 
-                        title.add(object.getString("categoryName"));
+                final List<String> title = new ArrayList<>();
+
+                final List<Integer> id = new ArrayList<>();
+
+                final List<String> images = new ArrayList<>();
 
 
-                        id.add(object.getInt("catId"));
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Categories");
 
-                        Log.i("url", object.getString("imageURL"));
+                query.whereEqualTo("status", true);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
 
-                      //  a = object.getString("imageURL");
+                        if (e == null && objects.size() > 0) {
 
-                       // Toast.makeText(CategoriesActivity.this, a, Toast.LENGTH_LONG).show();
+                            for (ParseObject object : objects) {
 
+                                url.add(object.getString("imageURL"));
+
+                                title.add(object.getString("categoryName"));
+
+                                id.add(object.getInt("catId"));
+                            }
+
+                            adapter = new CategoriesAdapter(CategoriesActivity.this, url, title, id);
+
+                            recyclerView.setAdapter(adapter);
+
+                            GridLayoutManager mLayoutManager = new GridLayoutManager(CategoriesActivity.this, 2);
+
+                            recyclerView.setLayoutManager(mLayoutManager);
+
+                        }
                     }
+                });
 
 
-                    adapter = new CategoriesAdapter(CategoriesActivity.this, url, title, id);
+                ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Product");
 
-                    recyclerView.setAdapter(adapter);
+                query1.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
 
-                    GridLayoutManager mLayoutManager = new GridLayoutManager(CategoriesActivity.this, 2);
+                        if (e == null && objects.size() > 0) {
 
-                    recyclerView.setLayoutManager(mLayoutManager);
+                            for (ParseObject object : objects) {
 
-                }
-            }
-        });
+                                images.add(object.getString("imageURL"));
+                            }
 
+                            viewPagerAdapter = new ViewPagerAdapter(CategoriesActivity.this, images);
 
+                            viewpager.setAdapter(viewPagerAdapter);
 
-
-        ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Product");
-
-
-        query1.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null && objects.size() > 0) {
-
-                    for (ParseObject object : objects) {
-
-                        images.add(object.getString("imageURL"));
+                        }
                     }
-
-                    viewPagerAdapter = new ViewPagerAdapter(CategoriesActivity.this, images);
-
-                    viewpager.setAdapter(viewPagerAdapter);
-
-
-
-                }
+                });
             }
-        });
+        } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
 
-        viewPagerAdapter = new ViewPagerAdapter(CategoriesActivity.this, images);
-
-        viewpager.setAdapter(viewPagerAdapter);
+        }
     }
-
-
 }

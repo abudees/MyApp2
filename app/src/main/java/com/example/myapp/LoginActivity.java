@@ -20,6 +20,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
@@ -266,6 +267,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
+        try {
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
+
+
+
 
 
 
@@ -303,7 +311,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signUpButton = findViewById(R.id.button2);
 
 
+            }
+        }
 
+        catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

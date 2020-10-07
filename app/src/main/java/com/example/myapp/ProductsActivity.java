@@ -55,98 +55,83 @@ public class ProductsActivity extends AppCompatActivity {
 
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
 
+        try {
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
 
 
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                categoryNumber = 0;
-            } else {
-                categoryNumber = extras.getInt("categoryNumber");
-            }
-        } else {
-            categoryNumber = (int) savedInstanceState.getSerializable("categoryNumber");
-        }
-
-
-//currency
-        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-
-        String countryCode = tm.getSimCountryIso();
-
-        String lang = Locale.getDefault().getDisplayLanguage();
-
-        Locale locale = new Locale(lang, countryCode);
-
-        final String currency = Currency.getInstance(locale).getCurrencyCode();
-
-
-        recyclerView = findViewById(R.id.recyclerview1);
-
-        recyclerView.setHasFixedSize(true);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        recyclerView.setHasFixedSize(true);
-
-        recyclerView.setAdapter(adapter);
-
-
-
-        ParseAnalytics.trackAppOpenedInBackground(getIntent());
-
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
-
-        query.whereEqualTo("catId", categoryNumber);
-
-        query.orderByAscending("productId");
-
-        query.whereEqualTo("status", true);
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null && objects.size() > 0) {
-
-                    for (ParseObject object : objects) {
-
-                        url.add(object.getString("imageURL"));
-
-                        title.add(object.getString("title") );
-
-                        if (currency.matches( "SDG" )) {
-
-                            Log.i("customer in sudan", "cstomer in sudan");
-
-                            price.add(object.getInt("price"));
-
-                        } else {
-
-                            price.add(object.getInt("price")*object.getInt("rate") );
-
-                            Log.i("customer in sudan", "not in sudan");
-                        }
-
-                        ptoductId.add(object.getInt("productId"));
+                if (savedInstanceState == null) {
+                    Bundle extras = getIntent().getExtras();
+                    if (extras == null) {
+                        categoryNumber = 0;
+                    } else {
+                        categoryNumber = extras.getInt("categoryNumber");
                     }
-
-                    GridLayoutManager mLayoutManager = new GridLayoutManager(ProductsActivity.this, 2);
-                    adapter = new ProductsAdapter(ProductsActivity.this, url, title, price , ptoductId, currency);
-
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(mLayoutManager);
+                } else {
+                    categoryNumber = (int) savedInstanceState.getSerializable("categoryNumber");
                 }
+
+
+                //local price
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                String countryCode = tm.getSimCountryIso();
+                String lang = Locale.getDefault().getDisplayLanguage();
+                Locale locale = new Locale(lang, countryCode);
+                final String currency = Currency.getInstance(locale).getCurrencyCode();
+
+
+                recyclerView = findViewById(R.id.recyclerview1);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(adapter);
+
+
+                ParseAnalytics.trackAppOpenedInBackground(getIntent());
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
+                query.whereEqualTo("catId", categoryNumber);
+                query.orderByAscending("productId");
+                query.whereEqualTo("status", true);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+                        if (e == null && objects.size() > 0) {
+                            for (ParseObject object : objects) {
+
+                                url.add(object.getString("imageURL"));
+                                title.add(object.getString("title"));
+
+                                if (currency.matches("SDG")) {
+
+                                    Log.i("customer in sudan", "cstomer in sudan");
+
+                                    price.add(object.getInt("price"));
+                                } else {
+                                    price.add(object.getInt("price") * object.getInt("rate"));
+                                    Log.i("customer in sudan", "not in sudan");
+                                }
+                                ptoductId.add(object.getInt("productId"));
+                            }
+
+                            GridLayoutManager mLayoutManager = new GridLayoutManager(ProductsActivity.this, 2);
+                            adapter = new ProductsAdapter(ProductsActivity.this, url, title, price, ptoductId, currency);
+
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(mLayoutManager);
+                        }
+                    }
+                });
             }
-        });
+        } catch (InterruptedException | IOException e) {
+        e.printStackTrace();
+        }
     }
 }
+

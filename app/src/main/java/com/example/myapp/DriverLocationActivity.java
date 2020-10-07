@@ -27,6 +27,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +82,11 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_location);
 
+        try {
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
+
 
 
         intent = getIntent();
@@ -119,6 +125,12 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
 
             }
         });
+
+            }
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+
+        }
     }
 
 

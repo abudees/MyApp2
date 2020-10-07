@@ -10,6 +10,8 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 
+import java.io.IOException;
+
 public class PasswordResetActivity extends AppCompatActivity {
 
     EditText editText, editText2;
@@ -38,8 +40,20 @@ public class PasswordResetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_reset);
 
-        editText = findViewById(R.id.editText2);
-        editText2 = findViewById(R.id.editText3);
+        try {
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
+
+                editText = findViewById(R.id.editText2);
+                editText2 = findViewById(R.id.editText3);
+
+            }
+        }
+
+        catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+        }
     }
 }
 

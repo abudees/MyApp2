@@ -30,34 +30,35 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity /*implements View.OnClickListener */{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+
+
+
+
+   // Boolean englishLanguageActive = true;
 
     String area;
 
     Intent intent;
 
-    Boolean englishLanguageActive = true;
-
-    TextView languageTextView ;
+    TextView languageTextView, redirectToLogin , logout, noConnection ;
 
     Button redirectButton, retry ;
 
-    TextView redirectToLogin , logout, noConnection ;
-
     Spinner spinner;
 
-     ArrayList<String> areaList;
+    ArrayList<String> areaList;
 
     ArrayAdapter adapter;
 
-    String a;
 
-
-    String[] users = { "Suresh Dasari", "Trishika Dasari", "Rohini Alavala", "Praveen Kumar", "Madhav Sai" };
 
 
 
@@ -79,28 +80,21 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
     public void redirect (View view) {
 
-/*
+
         if (area.matches("Please select your Area")) {
 
-         //   if (englishLanguageActive) {
-
-                Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
-/*
-            } else {
-
-                Toast.makeText(this, "يرجى اختيار منطقةالتوصيل!", Toast.LENGTH_LONG).show();
-            }
-
+            Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
 
         } else {
-*/
+
 
             intent = new Intent(getApplicationContext(), CategoriesActivity.class);
 
-           // intent.putExtra("area", area);
+            intent.putExtra("area", area);
 
             startActivity(intent);
-      //  }
+
+        }
     }
 
 
@@ -142,19 +136,15 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
             }
         }
     }
+    */
 
-*/
 
 
-    private boolean isNetworkAvailable() throws InterruptedException, IOException {
-        final String command = "ping -c 1 google.com";
-        return Runtime.getRuntime().exec(command).waitFor() == 0;
 
-       // ConnectivityManager connectivityManager
-         //       = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        //NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        //return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+
+
+
+
 
 
 
@@ -166,41 +156,23 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
         getSupportActionBar().hide(); //hide the title bar
 
-
-
-
-
-
-
-
-
-        // Add your initialization code here
-        /*Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
-                .applicationId("49cd35a5b5f6610271ebdebb749464d7770ea2ad")
-                .clientKey("36e7f81fcbe7caa26452001f6c6b31f6591f263c")
-                .server("http://18.190.25.222:80/parse/")
-                .build()
-        );*/
-
-
-
-
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
+
+
+
         noConnection = findViewById(R.id.textView4);
+
+        retry = findViewById(R.id.button3);
+
+        retry.setVisibility(View.INVISIBLE);
 
         // spinner
         spinner = findViewById(R.id.areaSelect);
 
-
-
-
-
-         areaList = new ArrayList<>();
+        areaList = new ArrayList<>();
 
         languageTextView = findViewById(R.id.languageTextView);
-
-        //languageTextView.setOnClickListener(this);
 
         redirectButton = findViewById(R.id.redirect);
 
@@ -208,97 +180,85 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
         logout = findViewById(R.id.logout1);
 
-        retry = findViewById(R.id.button3);
-
-        retry.setVisibility(View.INVISIBLE);
 
 
 
+        try {
 
+            CheckConnection checkConnection = new CheckConnection();
+            if (checkConnection.isNetworkAvailable()) {
 
-
-
-       // try {
-         //   if (isNetworkAvailable()) {
                 //internet is connected do something
+                if (ParseUser.getCurrentUser() != null) {
 
-        if (ParseUser.getCurrentUser() != null) {
+                    redirectToLogin.setVisibility(View.INVISIBLE);
 
-            redirectToLogin.setVisibility(View.INVISIBLE);
-            logout.setVisibility(View.VISIBLE);
+                    logout.setVisibility(View.VISIBLE);
 
+                    switch (ParseUser.getCurrentUser().getString("userType")) {
 
-            Toast.makeText(this, ParseUser.getCurrentUser().getUsername(), Toast.LENGTH_SHORT).show();
+                        case "Vendor":
 
-            switch (ParseUser.getCurrentUser().getString("userType")) {
+                            intent = new Intent(getApplicationContext(), VendorActivity.class);
+                            startActivity(intent);
+                            break;
 
-                case "Vendor":
+                        case "Driver":
 
-                    intent = new Intent(getApplicationContext(), VendorActivity.class);
-                    startActivity(intent);
-                    break;
+                            intent = new Intent(getApplicationContext(), DriverActivity.class);
+                            startActivity(intent);
+                            break;
 
-                case "Driver":
+                        case "Manager":
+                            intent = new Intent(getApplicationContext(), ManagerActivity.class);
+                            startActivity(intent);
+                            break;
 
-                    intent = new Intent(getApplicationContext(), DriverActivity.class);
-                    startActivity(intent);
-                    break;
-
-                case "Manager":
-                    intent = new Intent(getApplicationContext(), ManagerActivity.class);
-                    startActivity(intent);
-                    break;
-
-                default:
-                    throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
-            }
-
-
-        } else {
-
-            redirectToLogin.setVisibility(View.VISIBLE);
-            logout.setVisibility(View.INVISIBLE);
-
-            //  Toast.makeText(this, ParseUser.getCurrentUser().getUsername(), Toast.LENGTH_SHORT).show();
-        }
-
-
-        ParseQuery<ParseObject> query = new ParseQuery<>("Area");
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null) {
-
-                    for (ParseObject object : objects) {
-
-                        areaList.add(object.getString("areaName"));
-
-                       // a = object.getString("areaName");
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
                     }
 
 
+                } else {
 
-                    adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
-
-                    // Apply the adapter to the spinner
-                    spinner.setAdapter(adapter);
-
-                    spinner.setOnItemSelectedListener(new mySpinnerListener());
-
-
-
+                    redirectToLogin.setVisibility(View.VISIBLE);
+                    logout.setVisibility(View.INVISIBLE);
 
                 }
 
-            }
-        });
+
+                ParseQuery<ParseObject> query = new ParseQuery<>("Area");
+
+                query.findInBackground(new FindCallback<ParseObject>() {
+
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+
+                        if (e == null) {
+
+                            for (ParseObject object : objects) {
+
+                                areaList.add(object.getString("areaName"));
+
+                                // a = object.getString("areaName");
+                            }
 
 
+                            adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
 
-        /*    } else {
+                            // Apply the adapter to the spinner
+                            spinner.setAdapter(adapter);
+
+                            spinner.setOnItemSelectedListener(new mySpinnerListener());
+
+
+                        }
+
+                    }
+                });
+
+
+            } else {
                 //do something, net is not connected
 
                 //Toast.makeText(this, "Please check your internet connection", Toast.LENGTH_LONG).show();
@@ -320,9 +280,13 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 
 
     class mySpinnerListener implements Spinner.OnItemSelectedListener {

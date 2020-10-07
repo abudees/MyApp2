@@ -13,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
@@ -28,46 +30,210 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     int productSelected;
 
-    TextView productTitle, productDescription, productPrice, textCartItemCount;
+    TextView productTitle, productDescription, productPrice;
+
+
+    TextView textCartItemCount;
+    int mCartItemCount = 0;
 
 
 
-    SqliteDatabase mDB;
 
-    ArrayList<Products> allProducts ;
 
 
     public void addItemToCart(View view) {
 
-        Products newProducts = new Products(productSelected, 1);
-        mDB.addProduct(newProducts);
-
+        mCartItemCount = mCartItemCount + 1;
 
         textCartItemCount.setVisibility(View.VISIBLE);
 
-        textCartItemCount.setText(String.valueOf(mDB.listProducts().size()));
+        textCartItemCount.setText(String.valueOf(mCartItemCount));
+
+        Log.i("quantity is ", String.valueOf(mCartItemCount));
+
+        ParseQuery<ParseObject> query = new ParseQuery<>("Product");
+
+        query.whereEqualTo("productId", productSelected);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                if (e == null && objects.size() > 0) {
+
+                    for (ParseObject object : objects) {
+
+                        try {
+
+                            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
+
+                            Cursor checkC = cartDB.rawQuery("SELECT * FROM newCart WHERE tProductId = " + productSelected + " ", null);
+
+                            checkC.moveToFirst();
+
+                            cartDB.execSQL("UPDATE newCart SET tQty = " + mCartItemCount + " WHERE tProductId = " + productSelected);
+
+                            Log.i("product is there", "true");
+
+                            if (checkC.getColumnIndex("tProductId") == 0) {
+
+                                cartDB.execSQL("INSERT INTO newCart (tProductId, tPrice, tQty) VALUES (" + object.getInt("productId") + ", " + object.getInt("price") + ", " + mCartItemCount + ")");
+
+                                Log.i("product is there", "false");
+                            }
+
+                            checkC.moveToNext();
+
+                            checkC.close();
+
+                            Cursor c = cartDB.rawQuery("SELECT * FROM newCart", null);
+
+                            int tOne = c.getColumnIndex("tProductId");
+
+                            int tTwo = c.getColumnIndex("tPrice");
+
+                            int tThree = c.getColumnIndex("tQty");
+
+                            c.moveToFirst();
+
+                            Log.i("UserResults - one", Integer.toString(c.getInt(tOne)));
+
+                            Log.i("UserResults - two", Integer.toString(c.getInt(tTwo)));
+
+                            Log.i("UserResults - three", Integer.toString(c.getInt(tThree)));
+
+                            c.moveToNext();
 
 
-        Toast.makeText(ProductDetailsActivity.this, "Item added successfully", Toast.LENGTH_LONG).show();
+                        } catch (Exception error) {
 
+                            error.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
     }
 
 
+    public void removeItemToCart(View view) {
 
+        Log.i("quantity is ", String.valueOf(mCartItemCount));
 
+        try {
+
+            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
+
+            Cursor checkC = cartDB.rawQuery("SELECT * FROM newCart WHERE tProductId = " + productSelected + " ", null);
+
+            Log.i("product selected", String.valueOf(productSelected));
+
+            checkC.moveToFirst();
+
+            int nameIndex = checkC.getColumnIndex("tQty");
+
+            mCartItemCount =  checkC.getInt(nameIndex);
+
+            if (mCartItemCount > 0) {
+
+                mCartItemCount = mCartItemCount - 1;
+
+                if (mCartItemCount == 0){
+
+                    textCartItemCount.setVisibility(View.INVISIBLE);
+
+                } else {
+
+                    textCartItemCount.setVisibility(View.VISIBLE);
+                    textCartItemCount.setText(String.valueOf(mCartItemCount));
+                }
+                cartDB.execSQL("UPDATE newCart SET tQty = " + mCartItemCount + " WHERE tProductId = " + productSelected);
+
+                Log.i("qty was", String.valueOf(checkC.getColumnIndex("tQty")));
+
+                Toast.makeText(this, "Item removed" + mCartItemCount, Toast.LENGTH_LONG).show();
+
+            } else {
+
+                Toast.makeText(this, "Cart is Empty!" + mCartItemCount, Toast.LENGTH_LONG).show();
+            }
+
+            checkC.moveToNext();
+
+            checkC.close();
+
+        } catch (Exception error) {
+
+            error.printStackTrace();
+
+        }
+    }
 
 
     public void checkOut (View view){
 
         Intent intent = new Intent(getApplicationContext(), CheckoutActivity.class);
 
+
+        //  intent.putExtra("categoryNumber", id.get(position));
+
+
         startActivity(intent);
 
-    }
 
-    public void clearCart() {
+        if (mCartItemCount > 0) {
 
 
+            try {
+                SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
+
+                Cursor c = cartDB.rawQuery("SELECT * FROM newCart", null);
+
+                int tOne = c.getColumnIndex("tProductId");
+
+                int tTwo = c.getColumnIndex("tPrice");
+
+                int tThree = c.getColumnIndex("tQty");
+
+                c.moveToFirst();
+
+                ParseObject object = new ParseObject("Order_items");
+
+                object.put("productId", c.getInt(tOne));
+
+                object.put("price", c.getInt(tTwo));
+
+                object.put("qty", c.getInt(tThree));
+
+                object.saveInBackground();
+
+                c.moveToNext();
+
+                c.close();
+
+
+            } catch (Exception error) {
+
+                error.printStackTrace();
+            }
+        }
+
+  }
+
+    public void clearCart(){
+
+        try {
+
+            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
+
+            cartDB.execSQL("CREATE TABLE IF NOT EXISTS newCart (tProductId INTEGER(5), tPrice INTEGER(8), tQty INTEGER(5))");
+
+            // to clear cart DB
+            // cartDB.execSQL("DELETE FROM newCart");
+        } catch (Exception error) {
+
+            error.printStackTrace();
+        }
     }
 
 
@@ -81,19 +247,22 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
 
+        //CartQty.qtyCheck();
+
+        try {
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
+
+
+
+
+
+
         linearLayout = findViewById(R.id.productDetailImage);
         productTitle = findViewById(R.id.productTitle);
         productDescription = findViewById(R.id.productDescription);
         productPrice = findViewById(R.id.productPrice);
-
-       // allProducts = mDB.listProducts();
-
-        mDB = new SqliteDatabase(this);
-
-        //  mCartItemCount = allProducts.size();
-
-
-        Toast.makeText(ProductDetailsActivity.this, String.valueOf(mDB.listProducts().size()), Toast.LENGTH_LONG).show();
 
 
         //retrive selected product
@@ -107,9 +276,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
         } else {
             productSelected = (int) savedInstanceState.getSerializable("productId");
         }
-
-
-
 
 
 
@@ -136,7 +302,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     }
                 }
             }
+
         });
+
+            }
+        } catch (InterruptedException | IOException e) {
+        e.printStackTrace();
+
+        }
     }
 
     @Override
@@ -147,7 +320,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         View actionView = menuItem.getActionView();
         textCartItemCount =  actionView.findViewById(R.id.cart_badge);
-
 
         setupBadge();
 
@@ -178,33 +350,19 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void setupBadge() {
 
         if (textCartItemCount != null) {
-            if (mDB.listProducts().size() == 0) {
+            if (mCartItemCount == 0) {
                 if (textCartItemCount.getVisibility() != View.GONE) {
 
                     textCartItemCount.setVisibility(View.GONE);
                 }
             } else {
 
-                textCartItemCount.setText(String.valueOf(Math.min(mDB.listProducts().size(), 99)));
+                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
 
                 if (textCartItemCount.getVisibility() != View.VISIBLE) {
                     textCartItemCount.setVisibility(View.VISIBLE);
-                    textCartItemCount.setText(String.valueOf(mDB.listProducts().size()));
                 }
             }
         }
-
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mDB != null) {
-            mDB.close();
-        }
-
-
-    }
-
-
 }

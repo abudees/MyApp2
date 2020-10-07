@@ -22,6 +22,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +74,11 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
+        try {
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
+
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
 
@@ -106,13 +112,11 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
-        try {
+
 
             url = new ArrayList<>();
 
             productTitle = new ArrayList<>();
-
-
 
 
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
@@ -152,11 +156,14 @@ public class CheckoutActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
 
-        catch(Throwable  e) {
-            System.out.println("Error " + e.getMessage());
-        }
+
+            }    } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+
+            }
+
+
 
     }
 

@@ -14,6 +14,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.io.IOException;
 import java.util.List;
 
 import androidmads.library.qrgenearator.QRGContents;
@@ -29,23 +30,30 @@ public class DriverBarcodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_barcode);
 
-
-        driverQR = findViewById(R.id.driverBarcodeImage);
-
-
-
-        QRGEncoder qrgEncoder = new QRGEncoder(ParseUser.getCurrentUser().getUsername() , null, QRGContents.Type.TEXT, 10);
-
         try {
-            Bitmap qrbite = qrgEncoder.encodeAsBitmap();
-            driverQR.setImageBitmap(qrbite);
-        } catch (WriterException error) {
-            error.printStackTrace();
-        }
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
 
 
+                driverQR = findViewById(R.id.driverBarcodeImage);
 
 
+                QRGEncoder qrgEncoder = new QRGEncoder(ParseUser.getCurrentUser().getUsername(), null, QRGContents.Type.TEXT, 10);
+
+                try {
+                    Bitmap qrbite = qrgEncoder.encodeAsBitmap();
+                    driverQR.setImageBitmap(qrbite);
+                } catch (WriterException error) {
+                    error.printStackTrace();
+                }
+
+
+            }
+        } catch (InterruptedException | IOException e) {
+
+            e.printStackTrace();
+    }
 
     }
 }

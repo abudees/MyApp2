@@ -23,6 +23,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +94,11 @@ public class VendorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor);
 
+        try {
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
+
 
         setTitle(user+" Orders");
 
@@ -159,6 +165,11 @@ public class VendorActivity extends AppCompatActivity {
                 }
             }
         });
+
+            }
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
