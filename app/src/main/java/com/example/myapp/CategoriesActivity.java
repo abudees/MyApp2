@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -37,20 +38,15 @@ public class CategoriesActivity extends FragmentActivity {
 
      ViewPagerAdapter viewPagerAdapter;
 
-    ViewPager viewpager ;
+     ViewPager viewpager ;
 
      RecyclerView recyclerView;
 
+     Intent intent;
 
-    TextView  noConnection ;
 
-    Button  retry ;
 
-    public void retryInternet (View view){
 
-        finish();
-        startActivity(getIntent());
-    }
 
 
 
@@ -59,15 +55,11 @@ public class CategoriesActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
 
-        noConnection = findViewById(R.id.textView4);
-
-        retry = findViewById(R.id.button3);
-
-        retry.setVisibility(View.INVISIBLE);
-
 
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
+
+
 
         try {
             CheckConnection checkConnection = new CheckConnection();
@@ -144,6 +136,20 @@ public class CategoriesActivity extends FragmentActivity {
                         }
                     }
                 });
+            }else {
+                //do something, net is not connected
+
+
+
+                intent = new Intent(getApplicationContext(), InternetFailActivity.class);
+
+                intent.putExtra("activityName", this.getClass().getSimpleName());
+
+                startActivity(intent);
+
+
+
+
             }
         } catch (InterruptedException | IOException e) {
                 e.printStackTrace();

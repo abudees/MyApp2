@@ -105,11 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    public void retryInternet (View view){
 
-        finish();
-        startActivity(getIntent());
-    }
 
 
 
@@ -160,35 +156,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-
-        noConnection = findViewById(R.id.textView4);
-
-        retry = findViewById(R.id.button3);
-
-        retry.setVisibility(View.INVISIBLE);
-
-        // spinner
-        spinner = findViewById(R.id.areaSelect);
-
-        areaList = new ArrayList<>();
-
-        languageTextView = findViewById(R.id.languageTextView);
-
-        redirectButton = findViewById(R.id.redirect);
-
-        redirectToLogin = findViewById(R.id.redirectToLogin);
-
-        logout = findViewById(R.id.logout1);
-
-
-
-
         try {
 
             CheckConnection checkConnection = new CheckConnection();
             if (checkConnection.isNetworkAvailable()) {
-
                 //internet is connected do something
+
+
+                // spinner
+                spinner = findViewById(R.id.areaSelect);
+
+                areaList = new ArrayList<>();
+
+                languageTextView = findViewById(R.id.languageTextView);
+
+                redirectButton = findViewById(R.id.redirect);
+
+                redirectToLogin = findViewById(R.id.redirectToLogin);
+
+                logout = findViewById(R.id.logout1);
+
+
                 if (ParseUser.getCurrentUser() != null) {
 
                     redirectToLogin.setVisibility(View.INVISIBLE);
@@ -261,24 +249,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 //do something, net is not connected
 
-                //Toast.makeText(this, "Please check your internet connection", Toast.LENGTH_LONG).show();
+                //do something, net is not connected
 
-                noConnection.setVisibility(View.VISIBLE);
 
-                spinner.setVisibility(View.INVISIBLE);
 
-                languageTextView.setVisibility(View.INVISIBLE);
+                intent = new Intent(getApplicationContext(), InternetFailActivity.class);
 
-                redirectButton.setVisibility(View.INVISIBLE);
+                intent.putExtra("activityName", this.getClass().getSimpleName());
 
-                redirectToLogin.setVisibility(View.INVISIBLE);
-
-                logout.setVisibility(View.INVISIBLE);
-
-                retry.setVisibility(View.VISIBLE);
+                startActivity(intent);
 
             }
         } catch (InterruptedException | IOException e) {
+
             e.printStackTrace();
         }
     }

@@ -31,5 +31,8 @@ public class ParseApplication extends Application {
                 .server("http://18.190.25.222:80/parse/")
                 .build()
         );
+
+        // ParseCrashReporting.enable(this);
+
     }
 }
