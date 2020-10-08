@@ -17,6 +17,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +98,12 @@ public class PreparingCheckListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preparing_check_list);
 
 
+        try {
+            CheckConnection checkConnection = new CheckConnection();
+
+            if (checkConnection.isNetworkAvailable()) {
+
+
 
         intent = getIntent();
         final int orderNo = intent.getIntExtra("orderNo", 0);
@@ -158,10 +165,18 @@ public class PreparingCheckListActivity extends AppCompatActivity {
                         orderItems.add("No active orders ");
                     }
 
+
                     arrayAdapter.notifyDataSetChanged();
                 }
             }
         });
+
+            }
+        }
+
+        catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

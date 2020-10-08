@@ -24,11 +24,11 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
 
     private LayoutInflater inflater;
 
-    List<String> url;
+    private List<String> url;
 
-    List<String> title;
+    private List<String> title;
 
-    List<Integer> id;
+    private List<Integer> id;
 
     private Context context;
 
