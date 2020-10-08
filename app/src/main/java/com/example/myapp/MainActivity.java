@@ -48,16 +48,7 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
     TextView redirectToLogin , logout, noConnection ;
 
-    Spinner spinner;
-
-     ArrayList<String> areaList;
-
-    ArrayAdapter adapter;
-
-    String a;
-
-
-    String[] users = { "Suresh Dasari", "Trishika Dasari", "Rohini Alavala", "Praveen Kumar", "Madhav Sai" };
+    Spinner spinner, spinner1;
 
 
 
@@ -79,7 +70,7 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
     public void redirect (View view) {
 
-/*
+
         if (area.matches("Please select your Area")) {
 
          //   if (englishLanguageActive) {
@@ -91,16 +82,16 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
                 Toast.makeText(this, "يرجى اختيار منطقةالتوصيل!", Toast.LENGTH_LONG).show();
             }
 
-
-        } else {
 */
+        } else {
+
 
             intent = new Intent(getApplicationContext(), CategoriesActivity.class);
 
-           // intent.putExtra("area", area);
+            intent.putExtra("area", area);
 
             startActivity(intent);
-      //  }
+        }
     }
 
 
@@ -170,19 +161,22 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
 
 
 
-
-
-
+        // Enable Local Datastore.
+        Parse.enableLocalDatastore(this);
 
         // Add your initialization code here
-        /*Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
+        Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
                 .applicationId("49cd35a5b5f6610271ebdebb749464d7770ea2ad")
                 .clientKey("36e7f81fcbe7caa26452001f6c6b31f6591f263c")
                 .server("http://18.190.25.222:80/parse/")
                 .build()
-        );*/
+        );
 
-
+        //ParseUser.enableAutomaticUser();
+        ParseACL defaultACL = new ParseACL();
+        defaultACL.setPublicReadAccess(true);
+        defaultACL.setPublicWriteAccess(true);
+        ParseACL.setDefaultACL(defaultACL, true);
 
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
@@ -193,10 +187,10 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
         spinner = findViewById(R.id.areaSelect);
 
 
+        spinner1 = findViewById(R.id.spinner);
 
 
-
-         areaList = new ArrayList<>();
+        final ArrayList<String> areaList = new ArrayList<>();
 
         languageTextView = findViewById(R.id.languageTextView);
 
@@ -211,7 +205,6 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
         retry = findViewById(R.id.button3);
 
         retry.setVisibility(View.INVISIBLE);
-
 
 
 
@@ -275,27 +268,24 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
                     for (ParseObject object : objects) {
 
                         areaList.add(object.getString("areaName"));
-
-                       // a = object.getString("areaName");
                     }
 
-
-
-                    adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
+                    ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
 
                     // Apply the adapter to the spinner
                     spinner.setAdapter(adapter);
 
                     spinner.setOnItemSelectedListener(new mySpinnerListener());
 
+                    ArrayAdapter adapter1 = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
 
+                    spinner1.setAdapter(adapter1);
 
+                    spinner1.setOnItemSelectedListener(new mySpinnerListener());
 
                 }
-
             }
         });
-
 
 
         /*    } else {
@@ -321,6 +311,31 @@ public class MainActivity extends AppCompatActivity /*implements View.OnClickLis
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }*/
+
+
+
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(this);
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("Automobile");
+        categories.add("Business Services");
+        categories.add("Computers");
+        categories.add("Education");
+        categories.add("Personal");
+        categories.add("Travel");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
+    }
     }
 
 
