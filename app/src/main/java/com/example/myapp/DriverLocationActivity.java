@@ -83,9 +83,9 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
         setContentView(R.layout.activity_driver_location);
 
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
+            if (checkConnection.isNetwork()) {
 
 
 

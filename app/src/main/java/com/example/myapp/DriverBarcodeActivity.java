@@ -31,9 +31,9 @@ public class DriverBarcodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver_barcode);
 
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
+            if (checkConnection.isNetwork()) {
 
 
                 driverQR = findViewById(R.id.driverBarcodeImage);

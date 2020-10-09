@@ -95,76 +95,73 @@ public class VendorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_vendor);
 
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
-
-
-        setTitle(user+" Orders");
+            if (checkConnection.isNetwork()) {
 
 
-
-        vendorOrdersList = findViewById(R.id.venOrdersList);
-
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, vOrders);
-
-        vOrders.clear();
-
-        vOrders.add("Getting orders...");
-
-        vendorOrdersList.setAdapter(arrayAdapter);
-
-        vendorOrdersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                // Intent intent = new Intent(getApplicationContext(), PreparingCheckListActivity.class);
+                setTitle(user + " Orders");
 
 
+                vendorOrdersList = findViewById(R.id.venOrdersList);
 
-                //   startActivity(intent);
-            }
-        });
+                arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, vOrders);
+
+                vOrders.clear();
+
+                vOrders.add("Getting orders...");
+
+                vendorOrdersList.setAdapter(arrayAdapter);
+
+                vendorOrdersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                        // Intent intent = new Intent(getApplicationContext(), PreparingCheckListActivity.class);
 
 
-
-        vendorOrdersList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Orders");
-
-        // change to loggedin vendor
-        query.whereEqualTo("vendorId", 1);
-        query.whereEqualTo("prepared", false);
-
-        query.orderByAscending("orderItemId");
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null) {
-
-                    vOrders.clear();
-                    orderNo.clear();
-
-                    if (objects.size() > 0) {
-
-                        for (ParseObject object : objects) {
-
-                            vOrders.add( object.getInt("orderId")
-                                    +" - "+ object.getDate("confirmationDate")
-                                    +" - "+ object.getString("username"));
-
-                            orderNo.add( object.getInt("orderId"));
-                        }
-                    } else {
-
-                        vOrders.add("No active orders ");
+                        //   startActivity(intent);
                     }
-                    arrayAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+                });
+
+
+                vendorOrdersList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Orders");
+
+                // change to loggedin vendor
+                query.whereEqualTo("vendorId", 1);
+                query.whereEqualTo("prepared", false);
+
+                query.orderByAscending("orderItemId");
+
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+
+                        if (e == null) {
+
+                            vOrders.clear();
+                            orderNo.clear();
+
+                            if (objects.size() > 0) {
+
+                                for (ParseObject object : objects) {
+
+                                    vOrders.add(object.getInt("orderId")
+                                            + " - " + object.getDate("confirmationDate")
+                                            + " - " + object.getString("username"));
+
+                                    orderNo.add(object.getInt("orderId"));
+                                }
+                            } else {
+
+                                vOrders.add("No active orders ");
+                            }
+                            arrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
 
             }
         } catch (InterruptedException | IOException e) {

@@ -21,6 +21,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
@@ -34,7 +35,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
     TextView textCartItemCount;
+
+
+    private SqliteDatabase mDatabase;
+
     int mCartItemCount = 0;
+
+
 
 
 
@@ -43,124 +50,39 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     public void addItemToCart(View view) {
 
-        mCartItemCount = mCartItemCount + 1;
+        try {
+            mDatabase = new SqliteDatabase(this);
 
-        textCartItemCount.setVisibility(View.VISIBLE);
+            if (mDatabase.checkProduct(productSelected) ){
 
-        textCartItemCount.setText(String.valueOf(mCartItemCount));
-
-        Log.i("quantity is ", String.valueOf(mCartItemCount));
-
-        ParseQuery<ParseObject> query = new ParseQuery<>("Product");
-
-        query.whereEqualTo("productId", productSelected);
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null && objects.size() > 0) {
-
-                    for (ParseObject object : objects) {
-
-                        try {
-
-                            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
-
-                            Cursor checkC = cartDB.rawQuery("SELECT * FROM newCart WHERE tProductId = " + productSelected + " ", null);
-
-                            checkC.moveToFirst();
-
-                            cartDB.execSQL("UPDATE newCart SET tQty = " + mCartItemCount + " WHERE tProductId = " + productSelected);
-
-                            Log.i("product is there", "true");
-
-                            if (checkC.getColumnIndex("tProductId") == 0) {
-
-                                cartDB.execSQL("INSERT INTO newCart (tProductId, tPrice, tQty) VALUES (" + object.getInt("productId") + ", " + object.getInt("price") + ", " + mCartItemCount + ")");
-
-                                Log.i("product is there", "false");
-                            }
-
-                            checkC.moveToNext();
-
-                            checkC.close();
-
-                            Cursor c = cartDB.rawQuery("SELECT * FROM newCart", null);
-
-                            int tOne = c.getColumnIndex("tProductId");
-
-                            int tTwo = c.getColumnIndex("tPrice");
-
-                            int tThree = c.getColumnIndex("tQty");
-
-                            c.moveToFirst();
-
-                            Log.i("UserResults - one", Integer.toString(c.getInt(tOne)));
-
-                            Log.i("UserResults - two", Integer.toString(c.getInt(tTwo)));
-
-                            Log.i("UserResults - three", Integer.toString(c.getInt(tThree)));
-
-                            c.moveToNext();
-
-
-                        } catch (Exception error) {
-
-                            error.printStackTrace();
-                        }
-                    }
-                }
+                mDatabase.addQty(productSelected, mDatabase.getQty(productSelected)+1);
+            } else {
+                mDatabase.addProduct(productSelected, 1);
             }
-        });
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
     }
 
 
-    public void removeItemToCart(View view) {
-
-        Log.i("quantity is ", String.valueOf(mCartItemCount));
+    public void removeItem (View view) {
 
         try {
 
-            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
+            if (mDatabase.checkProduct(productSelected) ){
 
-            Cursor checkC = cartDB.rawQuery("SELECT * FROM newCart WHERE tProductId = " + productSelected + " ", null);
+                mDatabase.deleteQty(productSelected);
+            }
 
-            Log.i("product selected", String.valueOf(productSelected));
 
-            checkC.moveToFirst();
 
-            int nameIndex = checkC.getColumnIndex("tQty");
 
-            mCartItemCount =  checkC.getInt(nameIndex);
-
-            if (mCartItemCount > 0) {
-
-                mCartItemCount = mCartItemCount - 1;
-
-                if (mCartItemCount == 0){
-
-                    textCartItemCount.setVisibility(View.INVISIBLE);
-
-                } else {
-
-                    textCartItemCount.setVisibility(View.VISIBLE);
-                    textCartItemCount.setText(String.valueOf(mCartItemCount));
-                }
-                cartDB.execSQL("UPDATE newCart SET tQty = " + mCartItemCount + " WHERE tProductId = " + productSelected);
-
-                Log.i("qty was", String.valueOf(checkC.getColumnIndex("tQty")));
 
                 Toast.makeText(this, "Item removed" + mCartItemCount, Toast.LENGTH_LONG).show();
 
-            } else {
 
                 Toast.makeText(this, "Cart is Empty!" + mCartItemCount, Toast.LENGTH_LONG).show();
-            }
 
-            checkC.moveToNext();
-
-            checkC.close();
 
         } catch (Exception error) {
 
@@ -174,67 +96,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), CheckoutActivity.class);
 
-
-        //  intent.putExtra("categoryNumber", id.get(position));
-
-
         startActivity(intent);
-
-
-        if (mCartItemCount > 0) {
-
-
-            try {
-                SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
-
-                Cursor c = cartDB.rawQuery("SELECT * FROM newCart", null);
-
-                int tOne = c.getColumnIndex("tProductId");
-
-                int tTwo = c.getColumnIndex("tPrice");
-
-                int tThree = c.getColumnIndex("tQty");
-
-                c.moveToFirst();
-
-                ParseObject object = new ParseObject("Order_items");
-
-                object.put("productId", c.getInt(tOne));
-
-                object.put("price", c.getInt(tTwo));
-
-                object.put("qty", c.getInt(tThree));
-
-                object.saveInBackground();
-
-                c.moveToNext();
-
-                c.close();
-
-
-            } catch (Exception error) {
-
-                error.printStackTrace();
-            }
-        }
-
   }
 
-    public void clearCart(){
 
-        try {
-
-            SQLiteDatabase cartDB = ProductDetailsActivity.this.openOrCreateDatabase("tempOrder", MODE_PRIVATE, null);
-
-            cartDB.execSQL("CREATE TABLE IF NOT EXISTS newCart (tProductId INTEGER(5), tPrice INTEGER(8), tQty INTEGER(5))");
-
-            // to clear cart DB
-            // cartDB.execSQL("DELETE FROM newCart");
-        } catch (Exception error) {
-
-            error.printStackTrace();
-        }
-    }
 
 
 
@@ -250,60 +115,55 @@ public class ProductDetailsActivity extends AppCompatActivity {
         //CartQty.qtyCheck();
 
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
-
-
+            if (checkConnection.isNetwork()) {
 
 
+                linearLayout = findViewById(R.id.productDetailImage);
+                productTitle = findViewById(R.id.productTitle);
+                productDescription = findViewById(R.id.productDescription);
+                productPrice = findViewById(R.id.productPrice);
 
 
-        linearLayout = findViewById(R.id.productDetailImage);
-        productTitle = findViewById(R.id.productTitle);
-        productDescription = findViewById(R.id.productDescription);
-        productPrice = findViewById(R.id.productPrice);
+                //retrive selected product
+                if (savedInstanceState == null) {
+                    Bundle extras = getIntent().getExtras();
+                    if (extras == null) {
+                        productSelected = 0;
+                    } else {
+                        productSelected = extras.getInt("productId");
+                    }
+                } else {
+                    productSelected = (int) savedInstanceState.getSerializable("productId");
+                }
 
 
-        //retrive selected product
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                productSelected = 0;
-            } else {
-                productSelected = extras.getInt("productId");
-            }
-        } else {
-            productSelected = (int) savedInstanceState.getSerializable("productId");
-        }
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");
 
+                query.whereEqualTo("productId", productSelected);
 
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
 
-        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");
+                        if (e == null) {
 
-        query.whereEqualTo("productId", productSelected);
+                            if (objects.size() > 0) {
 
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
+                                for (ParseObject object : objects) {
 
-                if (e == null) {
+                                    productTitle.setText(object.getString("title"));
 
-                    if (objects.size() > 0) {
+                                    Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL")).fitCenter().into(linearLayout);
 
-                        for (ParseObject object : objects) {
-
-                            productTitle.setText(object.getString("title"));
-
-                            Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL")).fitCenter().into(linearLayout);
-
-                            productPrice.setText( String.valueOf(object.getInt("price")));
+                                    productPrice.setText(String.valueOf(object.getInt("price")));
+                                }
+                            }
                         }
                     }
-                }
-            }
 
-        });
+                });
 
             }
         } catch (InterruptedException | IOException e) {

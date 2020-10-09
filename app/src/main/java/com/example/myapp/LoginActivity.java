@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void changeMode(View view){
 
-        if (signUpModeActive == false){
+        if (!signUpModeActive){
 
             signUpModeActive = true;
             signUpButton.setText("Login");
@@ -48,8 +48,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             rePassword.setVisibility(View.INVISIBLE);
             firstNameEditText.setVisibility(View.INVISIBLE);
             lastNameEditText.setVisibility(View.INVISIBLE);
-            usernameEditText.getText().toString();
-            passwordEditText.getText().toString();
+            usernameEditText.getText();
+            passwordEditText.getText();
 
         } else {
 
@@ -99,46 +99,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         Log.i("here ", ParseUser.getCurrentUser().getString("userType"));
 
-        switch (ParseUser.getCurrentUser().getString("userType")) {
 
-            case "Vendor":
-
-                intent = new Intent(getApplicationContext(), VendorActivity.class);
-                startActivity(intent);
-
-                break;
-
-            case "Driver":
-
-                intent = new Intent(getApplicationContext(), DriverActivity.class);
-                startActivity(intent);
-                break;
-
-            case "Manager":
-                intent = new Intent(getApplicationContext(), ManagerActivity.class);
-                startActivity(intent);
-                break;
-
-            case "":
-
-                intent = new Intent(getApplicationContext(), ManagerActivity.class);
-                startActivity(intent);
-                break;
-
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
-
-
-        }
     }
 
 
 
 
-    public void login (View view){
+    public void login (View view) {
 
-        Toast.makeText(this, signUpModeActive.toString(), Toast.LENGTH_SHORT).show();
 
         if (usernameEditText.getText().toString().matches("") || passwordEditText.getText().toString().matches("")) {
 
@@ -161,38 +129,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             userType();
 
                             Toast.makeText(LoginActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
-
-
                         } else {
-
                             Toast.makeText(LoginActivity.this, "login error " + error.getMessage(), Toast.LENGTH_SHORT).show();
-
                         }
                     }
                 });
-
             } else {
-
-
-
-                if ( firstNameEditText.getText().toString().matches("") || lastNameEditText.getText().toString().matches("")
+                if (firstNameEditText.getText().toString().matches("") || lastNameEditText.getText().toString().matches("")
                         || usernameEditText.getText().toString().matches("") || passwordEditText.getText().toString().matches("")
                         || rePassword.getText().toString().matches("")) {
-
-
-                    Toast.makeText(this, "All fields are required - signup", Toast.LENGTH_SHORT).show();
-
-
                 } else {
-
                     String email = usernameEditText.getText().toString();
 
                     if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-
                         if (passwordEditText.getText().length() >= 6 && passwordEditText.getText().length() < 15) {
-
                             if (passwordEditText.getText().toString().matches(rePassword.getText().toString())) {
-
                                 ParseUser user = new ParseUser();
 
                                 user.setUsername(usernameEditText.getText().toString());
@@ -200,7 +151,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 user.setPassword(passwordEditText.getText().toString());
                                 user.put("firstName", firstNameEditText.getText().toString());
                                 user.put("lastName", lastNameEditText.getText().toString());
-
 
                                 user.signUpInBackground(new SignUpCallback() {
                                     @Override
@@ -218,36 +168,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             passwordEditText.getText();
 
                                             Toast.makeText(LoginActivity.this, "SignUp Successfully", Toast.LENGTH_SHORT).show();
-
-
                                         } else {
                                             Toast.makeText(LoginActivity.this, "signup error " + e.getMessage(), Toast.LENGTH_SHORT).show();
-
                                         }
                                     }
                                 });
-
                             } else {
-
                                 Toast.makeText(LoginActivity.this, "Password doesn't match!", Toast.LENGTH_SHORT).show();
                             }
-
                         } else {
-
                             Toast.makeText(this, "Password must be 6 digits or more", Toast.LENGTH_SHORT).show();
                         }
-
                     } else {
-
                         Toast.makeText(this, "email is invalid", Toast.LENGTH_SHORT).show();
-
                     }
-
                 }
-
             }
         }
-
     }
 
 
@@ -267,48 +204,71 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
+
+
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
+            if (checkConnection.isNetwork()) {
+
+                switch (ParseUser.getCurrentUser().getString("userType")) {
+
+                    case "Vendor":
+
+                        intent = new Intent(getApplicationContext(), VendorActivity.class);
+                        startActivity(intent);
+
+                        break;
+
+                    case "Driver":
+
+                        intent = new Intent(getApplicationContext(), DriverActivity.class);
+                        startActivity(intent);
+                        break;
+
+                    case "Manager":
+                        intent = new Intent(getApplicationContext(), ManagerActivity.class);
+                        startActivity(intent);
+                        break;
+
+                    case "":
+
+                        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+                        startActivity(intent);
+                        break;
 
 
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
 
 
+                }
 
 
+                changeSignUpTextView = findViewById(R.id.changeSignUp);
 
 
+                ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundReleativeLayout);
 
+                // ImageView logoImageView = findViewById(R.id.imageView);
 
+                // logoImageView.setOnClickListener(this);
 
+                backgroundReleativeLayout.setOnClickListener(this);
 
+                passwordEditText = findViewById(R.id.passwordEditText);
 
-        changeSignUpTextView = findViewById(R.id.changeSignUp);
+                usernameEditText = findViewById(R.id.usernameEditText);
 
+                firstNameEditText = findViewById(R.id.firstNameEditText);
 
+                lastNameEditText = findViewById(R.id.lastNameEditText);
 
-        ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundReleativeLayout);
+                rePassword = findViewById(R.id.rePassword);
 
-        // ImageView logoImageView = findViewById(R.id.imageView);
+                passwordEditText.setOnKeyListener(this);
 
-        // logoImageView.setOnClickListener(this);
-
-        backgroundReleativeLayout.setOnClickListener(this);
-
-        passwordEditText = findViewById(R.id.passwordEditText);
-
-        usernameEditText = findViewById(R.id.usernameEditText);
-
-        firstNameEditText = findViewById(R.id.firstNameEditText);
-
-        lastNameEditText = findViewById(R.id.lastNameEditText);
-
-        rePassword = findViewById(R.id.rePassword);
-
-        passwordEditText.setOnKeyListener(this);
-
-        signUpButton = findViewById(R.id.button2);
+                signUpButton = findViewById(R.id.button2);
 
 
             }
@@ -318,7 +278,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             e.printStackTrace();
         }
     }
-
-
 }
 

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity  {
 
 
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     ArrayAdapter adapter;
 
-
+    String user;
 
 
 
@@ -158,30 +158,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
 
-            CheckConnection checkConnection = new CheckConnection();
-            if (checkConnection.isNetworkAvailable()) {
-                //internet is connected do something
-
-
-                // spinner
-                spinner = findViewById(R.id.areaSelect);
-
-                areaList = new ArrayList<>();
-
-                languageTextView = findViewById(R.id.languageTextView);
-
-                redirectButton = findViewById(R.id.redirect);
-
-                redirectToLogin = findViewById(R.id.redirectToLogin);
-
-                logout = findViewById(R.id.logout1);
-
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
+            if (checkConnection.isNetwork()) {
 
                 if (ParseUser.getCurrentUser() != null) {
-
-                    redirectToLogin.setVisibility(View.INVISIBLE);
-
-                    logout.setVisibility(View.VISIBLE);
 
                     switch (ParseUser.getCurrentUser().getString("userType")) {
 
@@ -189,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             intent = new Intent(getApplicationContext(), VendorActivity.class);
                             startActivity(intent);
+
                             break;
 
                         case "Driver":
@@ -202,57 +183,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             startActivity(intent);
                             break;
 
+                        case "":
+
+
+                            break;
+
+
                         default:
                             throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
                     }
-
-
                 } else {
 
-                    redirectToLogin.setVisibility(View.VISIBLE);
-                    logout.setVisibility(View.INVISIBLE);
-
-                }
+                    //internet is connected do something
 
 
-                ParseQuery<ParseObject> query = new ParseQuery<>("Area");
+                    // spinner
+                    spinner = findViewById(R.id.areaSelect);
 
-                query.findInBackground(new FindCallback<ParseObject>() {
+                    areaList = new ArrayList<>();
 
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
+                    languageTextView = findViewById(R.id.languageTextView);
 
-                        if (e == null) {
+                    redirectButton = findViewById(R.id.redirect);
 
-                            for (ParseObject object : objects) {
+                    redirectToLogin = findViewById(R.id.redirectToLogin);
 
-                                areaList.add(object.getString("areaName"));
+                    logout = findViewById(R.id.logout1);
 
-                                // a = object.getString("areaName");
+
+                    ParseQuery<ParseObject> query = new ParseQuery<>("Area");
+
+                    query.findInBackground(new FindCallback<ParseObject>() {
+
+                        @Override
+                        public void done(List<ParseObject> objects, ParseException e) {
+
+                            if (e == null) {
+
+                                for (ParseObject object : objects) {
+
+                                    areaList.add(object.getString("areaName"));
+
+                                    // a = object.getString("areaName");
+                                }
+
+
+                                adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
+
+                                // Apply the adapter to the spinner
+                                spinner.setAdapter(adapter);
+
+                                spinner.setOnItemSelectedListener(new mySpinnerListener());
+
+
                             }
 
-
-                            adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
-
-                            // Apply the adapter to the spinner
-                            spinner.setAdapter(adapter);
-
-                            spinner.setOnItemSelectedListener(new mySpinnerListener());
-
-
                         }
+                    });
 
-                    }
-                });
-
-
+                }
             } else {
                 //do something, net is not connected
-
-                //do something, net is not connected
-
-
-
                 intent = new Intent(getApplicationContext(), InternetFailActivity.class);
 
                 intent.putExtra("activityName", this.getClass().getSimpleName());
@@ -266,10 +257,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onClick(View v) {
 
-    }
 
 
     class mySpinnerListener implements Spinner.OnItemSelectedListener {

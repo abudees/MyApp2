@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,18 +37,9 @@ public class CategoriesActivity extends FragmentActivity {
 
      CategoriesAdapter adapter;
 
-     ViewPagerAdapter viewPagerAdapter;
-
-     ViewPager viewpager ;
-
      RecyclerView recyclerView;
 
      Intent intent;
-
-
-
-
-
 
 
     @Override
@@ -62,12 +54,13 @@ public class CategoriesActivity extends FragmentActivity {
 
 
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
+            if (checkConnection.isNetwork()) {
 
 
-                viewpager = findViewById(R.id.pager);
+
+
 
                 recyclerView = findViewById(R.id.recyclerview);
 
@@ -83,6 +76,8 @@ public class CategoriesActivity extends FragmentActivity {
                 final List<Integer> id = new ArrayList<>();
 
                 final List<String> images = new ArrayList<>();
+
+
 
 
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Categories");
@@ -116,27 +111,13 @@ public class CategoriesActivity extends FragmentActivity {
                 });
 
 
-                ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Product");
 
-                query1.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
 
-                        if (e == null && objects.size() > 0) {
 
-                            for (ParseObject object : objects) {
 
-                                images.add(object.getString("imageURL"));
-                            }
 
-                            viewPagerAdapter = new ViewPagerAdapter(CategoriesActivity.this, images);
 
-                            viewpager.setAdapter(viewPagerAdapter);
-
-                        }
-                    }
-                });
-            }else {
+            } else {
                 //do something, net is not connected
 
 

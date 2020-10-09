@@ -21,6 +21,8 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.parse.ParseUser;
 
+import java.io.IOException;
+
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
@@ -53,24 +55,34 @@ public class ManagerActivity extends AppCompatActivity {
 
         setTitle("Manager Activity");
 
+        try {
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-        image_view = findViewById(R.id.imageView1);
-
-        button = findViewById(R.id.button1);
-
-        editText = findViewById(R.id.editText);
-
-        logout = findViewById(R.id.textView1);
+            if (checkConnection.isNetwork()) {
 
 
-        if (ParseUser.getCurrentUser().toString().equals("")) {
+                image_view = findViewById(R.id.imageView1);
 
-            logout.setVisibility(View.INVISIBLE);
-        } else {
-            logout.setVisibility(View.VISIBLE);
+                button = findViewById(R.id.button1);
+
+                editText = findViewById(R.id.editText);
+
+                logout = findViewById(R.id.textView1);
+
+
+                if (ParseUser.getCurrentUser().toString().equals("")) {
+
+                    logout.setVisibility(View.INVISIBLE);
+                } else {
+                    logout.setVisibility(View.VISIBLE);
+                }
+
+
+            }
+        } catch (InterruptedException | IOException e) {
+
+            e.printStackTrace();
         }
-
-
 
 
 

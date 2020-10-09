@@ -41,11 +41,6 @@ public class CheckoutActivity extends AppCompatActivity {
 
     Button btnAdd;
 
-
-
-
-
-
     public ArrayList<Integer> orderItems ;
 
     final List<Integer> price = new ArrayList<>();
@@ -74,91 +69,77 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        try {
-            CheckConnection checkConnection = new CheckConnection();
-
-            if (checkConnection.isNetworkAvailable()) {
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
+        try {
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
+
+            if (checkConnection.isNetwork()) {
 
 
+                cartView = findViewById(R.id.myCartList);
+                linearLayoutManager = new LinearLayoutManager(this);
+                cartView.setLayoutManager(linearLayoutManager);
+                cartView.setHasFixedSize(true);
+                mDatabase = new SqliteDatabase(this);
+                allProducts = mDatabase.listProducts();
+                url = new ArrayList<>();
+                productTitle = new ArrayList<>();
 
-        cartView = findViewById(R.id.myCartList);
+                btnAdd = findViewById(R.id.btnAdd);
+                btnAdd.setOnClickListener(new View.OnClickListener() {
 
-        linearLayoutManager = new LinearLayoutManager(this);
-        cartView.setLayoutManager(linearLayoutManager);
-        cartView.setHasFixedSize(true);
-        mDatabase = new SqliteDatabase(this);
-        allProducts = mDatabase.listProducts();
+                    @Override
+                    public void onClick(View view) {
+                        //addTaskDialog();
 
-
-
-
-
-
-
-
-
-        btnAdd = findViewById(R.id.btnAdd);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                //addTaskDialog();
-            }
-        });
-
-
-
-
-
-
-            url = new ArrayList<>();
-
-            productTitle = new ArrayList<>();
-
-
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
-
-
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-
-                    if (e == null && objects.size() > 0) {
-
-                        for (ParseObject object : objects) {
-
-                            url.add(object.getString("imageURL"));
-
-                            productTitle.add(object.getString("title"));
-
-                            price.add(object.getInt("price"));
-
-                            Log.i("url", object.getString("imageURL"));
-                        }
-
-                        if (allProducts.size() > 0) {
-                            cartView.setVisibility(View.VISIBLE);
-                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts, price);
-                            cartView.setAdapter(mAdapter);
-                            mAdapter.notifyDataSetChanged();
-
-                        } else {
-
-                            cartView.setVisibility(View.GONE);
-                            Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-
+                        mAdapter.notifyDataSetChanged();
                     }
-                }
-            });
+                });
 
 
-            }    } catch (InterruptedException | IOException e) {
+
+
+
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
+
+
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+
+                        if (e == null && objects.size() > 0) {
+
+                            for (ParseObject object : objects) {
+
+                                url.add(object.getString("imageURL"));
+
+                                productTitle.add(object.getString("title"));
+
+                                price.add(object.getInt("price"));
+
+                                Log.i("url", object.getString("imageURL"));
+                            }
+
+                            if (allProducts.size() > 0) {
+                                cartView.setVisibility(View.VISIBLE);
+                                mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts, price);
+                                cartView.setAdapter(mAdapter);
+                                mAdapter.notifyDataSetChanged();
+
+                            } else {
+
+                                cartView.setVisibility(View.GONE);
+                                Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
+
+            }
+        } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
 
             }

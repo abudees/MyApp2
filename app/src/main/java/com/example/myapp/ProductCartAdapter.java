@@ -103,7 +103,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
 
 
-        holder.qty.setText(String.valueOf(products.getQty()));
+        holder.qty.setText(String.valueOf(mDatabase.getQty(position)));
 
 
         holder.addQty.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +111,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             public void onClick(View view) {
 
                 holder.qty.setText(String.valueOf(products.getQty()+1));
+
                 mDatabase.addQty(products.getCartId(),products.getQty()+1);
                 Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
 
@@ -128,25 +129,11 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             @Override
             public void onClick(View view) {
 
-
                 Toast.makeText(context, "Qty removed successfully", Toast.LENGTH_LONG).show();
 
-
                mDatabase.deleteProduct(products.getCartId());
-
-
             }
         });
-
-
-
-
-
-
-
-
-
-
     }
 
 

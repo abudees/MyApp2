@@ -35,9 +35,9 @@ public class InventoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inventory);
 
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
+            if (checkConnection.isNetwork()) {
 
 
                 setTitle(ParseUser.getCurrentUser().getString("firstName") + " Products");

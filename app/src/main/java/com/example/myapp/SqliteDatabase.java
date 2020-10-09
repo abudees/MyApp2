@@ -54,27 +54,59 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         return storeCart;
     }
 
+    int getQty(int pID) {
+        String sql = "select "+ COLUMN_QTY + " from " + TABLE_CART + " where " + COLUMN_PID + " = "+ pID;
+        SQLiteDatabase db = this.getReadableDatabase();
+        int productQty = 0;
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int qty = cursor.getInt((2));
+                productQty = qty;
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        return productQty;
+    }
+
+    boolean checkProduct(int pID) {
+        String sql = "select  *  from " + TABLE_CART + " where " + COLUMN_PID + " = " + pID;
+        SQLiteDatabase db = this.getReadableDatabase();
+        int exist;
+        Cursor cursor = db.rawQuery(sql, null);
+
+        if (cursor.getCount() > 0) {
+
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }    }
 
 
-    void addProduct(Products products) {
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, products.getProductId());
-        values.put(COLUMN_QTY, products.getQty());
+
+
+    void addProduct(int productID, int qty) {
+        ContentValues values = new ContentValues();//
+        values.put(COLUMN_ID, productID);
+        values.put(COLUMN_QTY, qty);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_CART, null, values);
     }
 
+
+
     void addQty(int id,  int qty) {
+
         ContentValues values = new ContentValues();
         values.put(COLUMN_QTY, qty);
         SQLiteDatabase db = this.getWritableDatabase();
         db.update(TABLE_CART, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
 
-    void deleteProduct(int id) {
+    void deleteQty(int pid) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CART, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        db.delete(TABLE_CART, COLUMN_PID + " = ?", new String[]{String.valueOf(pid)});
     }
-
-
 }

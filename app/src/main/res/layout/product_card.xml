@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="307dp">
+        android:layout_height="280dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/productCard"
@@ -62,10 +62,10 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="8dp"
+                    android:autoSizeTextType="uniform"
                     android:text="Title"
                     android:textAlignment="center"
                     android:textColor="#030100"
-                    android:autoSizeTextType="uniform"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline51"
                     app:layout_constraintStart_toStartOf="parent"

@@ -41,9 +41,9 @@ public class PasswordResetActivity extends AppCompatActivity {
         setContentView(R.layout.activity_password_reset);
 
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
+            if (checkConnection.isNetwork()) {
 
                 editText = findViewById(R.id.editText2);
                 editText2 = findViewById(R.id.editText3);

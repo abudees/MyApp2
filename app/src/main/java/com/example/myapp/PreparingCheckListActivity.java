@@ -99,9 +99,9 @@ public class PreparingCheckListActivity extends AppCompatActivity {
 
 
         try {
-            CheckConnection checkConnection = new CheckConnection();
+            IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
-            if (checkConnection.isNetworkAvailable()) {
+            if (checkConnection.isNetwork()) {
 
 
 

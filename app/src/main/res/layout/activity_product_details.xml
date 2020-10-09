@@ -63,11 +63,12 @@
         android:id="@+id/productDescription"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:autoSizeTextType="uniform"
-        android:text="Product Description in this product you can find everthing you need!"
+        android:text="Product Description in this product you can find everthing you  gfgfgfg fgfg  gfgfg fgfgfgfg gfgfgfg fgfgfgf gfgfgf g ffgfgfneed!"
         app:layout_constraintBottom_toTopOf="@+id/guideline28"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -137,20 +138,11 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent=".15" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/productDescription"
-        app:srcCompat="@drawable/add"
-        tools:layout_editor_absoluteX="288dp" />
-
     <Button
         android:id="@+id/addtoCartButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:autoSizeTextType="uniform"
         android:onClick="checkOut"
         android:text="Checkout"
@@ -170,6 +162,17 @@
         app:layout_constraintStart_toStartOf="@+id/guideline15"
         app:layout_constraintTop_toTopOf="@+id/guideline28"
         app:srcCompat="@drawable/add" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:onClick="removeItem"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline29"
+        app:layout_constraintStart_toStartOf="@+id/guideline19"
+        app:layout_constraintTop_toTopOf="@+id/guideline28"
+        app:srcCompat="@drawable/remove" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

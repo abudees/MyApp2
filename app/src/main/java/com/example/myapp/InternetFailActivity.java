@@ -15,18 +15,25 @@ public class InternetFailActivity extends AppCompatActivity {
     String activityN;
 
 
+
+
+
+
+
+
+
     public void retry (View view){
 
         try {
 
-            CheckConnection checkConnection = new CheckConnection();
-            if (checkConnection.isNetworkAvailable()) {
-                //internet is connected do something
-            } else {
-                //do something, net is not connected
 
-                intent =  new Intent(getApplicationContext(), InternetFailActivity.class);
+            IsNetworkAvailable isNetworkAvailable = new IsNetworkAvailable();
+            if (isNetworkAvailable.isNetwork()) {
+                //internet is connected do something
+
+                intent =  new Intent(this, MainActivity.class);
                 startActivity(intent);
+
 
             }
         } catch (InterruptedException | IOException e) {
@@ -43,9 +50,8 @@ public class InternetFailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_internet_fail);
 
 
-        activityN = intent.getStringExtra("activityName");
 
-        Toast.makeText(this, activityN, Toast.LENGTH_LONG).show();
+
 
 
 
