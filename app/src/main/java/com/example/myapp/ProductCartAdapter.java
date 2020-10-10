@@ -84,23 +84,14 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         final Products products = listProducts.get(position);
 
 
+        holder.getAdapterPosition();
 
 
         Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.productImage);
 
-        holder.getAdapterPosition();
-
-
         holder.productName.setText(currenName);
+
         holder.price.setText( String.valueOf(currentPrice));
-
-
-
-
-
-
-
-
 
 
         holder.qty.setText(String.valueOf(mDatabase.getQty(position)));

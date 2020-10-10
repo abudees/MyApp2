@@ -24,8 +24,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART
-                + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_PID + " INTEGER,"
+                + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+                + COLUMN_PID + " INTEGER ,"
                 + COLUMN_QTY + " INTEGER" + ")";
         db.execSQL(CREATE_CART_TABLE);
     }
@@ -73,11 +73,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     boolean checkProduct(int pID) {
         String sql = "select  *  from " + TABLE_CART + " where " + COLUMN_PID + " = " + pID;
         SQLiteDatabase db = this.getReadableDatabase();
-        int exist;
         Cursor cursor = db.rawQuery(sql, null);
-
         if (cursor.getCount() > 0) {
-
             return true;
         } else {
             cursor.close();
@@ -89,6 +86,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
     void addProduct(int productID, int qty) {
         ContentValues values = new ContentValues();//
+
         values.put(COLUMN_ID, productID);
         values.put(COLUMN_QTY, qty);
         SQLiteDatabase db = this.getWritableDatabase();
@@ -97,16 +95,23 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
 
-    void addQty(int id,  int qty) {
+    void addQty(int pid,  int qty) {
 
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_QTY, qty);
+
         SQLiteDatabase db = this.getWritableDatabase();
-        db.update(TABLE_CART, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+
+        "_id = ?", new String[]{id});
+        db.update(TABLE_CART, qty,COLUMN_QTY,COLUMN_PID +" = ?"+, new Integer[]{pid}, );
+        db.update()
     }
 
     void deleteQty(int pid) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CART, COLUMN_PID + " = ?", new String[]{String.valueOf(pid)});
+
+    }
+
+    void clearCart() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CART, null,null);
     }
 }
