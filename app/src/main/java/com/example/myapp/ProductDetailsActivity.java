@@ -55,7 +55,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             if (mDatabase.checkProduct(productSelected) ){
 
-                mDatabase.addQty(productSelected, mDatabase.getQty(productSelected)+1);
+                mDatabase.updateQty(productSelected, mDatabase.getQty(productSelected)+1);
             } else {
                 mDatabase.addProduct(productSelected, 1);
             }
@@ -69,20 +69,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         try {
 
-            if (mDatabase.checkProduct(productSelected) ){
-
                 mDatabase.deleteQty(productSelected);
-            }
-
-
-
-
-
-                Toast.makeText(this, "Item removed" + mCartItemCount, Toast.LENGTH_LONG).show();
-
-
-                Toast.makeText(this, "Cart is Empty!" + mCartItemCount, Toast.LENGTH_LONG).show();
-
 
         } catch (Exception error) {
 

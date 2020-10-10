@@ -36,6 +36,29 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    ArrayList<Integer> listAll() {
+        String sql = "select * from " + TABLE_CART;
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Integer> storeCart = new ArrayList<>();
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                int pId = cursor.getInt((1));
+                int qty = cursor.getInt((2));
+
+
+                storeCart.add(id);
+                storeCart.add(pId);
+                storeCart.add(qty);
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        return storeCart;
+    }
+
+
     ArrayList<Products> listProducts() {
         String sql = "select * from " + TABLE_CART;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -46,13 +69,18 @@ public class SqliteDatabase extends SQLiteOpenHelper {
                 int id = cursor.getInt(0);
                 int pId = cursor.getInt((1));
                 int qty = cursor.getInt((2));
-                storeCart.add(new Products(id,pId,qty));
+
+
+                storeCart.add(new Products(id, pId, qty));
+
             }
             while (cursor.moveToNext());
         }
         cursor.close();
         return storeCart;
     }
+
+
 
     int getQty(int pID) {
         String sql = "select "+ COLUMN_QTY + " from " + TABLE_CART + " where " + COLUMN_PID + " = "+ pID;
@@ -95,18 +123,23 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
 
-    void addQty(int pid,  int qty) {
+    void updateQty(int pid,  int qty) {
 
+        int productID =pid;
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        "_id = ?", new String[]{id});
-        db.update(TABLE_CART, qty,COLUMN_QTY,COLUMN_PID +" = ?"+, new Integer[]{pid}, );
-        db.update()
+        db.execSQL("UPDATE TABLE_CART SET YOUR_COLUMN="+ qty + " WHERE "+COLUMN_PID+"="+pid);
+
     }
 
     void deleteQty(int pid) {
         SQLiteDatabase db = this.getWritableDatabase();
+        if (getQty(pid) == 1 ){
+
+        } else {
+            updateQty(pid,getQty(pid)-1);
+        }
 
     }
 

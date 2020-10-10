@@ -66,7 +66,6 @@ public class ProductsActivity extends AppCompatActivity {
             if (checkConnection.isNetwork()) {
 
 
-
                 if (savedInstanceState == null) {
                     Bundle extras = getIntent().getExtras();
                     if (extras == null) {
