@@ -2,8 +2,6 @@ package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,13 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +26,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     int productSelected;
 
-    TextView productTitle, productDescription, productPrice;
-
-
-    TextView textCartItemCount;
-
+    TextView productTitle, productDescription, productPrice, textCartItemCount;
 
     private SqliteDatabase mDatabase;
 
@@ -43,6 +34,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
+    ArrayList<Integer> listpIDs;
 
 
 
@@ -50,26 +42,36 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     public void addItemToCart(View view) {
 
+        mDatabase = new SqliteDatabase(this);
+
+
+
         try {
-            mDatabase = new SqliteDatabase(this);
 
-            if (mDatabase.checkProduct(productSelected) ){
+       /*     if (mDatabase.checkProduct(productSelected) ){
 
-                mDatabase.addQty(productSelected, (mDatabase.getQty(productSelected))+1);
+               mDatabase.updateQty(productSelected, mDatabase.getQty(productSelected)+1);
+               Toast.makeText(this, "already "+ mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
 
-                Toast.makeText(this, /*mDatabase.getQty(productSelected)*/"u", Toast.LENGTH_LONG).show();
+            } else {*/
+                mDatabase.addProduct(productSelected, 1);
+                Toast.makeText(this, "adding "+ mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
 
-            } else {
-                //mDatabase.addQty(productSelected, 1);
+        //   }
 
-                Products newProduct = new Products(productSelected, 1);
 
-                mDatabase.addProduct(newProduct);
+/*
 
-                Toast.makeText(this, /*mDatabase.getQty(productSelected)*/"add", Toast.LENGTH_LONG).show();
+            listpIDs = mDatabase.listPIDs();
+
+            StringBuilder builder = new StringBuilder();
+            for(int i : listpIDs)
+            {
+                builder.append("" + i + " ");
             }
-        } catch (Exception error) {
-            error.printStackTrace();
+            Toast.makeText(this, builder, Toast.LENGTH_LONG).show();*/
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -78,8 +80,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         try {
 
-                mDatabase.deleteQty(productSelected);
-            Toast.makeText(this, /*mDatabase.getQty(productSelected)*/"r", Toast.LENGTH_LONG).show();
+
+            mDatabase.clearCart();
+
+            Toast.makeText(this, String.valueOf(mDatabase.checkProduct(productSelected)), Toast.LENGTH_LONG).show();
+
+           //     mDatabase.deleteQty(productSelected);
 
         } catch (Exception error) {
 
@@ -108,6 +114,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
+        Toast.makeText(this, "hello", Toast.LENGTH_LONG).show();
+
 
         //CartQty.qtyCheck();
 
@@ -115,6 +123,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
+
+
+
 
 
                 linearLayout = findViewById(R.id.productDetailImage);
@@ -193,13 +204,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
+        if (item.getItemId() == R.id.action_cart) {// Do something
 
-            case R.id.action_cart: {
-                // Do something
-
-                return true;
-            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
