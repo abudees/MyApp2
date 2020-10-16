@@ -119,7 +119,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
 
-    void updateQty(int pid,  int qty) {
+    void addQty(int pid,  int qty) {
 
         int productID =pid;
 
@@ -133,8 +133,11 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         if (getQty(pid) == 1 ){
 
+
+
+            db.execSQL("delete from "+TABLE_CART+" WHERE "+COLUMN_PID+"="+pid);
         } else {
-            updateQty(pid,getQty(pid)-1);
+            addQty(pid,getQty(pid)-1);
         }
 
     }

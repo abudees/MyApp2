@@ -55,13 +55,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             if (mDatabase.checkProduct(productSelected) ){
 
-                mDatabase.updateQty(productSelected, mDatabase.getQty(productSelected)+1);
+                mDatabase.addQty(productSelected, (mDatabase.getQty(productSelected))+1);
+
+                Toast.makeText(this, /*mDatabase.getQty(productSelected)*/"u", Toast.LENGTH_LONG).show();
+
             } else {
-               // mDatabase.add(productSelected, 1);
+                //mDatabase.addQty(productSelected, 1);
 
+                Products newProduct = new Products(productSelected, 1);
 
-                    Products newProduct = new Products(productSelected, 1);
-                    mDatabase.addProduct(newProduct);
+                mDatabase.addProduct(newProduct);
+
+                Toast.makeText(this, /*mDatabase.getQty(productSelected)*/"add", Toast.LENGTH_LONG).show();
             }
         } catch (Exception error) {
             error.printStackTrace();
@@ -74,6 +79,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         try {
 
                 mDatabase.deleteQty(productSelected);
+            Toast.makeText(this, /*mDatabase.getQty(productSelected)*/"r", Toast.LENGTH_LONG).show();
 
         } catch (Exception error) {
 
