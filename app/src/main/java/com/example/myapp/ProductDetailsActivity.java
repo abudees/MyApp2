@@ -57,7 +57,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                 mDatabase.updateQty(productSelected, mDatabase.getQty(productSelected)+1);
             } else {
-                mDatabase.addProduct(productSelected, 1);
+               // mDatabase.add(productSelected, 1);
+
+
+                    Products newProduct = new Products(productSelected, 1);
+                    mDatabase.addProduct(newProduct);
             }
         } catch (Exception error) {
             error.printStackTrace();

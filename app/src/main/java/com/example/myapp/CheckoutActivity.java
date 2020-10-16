@@ -51,6 +51,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     List<String> productTitle = new ArrayList<>();
 
+    List<Integer> pIDs = new ArrayList<>();
 
 
     ArrayList<Products> allProducts;
@@ -78,12 +79,14 @@ public class CheckoutActivity extends AppCompatActivity {
             if (checkConnection.isNetwork()) {
 
 
+
+
                 cartView = findViewById(R.id.myCartList);
                 linearLayoutManager = new LinearLayoutManager(this);
                 cartView.setLayoutManager(linearLayoutManager);
                 cartView.setHasFixedSize(true);
                 mDatabase = new SqliteDatabase(this);
-                allProducts = mDatabase.listProducts();
+                allProducts = mDatabase.listAll();
                 url = new ArrayList<>();
                 productTitle = new ArrayList<>();
 
@@ -102,7 +105,11 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+
+
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
+
+
 
 
                 query.findInBackground(new FindCallback<ParseObject>() {
@@ -111,16 +118,22 @@ public class CheckoutActivity extends AppCompatActivity {
 
                         if (e == null && objects.size() > 0) {
 
-                            for (ParseObject object : objects) {
 
-                                url.add(object.getString("imageURL"));
+                            for (int i = 0; i < allProducts.size(); i++) {
 
-                                productTitle.add(object.getString("title"));
+                                for (ParseObject object : objects) {
 
-                                price.add(object.getInt("price"));
 
-                                Log.i("url", object.getString("imageURL"));
+                                    url.add(object.getString("imageURL"));
+
+                                    productTitle.add(object.getString("title"));
+
+                                    price.add(object.getInt("price"));
+
+                                    //   Log.i("url", object.getString("imageURL"));
+                                }
                             }
+
 
                             if (allProducts.size() > 0) {
                                 cartView.setVisibility(View.VISIBLE);

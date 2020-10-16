@@ -36,21 +36,19 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    ArrayList<Integer> listAll() {
+    ArrayList<Products> listAll() {
         String sql = "select * from " + TABLE_CART;
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Integer> storeCart = new ArrayList<>();
+        ArrayList<Products> storeCart = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt(0);
+                int id = Integer.parseInt(cursor.getString(0));
                 int pId = cursor.getInt((1));
                 int qty = cursor.getInt((2));
 
+                storeCart.add(new Products(id, pId, qty));
 
-                storeCart.add(id);
-                storeCart.add(pId);
-                storeCart.add(qty);
             }
             while (cursor.moveToNext());
         }
@@ -59,19 +57,17 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     }
 
 
-    ArrayList<Products> listProducts() {
-        String sql = "select * from " + TABLE_CART;
+    ArrayList<Integer> listProducts() {
+        String sql = "select "+ COLUMN_PID +" from " + TABLE_CART;
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Products> storeCart = new ArrayList<>();
+        ArrayList<Integer> storeCart = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt(0);
+
                 int pId = cursor.getInt((1));
-                int qty = cursor.getInt((2));
 
-
-                storeCart.add(new Products(id, pId, qty));
+                storeCart.add(pId);
 
             }
             while (cursor.moveToNext());
@@ -112,14 +108,14 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
 
-    void addProduct(int productID, int qty) {
+    void addProduct(Products product) {
         ContentValues values = new ContentValues();//
 
-        values.put(COLUMN_ID, productID);
-        values.put(COLUMN_QTY, qty);
+        values.put(COLUMN_PID, product.getProductId());
+        values.put(COLUMN_QTY, product.getQty());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_CART, null, values);
-    }
+  }
 
 
 
