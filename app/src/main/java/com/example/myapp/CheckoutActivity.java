@@ -25,6 +25,7 @@ import com.parse.ParseQuery;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -51,7 +52,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
     List<String> productTitle = new ArrayList<>();
 
-    List<Integer> pIDs = new ArrayList<>();
+    ArrayList<Integer>  pIDs ;
+
 
 
     ArrayList<Products> allProducts;
@@ -73,13 +75,12 @@ public class CheckoutActivity extends AppCompatActivity {
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
+
+
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
-
-
-
 
                 cartView = findViewById(R.id.myCartList);
                 linearLayoutManager = new LinearLayoutManager(this);
@@ -87,7 +88,10 @@ public class CheckoutActivity extends AppCompatActivity {
                 cartView.setHasFixedSize(true);
                 mDatabase = new SqliteDatabase(this);
                 allProducts = mDatabase.listAll();
+
+                pIDs = mDatabase.listProducts();
                 url = new ArrayList<>();
+
                 productTitle = new ArrayList<>();
 
                 btnAdd = findViewById(R.id.btnAdd);
@@ -104,23 +108,23 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+                pIDs = mDatabase.listProducts();
 
+                Log.d("products in cart are: ",  String.valueOf(pIDs));
 
+                for (int i = 0; i < pIDs.size(); i++) {
 
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
 
+                    query.orderByAscending("productId");
 
-                query.whereContainedIn("productId", pIDs);
-                query.orderByAscending("productId");
+                    query.whereEqualTo("productId", pIDs.get(i));
 
+                    query.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> objects, ParseException e) {
 
-                query.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null && objects.size() > 0) {
-
-
+                            if (e == null && objects.size() > 0) {
 
 
                                 for (ParseObject object : objects) {
@@ -132,10 +136,9 @@ public class CheckoutActivity extends AppCompatActivity {
 
                                     price.add(object.getInt("price"));
 
-                                    //   Log.i("url", object.getString("imageURL"));
+                                    Log.i("url", Objects.requireNonNull(object.getString("imageURL")));
                                 }
-
-
+                            }
 
                             if (allProducts.size() > 0) {
                                 cartView.setVisibility(View.VISIBLE);
@@ -150,21 +153,14 @@ public class CheckoutActivity extends AppCompatActivity {
                                         Toast.LENGTH_LONG).show();
                             }
                         }
-                    }
-                });
-
+                    });
+                }
             }
         } catch (InterruptedException | IOException e) {
-                e.printStackTrace();
 
-            }
-
-
-
+            e.printStackTrace();
+        }
     }
-
-
-
 
 
 
@@ -174,7 +170,5 @@ public class CheckoutActivity extends AppCompatActivity {
         if (mDatabase != null) {
             mDatabase.close();
         }
-
-
     }
 }

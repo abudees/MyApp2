@@ -182,7 +182,6 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
             super(itemView);
 
-
             productName = itemView.findViewById(R.id.productName);
             price = itemView.findViewById(R.id.price);
             decreaseQty = itemView.findViewById(R.id.decreaseQty);

@@ -58,13 +58,14 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
     ArrayList<Integer> listProducts() {
-        String sql = "select "+ COLUMN_PID +" from " + TABLE_CART;
+        String sql = "select * from " + TABLE_CART;
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Integer> storeCart = new ArrayList<>();
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             do {
 
+                int id = Integer.parseInt(cursor.getString(0));
                 int pId = cursor.getInt((1));
 
                 storeCart.add(pId);
@@ -79,7 +80,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
     int getQty(int pID) {
-        String sql = "select "+ COLUMN_QTY + " from " + TABLE_CART + " where " + COLUMN_PID + " = "+ pID;
+        String sql = "select * from " + TABLE_CART + " where " + COLUMN_PID + " = "+ pID;
         SQLiteDatabase db = this.getReadableDatabase();
         int productQty = 0;
         Cursor cursor = db.rawQuery(sql, null);
