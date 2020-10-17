@@ -24,14 +24,14 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.ViewHolder>/* implements Filterable*/ {
+public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.ViewHolder> implements Filterable {
 
     // define all adapter items and then uncomment the onclick listiner 23/9/2020
 
 
     private Context context;
-    private List<Integer> productId;
-
+    private ArrayList<Products> listProducts;
+    private ArrayList<Products> mArrayList;
     private List<String> url ;
     private List<String> productTitle;
     private List<Integer> price;
@@ -43,9 +43,10 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     int maxQty =25;
 
 
-    ProductCartAdapter(Context context, List<Integer> mProductId, List<String> url, List<String> productTitle,  List<Integer> price) {
+    ProductCartAdapter(Context context, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price) {
         this.context = context;
-        this.productId = mProductId;
+        this.listProducts = listProducts;
+        this.mArrayList = listProducts;
         this.url = url;
         this.productTitle = productTitle;
         this.price =price;
@@ -80,7 +81,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         String currentURL = url.get(position);
         String currenName = productTitle.get(position);
         int currentPrice = price.get(position);
-
+        final Products products = listProducts.get(position);
 
 
         holder.getAdapterPosition();
@@ -100,10 +101,10 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             @Override
             public void onClick(View view) {
 
-              //  holder.qty.setText(String.valueOf(mDatabase.getQty()));
+                holder.qty.setText(String.valueOf(products.getQty()+1));
 
-               // mDatabase.updateQty(productId,mDatabase.getQty(productId)+1);
-               // Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
+                mDatabase.addQty(products.getProductId(),products.getQty()+1);
+                Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -121,12 +122,12 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
                 Toast.makeText(context, "Qty removed successfully", Toast.LENGTH_LONG).show();
 
-              // mDatabase.deleteQty(products.getProductId());
+                mDatabase.deleteQty(products.getProductId());
             }
         });
     }
 
-/*
+
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -154,10 +155,10 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
                 notifyDataSetChanged();
             }
         };
-    }*/
+    }
     @Override
     public int getItemCount() {
-        return productId.size();
+        return listProducts.size();
     }
 
 
@@ -170,29 +171,29 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
 
 
-   static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
 
-       TextView productName, price, qty;
-       ImageView decreaseQty, addQty, productImage;
+        TextView productName, price, qty;
+        ImageView decreaseQty, addQty, productImage;
 
 
-       private ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
 
-           super(itemView);
-
-
-           productName = itemView.findViewById(R.id.productName);
-           price = itemView.findViewById(R.id.price);
-           decreaseQty = itemView.findViewById(R.id.decreaseQty);
-           addQty = itemView.findViewById(R.id.addQty);
-           productImage = itemView.findViewById(R.id.productImage);
-
-           qty = itemView.findViewById(R.id.qty);
-       }
+            super(itemView);
 
 
+            productName = itemView.findViewById(R.id.productName);
+            price = itemView.findViewById(R.id.price);
+            decreaseQty = itemView.findViewById(R.id.decreaseQty);
+            addQty = itemView.findViewById(R.id.addQty);
+            productImage = itemView.findViewById(R.id.productImage);
 
-   }
+            qty = itemView.findViewById(R.id.qty);
+        }
+
+
+
+    }
 
 }

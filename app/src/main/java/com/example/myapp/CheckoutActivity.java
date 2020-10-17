@@ -110,6 +110,8 @@ public class CheckoutActivity extends AppCompatActivity {
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
 
 
+                query.whereContainedIn("productId", pIDs);
+                query.orderByAscending("productId");
 
 
                 query.findInBackground(new FindCallback<ParseObject>() {
@@ -119,7 +121,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         if (e == null && objects.size() > 0) {
 
 
-                            for (int i = 0; i < allProducts.size(); i++) {
+
 
                                 for (ParseObject object : objects) {
 
@@ -132,7 +134,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
                                     //   Log.i("url", object.getString("imageURL"));
                                 }
-                            }
+
 
 
                             if (allProducts.size() > 0) {
