@@ -35,6 +35,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     private List<String> url ;
     private List<String> productTitle;
     private List<Integer> price;
+    private List<Integer> qty;
     private SqliteDatabase mDatabase;
     private LayoutInflater inflater;
 
@@ -43,13 +44,14 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     int maxQty =25;
 
 
-    ProductCartAdapter(Context context, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price) {
+    ProductCartAdapter(Context context, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price, List<Integer> qty) {
         this.context = context;
         this.listProducts = listProducts;
         this.mArrayList = listProducts;
         this.url = url;
         this.productTitle = productTitle;
         this.price =price;
+        this.qty = qty;
         inflater = LayoutInflater.from(context);
         mDatabase = new SqliteDatabase(context);
 
@@ -82,6 +84,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         String currenName = productTitle.get(position);
         int currentPrice = price.get(position);
         final Products products = listProducts.get(position);
+        final int currentQty = qty.get(position);
 
 
         holder.getAdapterPosition();
@@ -94,7 +97,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         holder.price.setText( String.valueOf(currentPrice));
 
 
-        holder.qty.setText(String.valueOf(mDatabase.getQty(position)));
+        holder.qty.setText(String.valueOf(currentQty));
 
 
         holder.addQty.setOnClickListener(new View.OnClickListener() {

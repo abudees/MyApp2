@@ -25,8 +25,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART
                 + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_PID + " INTEGER ,"
-                + COLUMN_QTY + " INTEGER" + ")";
+                + COLUMN_PID + " INTEGER NOT NULL UNIQUE,"
+                + COLUMN_QTY + " INTEGER NOT NULL" + ")";
         db.execSQL(CREATE_CART_TABLE);
     }
 
@@ -77,6 +77,26 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         return storeCart;
     }
 
+    ArrayList<Integer> listQty() {
+        String sql = "select * from " + TABLE_CART;
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Integer> storeCart = new ArrayList<>();
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToFirst()) {
+            do {
+
+                int id = Integer.parseInt(cursor.getString(0));
+                int pId = cursor.getInt((1));
+                int qty = cursor.getInt((2));
+
+                storeCart.add(qty);
+
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        return storeCart;
+    }
 
 
     int getQty(int pID) {
@@ -86,6 +106,9 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             do {
+
+                int id = Integer.parseInt(cursor.getString(0));
+                int pId = cursor.getInt((1));
                 int qty = cursor.getInt((2));
                 productQty = qty;
             }
@@ -122,12 +145,13 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
     void addQty(int pid,  int qty) {
 
-        int productID =pid;
+
+
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.execSQL("UPDATE TABLE_CART SET YOUR_COLUMN="+ qty + " WHERE "+COLUMN_PID+"="+pid);
 
+        db.execSQL("UPDATE "+TABLE_CART+ " SET "+ COLUMN_QTY +"="+ qty + " WHERE "+ COLUMN_PID +" = " +  pid );
     }
 
     void deleteQty(int pid) {

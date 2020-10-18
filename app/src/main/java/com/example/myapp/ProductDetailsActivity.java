@@ -23,6 +23,7 @@ import com.parse.ParseQuery;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
@@ -41,6 +42,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     int mCartItemCount = 0;
 
+    ArrayList<Integer> pIDs ;
+
+    ArrayList<Integer> qty ;
+
+
+
 
 
 
@@ -53,22 +60,31 @@ public class ProductDetailsActivity extends AppCompatActivity {
         try {
             mDatabase = new SqliteDatabase(this);
 
-            if (mDatabase.checkProduct(productSelected) ){
+            pIDs = mDatabase.listProducts();
+            qty = mDatabase.listQty();
 
-                mDatabase.addQty(productSelected, (mDatabase.getQty(productSelected))+1);
+            Log.i("pIDs", String.valueOf(pIDs));
+            Log.i("qty", String.valueOf(qty));
 
-                Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
+            if(mDatabase.checkProduct(productSelected)) {
+
+
+
+
+                mDatabase.addQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
+
+                Toast.makeText(this, "added twice", Toast.LENGTH_LONG).show();
 
             } else {
-
-                mDatabase.addQty(productSelected, 1);
 
                 Products newProduct = new Products(productSelected, 1);
 
                 mDatabase.addProduct(newProduct);
 
-                Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
-            }
+                Toast.makeText(this, "added", Toast.LENGTH_LONG).show();
+
+
+          }
         } catch (Exception error) {
             error.printStackTrace();
         }
@@ -79,9 +95,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         try {
 
-            mDatabase.deleteQty(productSelected);
-            Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
+//            mDatabase.deleteQty(productSelected);
+  //          Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
 
+            mDatabase.clearCart();
         } catch (Exception error) {
 
             error.printStackTrace();
@@ -116,6 +133,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
+
+
+                try {
+
+
+                } catch (Exception error) {
+                    error.printStackTrace();
+                }
+
 
 
                 linearLayout = findViewById(R.id.productDetailImage);

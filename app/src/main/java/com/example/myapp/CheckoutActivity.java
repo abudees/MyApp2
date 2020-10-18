@@ -54,9 +54,12 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ArrayList<Integer>  pIDs ;
 
+    ArrayList<Integer> qty;
 
 
     ArrayList<Products> allProducts;
+
+
 
 
 
@@ -76,6 +79,10 @@ public class CheckoutActivity extends AppCompatActivity {
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
 
+        mDatabase = new SqliteDatabase(this);
+        allProducts = mDatabase.listAll();
+        pIDs = mDatabase.listProducts();
+        qty = mDatabase.listQty();
 
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
@@ -86,15 +93,15 @@ public class CheckoutActivity extends AppCompatActivity {
                 linearLayoutManager = new LinearLayoutManager(this);
                 cartView.setLayoutManager(linearLayoutManager);
                 cartView.setHasFixedSize(true);
-                mDatabase = new SqliteDatabase(this);
-                allProducts = mDatabase.listAll();
+
+
 
                 pIDs = mDatabase.listProducts();
                 url = new ArrayList<>();
 
-                productTitle = new ArrayList<>();
+               // productTitle = new ArrayList<>();
 
-                btnAdd = findViewById(R.id.btnAdd);
+              /*  btnAdd = findViewById(R.id.btnAdd);
                 btnAdd.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -106,9 +113,9 @@ public class CheckoutActivity extends AppCompatActivity {
                 });
 
 
+*/
 
 
-                pIDs = mDatabase.listProducts();
 
                 Log.d("products in cart are: ",  String.valueOf(pIDs));
 
@@ -142,7 +149,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
                             if (allProducts.size() > 0) {
                                 cartView.setVisibility(View.VISIBLE);
-                                mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts, price);
+                                mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts, price, qty);
                                 cartView.setAdapter(mAdapter);
                                 mAdapter.notifyDataSetChanged();
 
