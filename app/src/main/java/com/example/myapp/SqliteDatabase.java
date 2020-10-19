@@ -103,6 +103,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         String sql = "select * from " + TABLE_CART + " where " + COLUMN_PID + " = "+ pID;
         SQLiteDatabase db = this.getReadableDatabase();
         int productQty = 0;
+
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             do {
@@ -110,6 +111,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
                 int id = Integer.parseInt(cursor.getString(0));
                 int pId = cursor.getInt((1));
                 int qty = cursor.getInt((2));
+
                 productQty = qty;
             }
             while (cursor.moveToNext());
@@ -143,32 +145,25 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
 
-    void addQty(int pid,  int qty) {
-
-
-
+    void updateQty(int pid,  int qty) {
 
         SQLiteDatabase db = this.getWritableDatabase();
-
 
         db.execSQL("UPDATE "+TABLE_CART+ " SET "+ COLUMN_QTY +"="+ qty + " WHERE "+ COLUMN_PID +" = " +  pid );
     }
 
-    void deleteQty(int pid) {
+    void deleteProduct(int pid) {
+
         SQLiteDatabase db = this.getWritableDatabase();
-        if (getQty(pid) == 1 ){
 
+        db.execSQL("delete from "+TABLE_CART+" WHERE "+COLUMN_PID+" = "+pid);
 
-
-            db.execSQL("delete from "+TABLE_CART+" WHERE "+COLUMN_PID+"="+pid);
-        } else {
-            addQty(pid,getQty(pid)-1);
-        }
 
     }
 
     void clearCart() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CART, null,null);
+
+        db.execSQL("delete from "+ TABLE_CART);
     }
 }

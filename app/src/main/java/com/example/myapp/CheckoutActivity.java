@@ -143,7 +143,6 @@ public class CheckoutActivity extends AppCompatActivity {
 
                                     price.add(object.getInt("price"));
 
-                                    Log.i("url", Objects.requireNonNull(object.getString("imageURL")));
                                 }
                             }
 

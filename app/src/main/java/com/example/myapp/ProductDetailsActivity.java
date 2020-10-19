@@ -35,7 +35,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     TextView productTitle, productDescription, productPrice;
 
 
-    TextView textCartItemCount;
+    TextView textCartItemCount, currentQty;
 
 
     private SqliteDatabase mDatabase;
@@ -45,6 +45,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     ArrayList<Integer> pIDs ;
 
     ArrayList<Integer> qty ;
+
+
 
 
 
@@ -68,10 +70,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             if(mDatabase.checkProduct(productSelected)) {
 
-
-
-
-                mDatabase.addQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
+                mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
+                currentQty.notify();
 
                 Toast.makeText(this, "added twice", Toast.LENGTH_LONG).show();
 
@@ -80,10 +80,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 Products newProduct = new Products(productSelected, 1);
 
                 mDatabase.addProduct(newProduct);
+                currentQty.notify();
 
                 Toast.makeText(this, "added", Toast.LENGTH_LONG).show();
-
-
           }
         } catch (Exception error) {
             error.printStackTrace();
@@ -95,16 +94,45 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         try {
 
-//            mDatabase.deleteQty(productSelected);
-  //          Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
+            if (mDatabase.checkProduct(productSelected)) {
 
-            mDatabase.clearCart();
+                if (mDatabase.getQty(productSelected) == 1) {
+
+                    mDatabase.deleteProduct(productSelected);
+                    currentQty.notify();
+
+                } else if (mDatabase.getQty(productSelected) > 1) {
+
+                    mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) - 1);
+                    currentQty.notify();
+
+                    Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, "Item selected not in cart " + String.valueOf(mDatabase.getQty(productSelected)), Toast.LENGTH_LONG).show();
+            }
         } catch (Exception error) {
 
             error.printStackTrace();
 
         }
     }
+
+
+    public void clearCart (View view){
+
+        try {
+
+            mDatabase.clearCart();
+
+            Toast.makeText(this, "cleared", Toast.LENGTH_LONG).show();
+            currentQty.notify();
+        } catch (Exception error) {
+
+            error.printStackTrace();
+        }
+    }
+
 
 
     public void checkOut (View view){
@@ -127,28 +155,23 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
 
-        //CartQty.qtyCheck();
+
 
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
 
-
-                try {
-
-
-                } catch (Exception error) {
-                    error.printStackTrace();
-                }
-
-
-
                 linearLayout = findViewById(R.id.productDetailImage);
                 productTitle = findViewById(R.id.productTitle);
                 productDescription = findViewById(R.id.productDescription);
                 productPrice = findViewById(R.id.productPrice);
+                currentQty = findViewById(R.id.currentQty);
 
+
+               // if (mDatabase.checkProduct(productSelected)) {
+                 //   currentQty.setText(mDatabase.getQty(productSelected));
+               // }
 
                 //retrive selected product
                 if (savedInstanceState == null) {
@@ -186,67 +209,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
                             }
                         }
                     }
-
                 });
-
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
 
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-
-        final MenuItem menuItem = menu.findItem(R.id.action_cart);
-
-        View actionView = menuItem.getActionView();
-        textCartItemCount =  actionView.findViewById(R.id.cart_badge);
-
-        setupBadge();
-
-        actionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOptionsItemSelected(menuItem);
-            }
-        });
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.action_cart: {
-                // Do something
-
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupBadge() {
-
-        if (textCartItemCount != null) {
-            if (mCartItemCount == 0) {
-                if (textCartItemCount.getVisibility() != View.GONE) {
-
-                    textCartItemCount.setVisibility(View.GONE);
-                }
-            } else {
-
-                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-
-                if (textCartItemCount.getVisibility() != View.VISIBLE) {
-                    textCartItemCount.setVisibility(View.VISIBLE);
-                }
-            }
         }
     }
 }
