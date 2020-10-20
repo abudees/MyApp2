@@ -108,6 +108,7 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
                 mDatabase.updateQty(products.getProductId(),products.getQty()+1);
                 Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
+                notifyDataSetChanged();
 
             }
         });
