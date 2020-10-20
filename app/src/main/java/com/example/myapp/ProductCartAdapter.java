@@ -104,9 +104,14 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             @Override
             public void onClick(View view) {
 
-                holder.qty.setText(String.valueOf(products.getQty()+1));
+                int newQty = currentQty + 1;
 
-                mDatabase.updateQty(products.getProductId(),products.getQty()+1);
+
+                notifyDataSetChanged();
+
+                mDatabase.updateQty(products.getProductId(),newQty);
+
+                holder.qty.setText(String.valueOf(newQty));
                 Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
 
             }

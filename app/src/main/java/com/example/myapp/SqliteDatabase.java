@@ -165,5 +165,6 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("delete from "+ TABLE_CART);
+       // db.delete(TABLE_CART,);
     }
 }
