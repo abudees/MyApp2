@@ -34,17 +34,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     TextView productTitle, productDescription, productPrice;
 
-
-    TextView textCartItemCount, currentQty;
-
-
     private SqliteDatabase mDatabase;
-
-    int mCartItemCount = 0;
 
     ArrayList<Integer> pIDs ;
 
     ArrayList<Integer> qty ;
+
+
+    TextView textCartItemCount, currentQty;
+    int mCartItemCount = 0;
+
+
+
 
 
 
@@ -62,11 +63,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         try {
             mDatabase = new SqliteDatabase(this);
 
-            pIDs = mDatabase.listProducts();
-            qty = mDatabase.listQty();
 
-            Log.i("pIDs", String.valueOf(pIDs));
-            Log.i("qty", String.valueOf(qty));
+
+
 
             if(mDatabase.checkProduct(productSelected)) {
 
@@ -169,9 +168,25 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 currentQty = findViewById(R.id.currentQty);
 
 
-               // if (mDatabase.checkProduct(productSelected)) {
-                 //   currentQty.setText(mDatabase.getQty(productSelected));
-               // }
+                mDatabase = new SqliteDatabase(this);
+
+
+                Log.i("all DB ", String.valueOf(mDatabase.listAll().size()));
+
+                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
+               // currentQty.notify();
+
+
+                pIDs = mDatabase.listProducts();
+
+                qty = mDatabase.listQty();
+
+
+                Log.i("pIDs", String.valueOf(pIDs));
+
+                Log.i("qty", String.valueOf(qty));
+
 
                 //retrive selected product
                 if (savedInstanceState == null) {
@@ -214,6 +229,52 @@ public class ProductDetailsActivity extends AppCompatActivity {
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
 
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        final MenuItem menuItem = menu.findItem(R.id.action_cart);
+
+        View actionView = menuItem.getActionView();
+        textCartItemCount = (TextView) actionView.findViewById(R.id.cart_badge);
+
+
+        setupBadge();
+
+        actionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(menuItem);
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_cart) {// Do something
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupBadge() {
+
+        if (textCartItemCount != null) {
+            if (mCartItemCount == 0) {
+                if (textCartItemCount.getVisibility() != View.GONE) {
+                    textCartItemCount.setVisibility(View.GONE);
+                }
+            } else {
+                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+                if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                    textCartItemCount.setVisibility(View.VISIBLE);
+                }
+            }
         }
     }
 }

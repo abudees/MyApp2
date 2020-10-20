@@ -89,31 +89,24 @@ public class CheckoutActivity extends AppCompatActivity {
 
             if (checkConnection.isNetwork()) {
 
-                cartView = findViewById(R.id.myCartList);
                 linearLayoutManager = new LinearLayoutManager(this);
+                cartView = findViewById(R.id.myCartList);
                 cartView.setLayoutManager(linearLayoutManager);
                 cartView.setHasFixedSize(true);
+                cartView.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
 
 
                 pIDs = mDatabase.listProducts();
                 url = new ArrayList<>();
-
-               // productTitle = new ArrayList<>();
-
-              /*  btnAdd = findViewById(R.id.btnAdd);
-                btnAdd.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        //addTaskDialog();
-
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
+                productTitle = new ArrayList<>();
 
 
-*/
+
+
+
+
+
 
 
 
