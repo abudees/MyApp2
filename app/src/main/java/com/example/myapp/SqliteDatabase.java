@@ -116,8 +116,12 @@ public class SqliteDatabase extends SQLiteOpenHelper {
             }
             while (cursor.moveToNext());
         }
-        cursor.close();
-        return productQty;
+        if (cursor.getCount() > 0) {
+            return productQty;
+        } else {
+            cursor.close();
+            return 0;
+        }
     }
 
     boolean checkProduct(int pID) {
@@ -129,7 +133,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         } else {
             cursor.close();
             return false;
-        }    }
+        }
+    }
 
 
 

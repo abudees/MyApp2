@@ -1,11 +1,14 @@
 package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +61,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
+
     public void addItemToCart(View view) {
 
         try {
@@ -65,12 +69,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
-
-
             if(mDatabase.checkProduct(productSelected)) {
 
                 mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
-                currentQty.notify();
+                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
 
                 Toast.makeText(this, "added twice", Toast.LENGTH_LONG).show();
 
@@ -79,7 +82,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 Products newProduct = new Products(productSelected, 1);
 
                 mDatabase.addProduct(newProduct);
-                currentQty.notify();
+                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
 
                 Toast.makeText(this, "added", Toast.LENGTH_LONG).show();
           }
@@ -98,12 +102,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 if (mDatabase.getQty(productSelected) == 1) {
 
                     mDatabase.deleteProduct(productSelected);
-                    currentQty.notify();
+
+                    currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
 
                 } else if (mDatabase.getQty(productSelected) > 1) {
 
                     mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) - 1);
-                    currentQty.notify();
+
+                    currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
 
                     Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
                 }
@@ -125,7 +131,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             mDatabase.clearCart();
 
             Toast.makeText(this, "cleared", Toast.LENGTH_LONG).show();
-            currentQty.notify();
+
         } catch (Exception error) {
 
             error.printStackTrace();
@@ -161,21 +167,48 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             if (checkConnection.isNetwork()) {
 
+                //retrive selected product
+                if (savedInstanceState == null) {
+                    Bundle extras = getIntent().getExtras();
+                    if (extras == null) {
+                        productSelected = 0;
+                    } else {
+                        productSelected = extras.getInt("productId");
+                    }
+                } else {
+                    productSelected = (int) savedInstanceState.getSerializable("productId");
+                }
+
+                mDatabase = new SqliteDatabase(this);
+
                 linearLayout = findViewById(R.id.productDetailImage);
                 productTitle = findViewById(R.id.productTitle);
                 productDescription = findViewById(R.id.productDescription);
                 productPrice = findViewById(R.id.productPrice);
-                currentQty = findViewById(R.id.currentQty);
+              //  updateTextView(String.valueOf(mDatabase.getQty(productSelected)));
+
+                currentQty =  findViewById(R.id.currentQty);
+
+                if(mDatabase.checkProduct(productSelected)) {
+
+                    currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
+                }
 
 
-                mDatabase = new SqliteDatabase(this);
+
+
 
 
                 Log.i("all DB ", String.valueOf(mDatabase.listAll().size()));
 
-                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
 
-               // currentQty.notify();
+
+
+
+                Log.i("i ", String.valueOf(mDatabase.getQty(productSelected)));
+
+
 
 
                 pIDs = mDatabase.listProducts();
@@ -188,17 +221,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 Log.i("qty", String.valueOf(qty));
 
 
-                //retrive selected product
-                if (savedInstanceState == null) {
-                    Bundle extras = getIntent().getExtras();
-                    if (extras == null) {
-                        productSelected = 0;
-                    } else {
-                        productSelected = extras.getInt("productId");
-                    }
-                } else {
-                    productSelected = (int) savedInstanceState.getSerializable("productId");
-                }
+
 
 
                 ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");

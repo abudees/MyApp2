@@ -36,16 +36,19 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
     private List<String> productTitle;
     private List<Integer> price;
     private List<Integer> qty;
+    private List<Integer> pID;
     private SqliteDatabase mDatabase;
     private LayoutInflater inflater;
+
 
 
 
     int maxQty =25;
 
 
-    ProductCartAdapter(Context context, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price, List<Integer> qty) {
+    ProductCartAdapter(Context context, List<Integer> pIDs, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price, List<Integer> qty  ) {
         this.context = context;
+        this.pID = pIDs;
         this.listProducts = listProducts;
         this.mArrayList = listProducts;
         this.url = url;
@@ -54,8 +57,6 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         this.qty = qty;
         inflater = LayoutInflater.from(context);
         mDatabase = new SqliteDatabase(context);
-
-
     }
 
 
@@ -83,12 +84,12 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
         String currentURL = url.get(position);
         String currenName = productTitle.get(position);
         int currentPrice = price.get(position);
-        final Products products = listProducts.get(position);
+      //  final Products products = listProducts.get(position);
         final int currentQty = qty.get(position);
+        int currentID = pID.get(position);
 
 
         holder.getAdapterPosition();
-
 
         Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.productImage);
 
@@ -96,34 +97,22 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
         holder.price.setText( String.valueOf(currentPrice));
 
-
         holder.qty.setText(String.valueOf(currentQty));
 
 
         holder.addQty.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
 
-                int newQty = currentQty + 1;
+                int newQty = mDatabase.getQty(currentID)+1;
 
-
-                notifyDataSetChanged();
-
-                mDatabase.updateQty(products.getProductId(),newQty);
+                mDatabase.updateQty(currentID, newQty);
 
                 holder.qty.setText(String.valueOf(newQty));
-                Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
-                notifyDataSetChanged();
 
+                Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
             }
         });
-
-
-
-
-
-
-
 
         holder.decreaseQty.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +120,19 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
                 Toast.makeText(context, "Qty removed successfully", Toast.LENGTH_LONG).show();
 
-             //   mDatabase.deleteQty(products.getProductId());
+                if (mDatabase.getQty(currentID) == 1){
+
+                    mDatabase.deleteProduct(currentID);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, listProducts.size());
+
+                } else if (mDatabase.getQty(currentID) > 1){
+
+                    int newQty = mDatabase.getQty(currentID)-1;
+
+                    mDatabase.updateQty(currentID, newQty);
+                    holder.qty.setText(String.valueOf(newQty));
+                }
             }
         });
     }
@@ -198,6 +199,8 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
             productImage = itemView.findViewById(R.id.productImage);
 
             qty = itemView.findViewById(R.id.qty);
+
+
         }
 
 

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -56,15 +57,22 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ArrayList<Integer> qty;
 
+    ArrayList<Integer> pId;
 
     ArrayList<Products> allProducts;
 
 
+    int total ;
+
+    TextView totalText;
 
 
 
 
-    public void createOrder (View view){
+    public void placeOrder (View view){
+
+
+
     }
 
 
@@ -84,6 +92,8 @@ public class CheckoutActivity extends AppCompatActivity {
         pIDs = mDatabase.listProducts();
         qty = mDatabase.listQty();
 
+
+
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
@@ -95,9 +105,10 @@ public class CheckoutActivity extends AppCompatActivity {
                 cartView.setHasFixedSize(true);
                 cartView.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
+                totalText = findViewById(R.id.total);
 
 
-                pIDs = mDatabase.listProducts();
+
                 url = new ArrayList<>();
                 productTitle = new ArrayList<>();
 
@@ -126,30 +137,27 @@ public class CheckoutActivity extends AppCompatActivity {
 
                             if (e == null && objects.size() > 0) {
 
-
                                 for (ParseObject object : objects) {
-
 
                                     url.add(object.getString("imageURL"));
 
                                     productTitle.add(object.getString("title"));
 
                                     price.add(object.getInt("price"));
-
                                 }
                             }
 
                             if (allProducts.size() > 0) {
                                 cartView.setVisibility(View.VISIBLE);
-                                mAdapter = new ProductCartAdapter(CheckoutActivity.this, url, productTitle, allProducts, price, qty);
+                                mAdapter = new ProductCartAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty );
                                 cartView.setAdapter(mAdapter);
-                                mAdapter.notifyDataSetChanged();
+                              //  mAdapter.notifyDataSetChanged();
 
                             } else {
 
                                 cartView.setVisibility(View.GONE);
-                                Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now",
-                                        Toast.LENGTH_LONG).show();
+
+                                Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
