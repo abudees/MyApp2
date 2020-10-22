@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.common.detector.MathUtils;
 import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
@@ -25,6 +26,7 @@ import com.parse.ParseQuery;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,6 +70,14 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+    public static int sum(List<Integer> list) {
+        int sum = 0;
+        for (int i: list) {
+            sum += i;
+        }
+        return sum;
+    }
+
 
     public void placeOrder (View view){
 
@@ -108,7 +118,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 totalText = findViewById(R.id.total);
 
 
-
                 url = new ArrayList<>();
                 productTitle = new ArrayList<>();
 
@@ -122,6 +131,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
                 Log.d("products in cart are: ",  String.valueOf(pIDs));
+
+
 
                 for (int i = 0; i < pIDs.size(); i++) {
 
@@ -144,6 +155,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                     productTitle.add(object.getString("title"));
 
                                     price.add(object.getInt("price"));
+
                                 }
                             }
 
@@ -151,7 +163,19 @@ public class CheckoutActivity extends AppCompatActivity {
                                 cartView.setVisibility(View.VISIBLE);
                                 mAdapter = new ProductCartAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty );
                                 cartView.setAdapter(mAdapter);
-                              //  mAdapter.notifyDataSetChanged();
+
+                                int sumQty = 0;
+                                for (int m = 0; m < qty.size(); m++) {
+                                    sumQty += qty.get(m);
+                                }
+
+                                int sumPrice =0;
+                                for (int m = 0; m < price.size(); m++) {
+                                    sumPrice += price.get(m);
+                                }
+
+
+                                totalText.setText(String.valueOf(sumPrice*sumQty));
 
                             } else {
 
