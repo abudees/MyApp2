@@ -63,6 +63,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ArrayList<Products> allProducts;
 
+    ArrayList<Integer> lineSum ;
+
 
     int total ;
 
@@ -104,6 +106,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
@@ -120,6 +123,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
                 url = new ArrayList<>();
                 productTitle = new ArrayList<>();
+
+
 
 
 
@@ -164,18 +169,25 @@ public class CheckoutActivity extends AppCompatActivity {
                                 mAdapter = new ProductCartAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty );
                                 cartView.setAdapter(mAdapter);
 
-                                int sumQty = 0;
-                                for (int m = 0; m < qty.size(); m++) {
-                                    sumQty += qty.get(m);
+
+
+                               // int d = (qty*price);
+                              /*  for (int m = 0; m < qty.size(); m++) {
+
+                                    lineSum.add(qty.get(m)*price.get(m));
+                                    Log.i("total ", String.valueOf(lineSum));
+
                                 }
 
-                                int sumPrice =0;
-                                for (int m = 0; m < price.size(); m++) {
-                                    sumPrice += price.get(m);
-                                }
+                              //  int sum =0;
+                                //for (int n = 0; n < lineSum.size(); n++) {
 
+                                  //  sum += lineSum.get(n);
+                               // }
 
-                                totalText.setText(String.valueOf(sumPrice*sumQty));
+*/
+
+                            //    totalText.setText(String.valueOf(sum));
 
                             } else {
 
