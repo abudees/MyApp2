@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -63,7 +65,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ArrayList<Products> allProducts;
 
-    ArrayList<Integer> lineSum ;
+    ArrayList<Integer> totals ;
 
 
     int total ;
@@ -72,13 +74,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
-    public static int sum(List<Integer> list) {
-        int sum = 0;
-        for (int i: list) {
-            sum += i;
-        }
-        return sum;
-    }
+
+
 
 
     public void placeOrder (View view){
@@ -86,6 +83,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
     }
+
+    double subTotal = 0;
 
 
 
@@ -117,12 +116,19 @@ public class CheckoutActivity extends AppCompatActivity {
                 cartView.setLayoutManager(linearLayoutManager);
                 cartView.setHasFixedSize(true);
                 cartView.getRecycledViewPool().setMaxRecycledViews(0, 0);
+                totalText = findViewById(R.id.textView2);
 
-                totalText = findViewById(R.id.total);
+
 
 
                 url = new ArrayList<>();
                 productTitle = new ArrayList<>();
+
+
+
+
+               //
+
 
 
 
@@ -161,33 +167,27 @@ public class CheckoutActivity extends AppCompatActivity {
 
                                     price.add(object.getInt("price"));
 
+
+
                                 }
                             }
 
                             if (allProducts.size() > 0) {
+
+
                                 cartView.setVisibility(View.VISIBLE);
                                 mAdapter = new ProductCartAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty );
                                 cartView.setAdapter(mAdapter);
 
+                                int all = mDatabase.sumPriceCartItems(price);
+                                Log.d("total: ",  String.valueOf(all));
 
 
-                               // int d = (qty*price);
-                              /*  for (int m = 0; m < qty.size(); m++) {
 
-                                    lineSum.add(qty.get(m)*price.get(m));
-                                    Log.i("total ", String.valueOf(lineSum));
 
-                                }
 
-                              //  int sum =0;
-                                //for (int n = 0; n < lineSum.size(); n++) {
 
-                                  //  sum += lineSum.get(n);
-                               // }
 
-*/
-
-                            //    totalText.setText(String.valueOf(sum));
 
                             } else {
 

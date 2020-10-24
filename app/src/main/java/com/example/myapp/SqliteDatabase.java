@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 public class SqliteDatabase extends SQLiteOpenHelper {
 
@@ -17,6 +19,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_QTY = "qtySelected";
 
 
+
     SqliteDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -26,7 +29,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART
                 + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_PID + " INTEGER NOT NULL UNIQUE,"
-                + COLUMN_QTY + " INTEGER NOT NULL" + ")";
+                + COLUMN_QTY + " INTEGER NOT NULL"
+                + ")";
         db.execSQL(CREATE_CART_TABLE);
     }
 
@@ -47,7 +51,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
                 int pId = cursor.getInt((1));
                 int qty = cursor.getInt((2));
 
-                storeCart.add(new Products(id, pId, qty));
+
+                storeCart.add(new Products(id, pId,qty));
 
             }
             while (cursor.moveToNext());
@@ -99,6 +104,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     }
 
 
+
+
     int getQty(int pID) {
         String sql = "select * from " + TABLE_CART + " where " + COLUMN_PID + " = "+ pID;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -140,10 +147,12 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
     void addProduct(Products product) {
-        ContentValues values = new ContentValues();//
+        ContentValues values = new ContentValues();
 
         values.put(COLUMN_PID, product.getProductId());
-        values.put(COLUMN_QTY, product.getQty());
+        values.put(COLUMN_QTY, 1);
+
+
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_CART, null, values);
     }
@@ -155,6 +164,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("UPDATE "+TABLE_CART+ " SET "+ COLUMN_QTY +"="+ qty + " WHERE "+ COLUMN_PID +" = " +  pid );
+
     }
 
     void deleteProduct(int pid) {
@@ -171,5 +181,18 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
         db.execSQL("delete from "+ TABLE_CART);
        // db.delete(TABLE_CART,);
+    }
+
+    public int sumPriceCartItems(List<Integer> price) {
+        int result = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (Integer i =0; i <price.size(); i++) {
+            Cursor cursor = db.rawQuery("select sum(" + COLUMN_QTY + " * " + price.get(i) + ") from " + TABLE_CART,   COLUMN_PID+  = + i);
+            if (cursor.moveToFirst()) result = cursor.getInt(0);
+
+            cursor.close();
+        }
+        db.close();
+        return result;
     }
 }

@@ -39,27 +39,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private SqliteDatabase mDatabase;
 
-    ArrayList<Integer> pIDs ;
+    ArrayList<Integer> pIDs;
 
-    ArrayList<Integer> qty ;
-
-
-    TextView textCartItemCount, currentQty;
-    int mCartItemCount = 0;
+    ArrayList<Integer> qty;
 
 
+    TextView currentQty;
 
+    int mCartItemCount;
 
-
-
-
-
-
-
-
-
-
-
+    TextView textCartItemCount;
 
 
     public void addItemToCart(View view) {
@@ -69,31 +58,35 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
-            if(mDatabase.checkProduct(productSelected)) {
+            if (mDatabase.checkProduct(productSelected)) {
+
+               // Log.i("price  ", String.valueOf(price));
 
                 mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
                 currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
 
+                setupBadge();
 
                 Toast.makeText(this, "added twice", Toast.LENGTH_LONG).show();
 
             } else {
 
-                Products newProduct = new Products(productSelected, 1);
+                Products newProduct = new Products(productSelected);
 
                 mDatabase.addProduct(newProduct);
-                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+                currentQty.setText(String.valueOf(1));
 
+                setupBadge();
 
                 Toast.makeText(this, "added", Toast.LENGTH_LONG).show();
-          }
+            }
         } catch (Exception error) {
             error.printStackTrace();
         }
     }
 
 
-    public void removeItem (View view) {
+    public void removeItem(View view) {
 
         try {
 
@@ -103,18 +96,20 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                     mDatabase.deleteProduct(productSelected);
 
-                    currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+                    currentQty.setText(0);
+                    setupBadge();
 
                 } else if (mDatabase.getQty(productSelected) > 1) {
 
                     mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) - 1);
 
                     currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+                    setupBadge();
 
                     Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(this, "Item selected not in cart " + String.valueOf(mDatabase.getQty(productSelected)), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, ("Item selected not in cart " + mDatabase.getQty(productSelected)), Toast.LENGTH_LONG).show();
             }
         } catch (Exception error) {
 
@@ -124,13 +119,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
 
-    public void clearCart (View view){
+    public void clearCart(View view) {
 
         try {
 
             mDatabase.clearCart();
 
             Toast.makeText(this, "cleared", Toast.LENGTH_LONG).show();
+            setupBadge();
 
         } catch (Exception error) {
 
@@ -139,8 +135,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
 
-
-    public void checkOut (View view){
+    public void checkOut(View view) {
 
         Intent intent = new Intent(getApplicationContext(), CheckoutActivity.class);
 
@@ -148,18 +143,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
-
-
 
 
         try {
@@ -181,34 +168,26 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                 mDatabase = new SqliteDatabase(this);
 
+                setupBadge();
                 linearLayout = findViewById(R.id.productDetailImage);
                 productTitle = findViewById(R.id.productTitle);
                 productDescription = findViewById(R.id.productDescription);
                 productPrice = findViewById(R.id.productPrice);
-              //  updateTextView(String.valueOf(mDatabase.getQty(productSelected)));
+                //  updateTextView(String.valueOf(mDatabase.getQty(productSelected)));
 
-                currentQty =  findViewById(R.id.currentQty);
+                currentQty = findViewById(R.id.currentQty);
 
-                if(mDatabase.checkProduct(productSelected)) {
+                if (mDatabase.checkProduct(productSelected)) {
 
                     currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
 
                 }
 
 
-
-
-
-
                 Log.i("all DB ", String.valueOf(mDatabase.listAll().size()));
 
 
-
-
-
                 Log.i("i ", String.valueOf(mDatabase.getQty(productSelected)));
-
-
 
 
                 pIDs = mDatabase.listProducts();
@@ -219,9 +198,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 Log.i("pIDs", String.valueOf(pIDs));
 
                 Log.i("qty", String.valueOf(qty));
-
-
-
 
 
                 ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");
@@ -242,6 +218,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                                     Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL")).fitCenter().into(linearLayout);
 
+
                                     productPrice.setText(String.valueOf(object.getInt("price")));
                                 }
                             }
@@ -254,6 +231,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -261,9 +239,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
         final MenuItem menuItem = menu.findItem(R.id.action_cart);
 
         View actionView = menuItem.getActionView();
-        textCartItemCount = (TextView) actionView.findViewById(R.id.cart_badge);
 
 
+        textCartItemCount = actionView.findViewById(R.id.cart_badge);
+        mCartItemCount = mDatabase.listAll().size();
         setupBadge();
 
         actionView.setOnClickListener(new View.OnClickListener() {
@@ -300,4 +279,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }
