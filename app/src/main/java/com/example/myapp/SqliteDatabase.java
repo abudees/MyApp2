@@ -20,6 +20,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
 
 
+
     SqliteDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -186,13 +187,16 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     public int sumPriceCartItems(List<Integer> price) {
         int result = 0;
         SQLiteDatabase db = this.getWritableDatabase();
-        for (Integer i =0; i <price.size(); i++) {
-            Cursor cursor = db.rawQuery("select sum(" + COLUMN_QTY + " * " + price.get(i) + ") from " + TABLE_CART,   COLUMN_PID+  = + i);
-            if (cursor.moveToFirst()) result = cursor.getInt(0);
+        for (int i =0; i < price.size(); i++) {
 
-            cursor.close();
+            Cursor cur = db.rawQuery("SELECT SUM(" + COLUMN_QTY + " * " + price.get(i) + ") FROM " + TABLE_CART, null);
+            if (cur.moveToFirst()) {
+                result = cur.getInt(0);
+            }
+
+            cur.close();
+
         }
-        db.close();
         return result;
     }
 }
