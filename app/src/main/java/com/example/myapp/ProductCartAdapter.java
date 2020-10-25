@@ -141,16 +141,23 @@ public class ProductCartAdapter extends RecyclerView.Adapter<ProductCartAdapter.
 
                 if (mDatabase.getQty(currentID) == 1){
 
-                    mDatabase.deleteProduct(currentID);
+                    if (mDatabase.listProducts().size() == 1) {
+
+                        mDatabase.clearCart();
+                        notifyDataSetChanged();
 
 
-                    notifyItemRemoved(holder.getAdapterPosition());
-                    notifyItemRangeChanged(holder.getAdapterPosition(), mListProducts.size());
-
-                    mListProducts.remove(mListProducts.get(position));
-                    notifyDataSetChanged();
+                    } else {
+                        mDatabase.deleteProduct(currentID);
 
 
+                        notifyItemRemoved(holder.getAdapterPosition());
+                        notifyItemRangeChanged(holder.getAdapterPosition(), mListProducts.size());
+
+                        mListProducts.remove(mListProducts.get(position));
+                        notifyDataSetChanged();
+
+                    }
                 } else if (mDatabase.getQty(currentID) > 1){
 
                     int newQty = mDatabase.getQty(currentID)-1;
