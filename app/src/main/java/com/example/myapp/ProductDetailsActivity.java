@@ -184,10 +184,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
 
 
-                Log.i("all DB ", String.valueOf(mDatabase.listAll().size()));
+              //  Log.i("all DB ", String.valueOf(mDatabase.listAll().size()));
 
 
-                Log.i("i ", String.valueOf(mDatabase.getQty(productSelected)));
+                //Log.i("i ", String.valueOf(mDatabase.getQty(productSelected)));
 
 
                 pIDs = mDatabase.listProducts();

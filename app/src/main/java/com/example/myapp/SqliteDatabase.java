@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -188,6 +190,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         int result = 0;
         SQLiteDatabase db = this.getWritableDatabase();
         for (int i =0; i < price.size(); i++) {
+
+            Log.d("prices: ",  String.valueOf(price.get(i)));
 
             Cursor cur = db.rawQuery("SELECT SUM(" + COLUMN_QTY + " * " + price.get(i) + ") FROM " + TABLE_CART, null);
             if (cur.moveToFirst()) {

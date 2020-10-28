@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
+
+import static java.lang.Math.min;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -45,15 +48,17 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ProductCartAdapter mAdapter;
 
-    Button btnAdd;
+    //Button btnAdd;
 
     public ArrayList<Integer> orderItems ;
 
-    final List<Integer> price = new ArrayList<>();
+     List<Integer> price = new ArrayList<>();
 
     List<String> url = new ArrayList<>();
 
-    final ArrayList<String> size = new ArrayList<>();
+   // List<Integer> stack = new ArrayList<Integer>();
+
+  //  final ArrayList<String> size = new ArrayList<>();
 
     List<String> productTitle = new ArrayList<>();
 
@@ -61,14 +66,14 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ArrayList<Integer> qty;
 
-    ArrayList<Integer> pId;
+  //  ArrayList<Integer> pId;
 
     ArrayList<Products> allProducts;
 
-    ArrayList<Integer> totals ;
+     ArrayList<Integer> totals = new ArrayList<>();
 
 
-    int total ;
+    //int total ;
 
     TextView totalText;
 
@@ -84,9 +89,10 @@ public class CheckoutActivity extends AppCompatActivity {
 
     }
 
-    double subTotal = 0;
+   // double subTotal = 0;
 
 
+    int sum;
 
 
     @Override
@@ -106,6 +112,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+
+
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
@@ -119,85 +127,76 @@ public class CheckoutActivity extends AppCompatActivity {
                 totalText = findViewById(R.id.textView2);
 
 
-
-
                 url = new ArrayList<>();
                 productTitle = new ArrayList<>();
 
 
 
 
-               //
 
-
-
-
-
-
-
-
-
-
-
-
-
-                Log.d("products in cart are: ",  String.valueOf(pIDs));
-
+                Log.d("products in cart are: ", String.valueOf(pIDs));
 
 
                 for (int i = 0; i < pIDs.size(); i++) {
 
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
 
-                    query.orderByAscending("productId");
-
-                    query.whereEqualTo("productId", pIDs.get(i));
-
-                    query.findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> objects, ParseException e) {
-
-                            if (e == null && objects.size() > 0) {
-
-                                for (ParseObject object : objects) {
-
-                                    url.add(object.getString("imageURL"));
-
-                                    productTitle.add(object.getString("title"));
-
-                                    price.add(object.getInt("price"));
+                query.orderByAscending("productId");
 
 
+                query.whereEqualTo("productId", pIDs.get(i));
 
-                                }
-                            }
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
 
-                            if (allProducts.size() > 0) {
+                        if (e == null && objects.size() > 0) {
 
+                            for (ParseObject object : objects) {
 
-                                cartView.setVisibility(View.VISIBLE);
-                                mAdapter = new ProductCartAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty );
-                                cartView.setAdapter(mAdapter);
+                                url.add(object.getString("imageURL"));
 
-                                int all = mDatabase.sumPriceCartItems(price);
-                                Log.d("total: ",  String.valueOf(all));
+                                productTitle.add(object.getString("title"));
 
-
-
-
+                                price.add(object.getInt("price"));
 
 
-
-
-                            } else {
-
-                                cartView.setVisibility(View.GONE);
-
-                                Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now", Toast.LENGTH_LONG).show();
                             }
                         }
-                    });
-                }
+
+                        if (allProducts.size() > 0) {
+
+
+                            cartView.setVisibility(View.VISIBLE);
+                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty);
+                            cartView.setAdapter(mAdapter);
+
+                            // int all = mDatabase.sumPriceCartItems(price);
+
+
+
+                            for (int g = 0; g < price.size(); g++) {
+                                sum += price.get(g) * mDatabase.getQty(pIDs.get(g));
+                            }
+
+                            totals.add(sum);
+
+                            Log.d("totals: ",  String.valueOf(totals.get(totals.size()-1)));
+
+
+                        } else {
+
+                            cartView.setVisibility(View.GONE);
+
+                            Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+
+
+
+
             }
         } catch (InterruptedException | IOException e) {
 
