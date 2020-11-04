@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity  {
 
                                 for (ParseObject object : objects) {
 
-                                    areaList.add(object.getString("areaName"));
+                                    areaList.add(object.getString("AreaName"));
 
                                     // a = object.getString("areaName");
                                 }

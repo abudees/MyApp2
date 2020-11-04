@@ -139,7 +139,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
                 for (int i = 0; i < pIDs.size(); i++) {
 
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Products");
 
                 query.orderByAscending("productId");
 
@@ -176,6 +176,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
                             for (int g = 0; g < price.size(); g++) {
+
                                 sum += price.get(g) * mDatabase.getQty(pIDs.get(g));
                             }
 
@@ -187,6 +188,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         } else {
 
                             cartView.setVisibility(View.GONE);
+
 
                             Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now", Toast.LENGTH_LONG).show();
                         }

@@ -200,7 +200,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 Log.i("qty", String.valueOf(qty));
 
 
-                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Products");
 
                 query.whereEqualTo("productId", productSelected);
 

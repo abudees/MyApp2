@@ -82,7 +82,7 @@ public class CategoriesActivity extends FragmentActivity {
 
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Categories");
 
-                query.whereEqualTo("status", true);
+                query.whereEqualTo("Status", true);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> objects, ParseException e) {

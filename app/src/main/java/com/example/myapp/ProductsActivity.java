@@ -78,6 +78,7 @@ public class ProductsActivity extends AppCompatActivity {
                 }
 
 
+                Log.i("categ is", String.valueOf(categoryNumber));
                 //local price
                 TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                 String countryCode = tm.getSimCountryIso();
@@ -94,7 +95,7 @@ public class ProductsActivity extends AppCompatActivity {
 
 
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Products");
                 query.whereEqualTo("catId", categoryNumber);
                 query.orderByAscending("productId");
                 query.whereEqualTo("status", true);
