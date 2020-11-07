@@ -9,17 +9,19 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
-/*
-public class ProductCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
+public class RecyclerViewWithFooterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  implements Filterable {
 
     private static final int FOOTER_VIEW = 1;
-    private ArrayList<String> data; // Take any list that matches your requirement.
+  //  private ArrayList<String> data; // Take any list that matches your requirement.
 
     // define all adapter items and then uncomment the onclick listiner 23/9/2020
     private Context context;
@@ -31,12 +33,13 @@ public class ProductCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Integer> mQty;
     private List<Integer> mPID;
     private SqliteDatabase mDatabase;
-    private LayoutInflater inflater;
+    CheckoutActivity car;
 
+   // private double total = 0;
     int maxQty =25;
 
 
-    ProductCartAdapter(Context context, List<Integer> pIDs, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price, List<Integer> qty ) {
+    RecyclerViewWithFooterAdapter(Context context, List<Integer> pIDs, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price, List<Integer> qty ) {
         this.context = context;
         this.mPID = pIDs;
         this.mListProducts = listProducts;
@@ -46,155 +49,163 @@ public class ProductCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.mPrice =price;
         this.mQty = qty;
 
-        inflater = LayoutInflater.from(context);
+      //  LayoutInflater inflater = LayoutInflater.from(context);
         mDatabase = new SqliteDatabase(context);
+        car = new CheckoutActivity();
+
+
     }
 
 
 
 
 
+    // Define a ViewHolder for Footer view
+    public static class FooterViewHolder extends ViewHolder {
+
+        public static TextView totalTextView ;
+
+        public  static int n =7;
+
+        FooterViewHolder(View itemView) {
+            super(itemView);
+
+            totalTextView = itemView.findViewById(R.id.footerText);
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Do whatever you want on clicking the item
+                }
+            });
+        }
+    }
+
+    // Now define the ViewHolder for Normal list item
+    public static class NormalViewHolder extends ViewHolder {
+
+        TextView productName, price, qty, total;
+        ImageView decreaseQty, addQty, productImage;
 
 
 
+        NormalViewHolder(View itemView) {
+            super(itemView);
 
 
 
+            productName = itemView.findViewById(R.id.productName);
+            price = itemView.findViewById(R.id.price);
+            decreaseQty = itemView.findViewById(R.id.decreaseQty);
+            addQty = itemView.findViewById(R.id.addQty);
+            productImage = itemView.findViewById(R.id.productImage);
+            total = itemView.findViewById(R.id.total);
+            qty = itemView.findViewById(R.id.qty);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Do whatever you want on clicking the normal items
+                }
+            });
+        }
+    }
 
     // And now in onCreateViewHolder you have to pass the correct view
     // while populating the list item.
 
-
-
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-
-        View view;
+        View v;
 
         if (viewType == FOOTER_VIEW) {
-            view = LayoutInflater.from(context).inflate(R.layout.list_item_footer, parent, false);
-            FooterViewHolder vh = new FooterViewHolder(view);
+            v = LayoutInflater.from(context).inflate(R.layout.list_item_footer, parent, false);
+            FooterViewHolder vh = new FooterViewHolder(v);
             return vh;
         }
 
-        view = LayoutInflater.from(context).inflate(R.layout.cart_list_item, parent, false);
+        v = LayoutInflater.from(context).inflate(R.layout.cart_list_item, parent, false);
 
-        NormalViewHolder vh = new NormalViewHolder(view);
+        NormalViewHolder vh = new NormalViewHolder(v);
 
         return vh;
-
-
-
-       // View view = inflater.inflate(R.layout.cart_list_item, parent, false);
-
-     //   ViewHolder holder = new ProductCartAdapter.ViewHolder(view);
-
-
-      //  return  holder;
     }
 
-
-
-
-
-
     // Now bind the ViewHolder in onBindViewHolder
-
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull  RecyclerView.ViewHolder holder,  int position) {
 
         try {
+
+
             if (holder instanceof NormalViewHolder) {
                 NormalViewHolder vh = (NormalViewHolder) holder;
 
                 vh.bindView(position);
 
+
                 String currentURL = mUrl.get(position);
                 String currenName = mProductTitle.get(position);
                 int currentPrice = mPrice.get(position);
                 //  final Products products = listProducts.get(position);
-                //  final int currentQty = mQty.get(position);
+                final int currentQty = mQty.get(position);
                 int currentID = mPID.get(position);
 
 
-
-                // update price
                 holder.getAdapterPosition();
 
-                Picasso.with(context).load(mUrl.get(position)).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.productImage);
+                Picasso.with(context).load(mUrl.get(position)).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(vh.productImage);
 
-                holder.productName.setText(currenName);
+                vh.productName.setText(currenName);
 
-                holder.price.setText( String.valueOf(currentPrice));
+                vh.price.setText(String.valueOf(currentPrice));
 
-                holder.qty.setText(String.valueOf(mQty.get(position)));
-
-                holder.total.setText(String.valueOf(currentPrice * mQty.get(position)));
+                vh.qty.setText(String.valueOf(currentQty));
 
 
+                vh.total.setText(String.valueOf(currentPrice * mQty.get(position)));
 
 
-
-
-
-                holder.addQty.setOnClickListener(new View.OnClickListener() {
+                vh.addQty.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        int newQty = mDatabase.getQty(currentID)+1;
+                        int newQty = mDatabase.getQty(currentID) + 1;
 
                         mDatabase.updateQty(currentID, newQty);
 
-                        holder.qty.setText(String.valueOf(newQty));
+                        vh.qty.setText(String.valueOf(newQty));
 
-                        holder.total.setText(String.valueOf(currentPrice * newQty));
+                        vh.total.setText(String.valueOf(currentPrice * newQty));
+
+                      //  Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
+
+                        Toast.makeText(context, String.valueOf(FooterViewHolder.n), Toast.LENGTH_LONG).show();
 
 
-                        Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
+                        FooterViewHolder.totalTextView.setText(String.valueOf(car.countTotal(mPrice,mQty)));
+
+
+
+                        notifyDataSetChanged();
                     }
                 });
 
-                holder.decreaseQty.setOnClickListener(new View.OnClickListener() {
+                vh.decreaseQty.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                         Toast.makeText(context, "Qty removed successfully", Toast.LENGTH_LONG).show();
 
-                        if (mDatabase.getQty(currentID) == 1){
+                        if (mDatabase.getQty(currentID) == 1) {
 
                             if (mDatabase.listProducts().size() == 1) {
 
                                 mDatabase.clearCart();
-                                notifyDataSetChanged();
+
 
 
                             } else {
@@ -205,17 +216,18 @@ public class ProductCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 notifyItemRangeChanged(holder.getAdapterPosition(), mListProducts.size());
 
                                 mListProducts.remove(mListProducts.get(position));
-                                notifyDataSetChanged();
 
+                                notifyItemChanged(mQty.get(position));
                             }
-                        } else if (mDatabase.getQty(currentID) > 1){
+                        } else if (mDatabase.getQty(currentID) > 1) {
 
-                            int newQty = mDatabase.getQty(currentID)-1;
+                            int newQty = mDatabase.getQty(currentID) - 1;
 
                             mDatabase.updateQty(currentID, newQty);
-                            holder.qty.setText(String.valueOf(newQty));
-                            holder.total.setText(String.valueOf(currentPrice * newQty));
+                            vh.qty.setText(String.valueOf(newQty));
+                            vh.total.setText(String.valueOf(currentPrice * newQty));
 
+                            notifyItemChanged(mQty.get(position));
                         }
                     }
                 });
@@ -223,18 +235,25 @@ public class ProductCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             } else if (holder instanceof FooterViewHolder) {
                 FooterViewHolder vh = (FooterViewHolder) holder;
+
+
+               // notifyItemChanged(mQty.get(position));
+
+
+             //   double total =0;
+               // for(int i = 0; i < mPrice.size(); i++){
+
+                 //   total += (mPrice.get(i)*mQty.get(i));
+               // }
+
+
+
+                vh.totalTextView.setText(String.valueOf(car.countTotal(mPrice,mQty)));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
-
-
     }
-
-
 
 
     @Override
@@ -271,27 +290,20 @@ public class ProductCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     // If you've multiple headers and footers, you've to return total count
     // like, headers.size() + data.size() + footers.size()
 
-
     @Override
     public int getItemCount() {
-
-
-        if (mListProducts.size() == 0) {
+        if (mListProducts == null) {
             return 0;
         }
 
-
+        if (mListProducts.size() == 0) {
+            //Return 1 here to show nothing
+            return 1;
+        }
 
         // Add extra view to show the footer view
         return mListProducts.size() + 1;
-
-       // return mListProducts.size();
     }
-
-
-
-
-
 
     // Now define getItemViewType of your own.
 
@@ -305,74 +317,18 @@ public class ProductCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return super.getItemViewType(position);
     }
 
-
-
     // So you're done with adding a footer and its action on onClick.
     // Now set the default ViewHolder for NormalViewHolder
 
-
-    // Define a ViewHolder for Footer view
-    public class FooterViewHolder extends RecyclerView.ViewHolder {
-        public FooterViewHolder(View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Do whatever you want on clicking the item
-                }
-            });
-        }
-    }
-
-
-
-
-
-
-    static class NormalViewHolder extends RecyclerView.ViewHolder {
-
-
+    static class ViewHolder extends RecyclerView.ViewHolder {
         // Define elements of a row here
-        TextView productName, price, qty, total;
-        ImageView decreaseQty, addQty, productImage;
-
-
-        // Now define the ViewHolder for Normal list item
-        private NormalViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
-
-            productName = itemView.findViewById(R.id.productName);
-            price = itemView.findViewById(R.id.price);
-            decreaseQty = itemView.findViewById(R.id.decreaseQty);
-            addQty = itemView.findViewById(R.id.addQty);
-            productImage = itemView.findViewById(R.id.productImage);
-
-            total = itemView.findViewById(R.id.total);
-            qty = itemView.findViewById(R.id.qty);
-
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Do whatever you want on clicking the normal items
-                }
-            });
+            // Find view by ID and initialize here
         }
 
-        public void bindView(int position) {
+        void bindView(int position) {
             // bindView() method to implement actions
         }
-
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            // Define elements of a row here
-            public ViewHolder(View itemView) {
-                super(itemView);
-                // Find view by ID and initialize here
-            }
-
-
-        }
     }
-
- */
+}

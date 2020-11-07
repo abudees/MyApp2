@@ -1,5 +1,7 @@
 package com.example.myapp;
 
+import java.util.List;
+
 public class Products {
 
 
@@ -42,6 +44,8 @@ public class Products {
     public void setQty(int qtyAvilable) {
         this.qty = qtyAvilable;
     }
+
+
 }
 
 

@@ -36,7 +36,7 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
 
 
 
-    public CategoriesAdapter(Context context, List<String> url, List<String> title, List<Integer> id){
+    CategoriesAdapter(Context context, List<String> url, List<String> title, List<Integer> id){
 
         inflater = LayoutInflater.from(context);
         this.url = url;

@@ -31,7 +31,8 @@ import java.util.Objects;
 public class ProductDetailsActivity extends AppCompatActivity {
 
 
-    ImageView linearLayout;
+
+    ImageView productDetailImage;
 
     int productSelected;
 
@@ -126,7 +127,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
             mDatabase.clearCart();
 
             Toast.makeText(this, "cleared", Toast.LENGTH_LONG).show();
+
             setupBadge();
+
+            currentQty.setText(String.valueOf(0));
 
         } catch (Exception error) {
 
@@ -169,7 +173,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 mDatabase = new SqliteDatabase(this);
 
                 setupBadge();
-                linearLayout = findViewById(R.id.productDetailImage);
+                productDetailImage = findViewById(R.id.productDetailImage);
                 productTitle = findViewById(R.id.productTitle);
                 productDescription = findViewById(R.id.productDescription);
                 productPrice = findViewById(R.id.productPrice);
@@ -180,7 +184,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 if (mDatabase.checkProduct(productSelected)) {
 
                     currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
-
                 }
 
 
@@ -216,7 +219,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                                     productTitle.setText(object.getString("title"));
 
-                                    Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL")).fitCenter().into(linearLayout);
+                                    Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL")).fitCenter().into(productDetailImage);
 
 
                                     productPrice.setText(String.valueOf(object.getInt("price")));

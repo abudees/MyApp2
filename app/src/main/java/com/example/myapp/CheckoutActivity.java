@@ -46,7 +46,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     LinearLayoutManager linearLayoutManager;
 
-    ProductCartAdapter mAdapter;
+    RecyclerViewWithFooterAdapter mAdapter;
 
     //Button btnAdd;
 
@@ -77,6 +77,16 @@ public class CheckoutActivity extends AppCompatActivity {
 
     TextView totalText;
 
+
+    public double countTotal (List<Integer> pID, List<Integer> qty){
+
+        double total =0;
+        for(int i = 0; i < pID.size(); i++){
+
+            total += (pID.get(i) * qty.get(i));
+        }
+        return total;
+    }
 
 
 
@@ -168,7 +178,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
                             cartView.setVisibility(View.VISIBLE);
-                            mAdapter = new ProductCartAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty);
+                            mAdapter = new RecyclerViewWithFooterAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty);
                             cartView.setAdapter(mAdapter);
 
                             // int all = mDatabase.sumPriceCartItems(price);
@@ -181,6 +191,8 @@ public class CheckoutActivity extends AppCompatActivity {
                             }
 
                             totals.add(sum);
+
+
 
                             Log.d("totals: ",  String.valueOf(totals.get(totals.size()-1)));
 
