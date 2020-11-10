@@ -1,5 +1,6 @@
 package com.example.myapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ public class RecyclerViewWithFooterAdapter extends RecyclerView.Adapter<Recycler
   //  private ArrayList<String> data; // Take any list that matches your requirement.
 
     // define all adapter items and then uncomment the onclick listiner 23/9/2020
-    private Context context;
+    private static Context context;
     private ArrayList<Products> mListProducts;
     private ArrayList<Products> mArrayList;
     private List<String> mUrl ;
@@ -63,9 +64,9 @@ public class RecyclerViewWithFooterAdapter extends RecyclerView.Adapter<Recycler
     // Define a ViewHolder for Footer view
     public static class FooterViewHolder extends ViewHolder {
 
-        public static TextView totalTextView ;
+        static TextView totalTextView ;
 
-        public  static int n =7;
+      //  public  static int n =7;
 
         FooterViewHolder(View itemView) {
             super(itemView);
@@ -88,10 +89,14 @@ public class RecyclerViewWithFooterAdapter extends RecyclerView.Adapter<Recycler
         TextView productName, price, qty, total;
         ImageView decreaseQty, addQty, productImage;
 
+       // TextView txtView ;
+
 
 
         NormalViewHolder(View itemView) {
             super(itemView);
+
+           // txtView = ((Activity)context).findViewById(R.id.footerText);
 
 
 
@@ -169,6 +174,12 @@ public class RecyclerViewWithFooterAdapter extends RecyclerView.Adapter<Recycler
                 vh.total.setText(String.valueOf(currentPrice * mQty.get(position)));
 
 
+             //   TextView txtView = ((Activity)context).findViewById(R.id.footerText);
+             //   vh.txtView.setText("Hello");
+
+              //  FooterViewHolder.totalTextView.setText(String.valueOf(car.countTotal(mPrice,mQty)));
+
+
                 vh.addQty.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -181,12 +192,11 @@ public class RecyclerViewWithFooterAdapter extends RecyclerView.Adapter<Recycler
 
                         vh.total.setText(String.valueOf(currentPrice * newQty));
 
-                      //  Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Qty added successfully", Toast.LENGTH_LONG).show();
 
-                        Toast.makeText(context, String.valueOf(FooterViewHolder.n), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(context, String.valueOf(FooterViewHolder.n), Toast.LENGTH_LONG).show();
 
 
-                        FooterViewHolder.totalTextView.setText(String.valueOf(car.countTotal(mPrice,mQty)));
 
 
 

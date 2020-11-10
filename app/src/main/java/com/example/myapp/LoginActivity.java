@@ -95,12 +95,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    public void userType() {
-
-        Log.i("here ", ParseUser.getCurrentUser().getString("userType"));
 
 
-    }
 
 
 
@@ -122,13 +118,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 user.setUsername(usernameEditText.getText().toString());
                 user.setPassword(passwordEditText.getText().toString());
 
-                user.logInInBackground(usernameEditText.getText().toString(), passwordEditText.getText().toString(), new LogInCallback() {
+                ParseUser.logInInBackground(usernameEditText.getText().toString(), passwordEditText.getText().toString(), new LogInCallback() {
                     public void done(ParseUser user, ParseException error) {
                         if (error == null) {
 
-                            userType();
+
 
                             Toast.makeText(LoginActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+
+                            intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+
                         } else {
                             Toast.makeText(LoginActivity.this, "login error " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -151,6 +151,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 user.setPassword(passwordEditText.getText().toString());
                                 user.put("firstName", firstNameEditText.getText().toString());
                                 user.put("lastName", lastNameEditText.getText().toString());
+                                user.put("userType","c");
 
                                 user.signUpInBackground(new SignUpCallback() {
                                     @Override
@@ -211,66 +212,38 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if (checkConnection.isNetwork()) {
 
-                switch (ParseUser.getCurrentUser().getString("userType")) {
+                if (ParseUser.getCurrentUser() != null) {
 
-                    case "Vendor":
+                    intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
 
-                        intent = new Intent(getApplicationContext(), VendorActivity.class);
-                        startActivity(intent);
-
-                        break;
-
-                    case "Driver":
-
-                        intent = new Intent(getApplicationContext(), DriverActivity.class);
-                        startActivity(intent);
-                        break;
-
-                    case "Manager":
-                        intent = new Intent(getApplicationContext(), ManagerActivity.class);
-                        startActivity(intent);
-                        break;
-
-                    case "":
-
-                        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
-                        startActivity(intent);
-                        break;
+                } else {
+                    changeSignUpTextView = findViewById(R.id.changeSignUp);
 
 
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
+                    ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundReleativeLayout);
 
+                    // ImageView logoImageView = findViewById(R.id.imageView);
+
+                    // logoImageView.setOnClickListener(this);
+
+                    backgroundReleativeLayout.setOnClickListener(this);
+
+                    passwordEditText = findViewById(R.id.passwordEditText);
+
+                    usernameEditText = findViewById(R.id.usernameEditText);
+
+                    firstNameEditText = findViewById(R.id.firstNameEditText);
+
+                    lastNameEditText = findViewById(R.id.lastNameEditText);
+
+                    rePassword = findViewById(R.id.rePassword);
+
+                    passwordEditText.setOnKeyListener(this);
+
+                    signUpButton = findViewById(R.id.button2);
 
                 }
-
-
-                changeSignUpTextView = findViewById(R.id.changeSignUp);
-
-
-                ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundReleativeLayout);
-
-                // ImageView logoImageView = findViewById(R.id.imageView);
-
-                // logoImageView.setOnClickListener(this);
-
-                backgroundReleativeLayout.setOnClickListener(this);
-
-                passwordEditText = findViewById(R.id.passwordEditText);
-
-                usernameEditText = findViewById(R.id.usernameEditText);
-
-                firstNameEditText = findViewById(R.id.firstNameEditText);
-
-                lastNameEditText = findViewById(R.id.lastNameEditText);
-
-                rePassword = findViewById(R.id.rePassword);
-
-                passwordEditText.setOnKeyListener(this);
-
-                signUpButton = findViewById(R.id.button2);
-
-
             }
         }
 

@@ -2,15 +2,8 @@ package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,18 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseACL;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +36,7 @@ public class MainActivity extends AppCompatActivity  {
 
     Intent intent;
 
-    TextView languageTextView, redirectToLogin , logout, noConnection ;
+    TextView languageTextView, login , logout, noConnection ;
 
     Button redirectButton, retry ;
 
@@ -56,9 +44,11 @@ public class MainActivity extends AppCompatActivity  {
 
     ArrayList<String> areaList;
 
-    ArrayAdapter adapter;
+    ArrayAdapter<String> adapter;
 
-    String user;
+  //  String user;
+
+    //Button button;
 
 
 
@@ -70,7 +60,39 @@ public class MainActivity extends AppCompatActivity  {
 
         logout.setVisibility(View.INVISIBLE);
 
-        redirectToLogin.setVisibility(View.VISIBLE);
+        login.setVisibility(View.VISIBLE);
+    }
+
+
+    public void customer(){
+
+        areaList = new ArrayList<>();
+
+        ParseQuery<ParseObject> query = new ParseQuery<>("Area");
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                if (e == null) {
+
+                    for (ParseObject object : objects) {
+
+                        areaList.add(object.getString("AreaName"));
+
+                        // a = object.getString("areaName");
+                    }
+
+                    adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
+
+                    // Apply the adapter to the spinner
+                    spinner.setAdapter(adapter);
+
+                    spinner.setOnItemSelectedListener(new mySpinnerListener());
+                }
+            }
+        });
     }
 
 
@@ -80,22 +102,76 @@ public class MainActivity extends AppCompatActivity  {
 
     public void redirect (View view) {
 
+        if (ParseUser.getCurrentUser() != null) {
 
-        if (area.matches("Please select your Area")) {
+            login.setVisibility(View.INVISIBLE);
 
-            Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
+            switch (ParseUser.getCurrentUser().getString("userType")) {
 
+                case "Vendor":
+
+                    intent = new Intent(getApplicationContext(), VendorActivity.class);
+                    startActivity(intent);
+
+                    break;
+
+                case "Driver":
+
+                    intent = new Intent(getApplicationContext(), DriverActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case "Manager":
+                    intent = new Intent(getApplicationContext(), ManagerActivity.class);
+                    startActivity(intent);
+                    break;
+
+                case "c":
+                case "":
+
+                    customer();
+
+                    if (area.matches("Please select your Area")) {
+
+                        Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
+
+                    } else {
+
+                        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+
+                        intent.putExtra("area", area);
+
+                        startActivity(intent);
+
+                    }
+
+                    break;
+
+                default:
+                    throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
+            }
         } else {
 
 
-            intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+            if (area.matches("Please select your Area")) {
 
-            intent.putExtra("area", area);
+                Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
 
-            startActivity(intent);
+            } else {
 
+                intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+
+                intent.putExtra("area", area);
+
+                startActivity(intent);
+
+            }
         }
     }
+
+
+
+
 
 
     public void login (View view){
@@ -104,6 +180,8 @@ public class MainActivity extends AppCompatActivity  {
 
         startActivity(intent);
     }
+
+
 
 
 
@@ -154,6 +232,15 @@ public class MainActivity extends AppCompatActivity  {
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
+        languageTextView = findViewById(R.id.languageTextView);
+        spinner = findViewById(R.id.areaSelect);
+
+        redirectButton = findViewById(R.id.redirect);
+
+        login = findViewById(R.id.redirectToLogin);
+
+        logout = findViewById(R.id.logout1);
+
 
 
         try {
@@ -163,83 +250,36 @@ public class MainActivity extends AppCompatActivity  {
 
                 if (ParseUser.getCurrentUser() != null) {
 
+                    login.setVisibility(View.INVISIBLE);
+
                     switch (ParseUser.getCurrentUser().getString("userType")) {
 
                         case "Vendor":
-
-                            intent = new Intent(getApplicationContext(), VendorActivity.class);
-                            startActivity(intent);
 
                             break;
 
                         case "Driver":
 
-                            intent = new Intent(getApplicationContext(), DriverActivity.class);
-                            startActivity(intent);
                             break;
 
                         case "Manager":
-                            intent = new Intent(getApplicationContext(), ManagerActivity.class);
-                            startActivity(intent);
+
                             break;
 
+                        case "c":
                         case "":
 
-
+                            customer();
                             break;
-
 
                         default:
                             throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
                     }
                 } else {
 
-                    //internet is connected do something
+                  logout.setVisibility(View.INVISIBLE);
 
-
-                    // spinner
-                    spinner = findViewById(R.id.areaSelect);
-
-                    areaList = new ArrayList<>();
-
-                    languageTextView = findViewById(R.id.languageTextView);
-
-                    redirectButton = findViewById(R.id.redirect);
-
-                    redirectToLogin = findViewById(R.id.redirectToLogin);
-
-                    logout = findViewById(R.id.logout1);
-
-
-                    ParseQuery<ParseObject> query = new ParseQuery<>("Area");
-
-                    query.findInBackground(new FindCallback<ParseObject>() {
-
-                        @Override
-                        public void done(List<ParseObject> objects, ParseException e) {
-
-                            if (e == null) {
-
-                                for (ParseObject object : objects) {
-
-                                    areaList.add(object.getString("AreaName"));
-
-                                    // a = object.getString("areaName");
-                                }
-
-
-                                adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
-
-                                // Apply the adapter to the spinner
-                                spinner.setAdapter(adapter);
-
-                                spinner.setOnItemSelectedListener(new mySpinnerListener());
-
-
-                            }
-
-                        }
-                    });
+                  customer();
 
                 }
             } else {
