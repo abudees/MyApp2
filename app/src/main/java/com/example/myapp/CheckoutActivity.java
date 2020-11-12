@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.zxing.common.detector.MathUtils;
 import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
@@ -27,7 +29,9 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -77,6 +81,11 @@ public class CheckoutActivity extends AppCompatActivity {
 
     TextView totalText;
 
+    Location a ;
+
+    ArrayList<Integer> vendorsLocations ;
+    ArrayList<Integer> distance ;
+
 
     public double countTotal (List<Integer> pID, List<Integer> qty){
 
@@ -105,6 +114,31 @@ public class CheckoutActivity extends AppCompatActivity {
     int sum;
 
 
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,10 +148,13 @@ public class CheckoutActivity extends AppCompatActivity {
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
 
+
         mDatabase = new SqliteDatabase(this);
         allProducts = mDatabase.listAll();
         pIDs = mDatabase.listProducts();
         qty = mDatabase.listQty();
+
+
 
 
 
@@ -141,74 +178,108 @@ public class CheckoutActivity extends AppCompatActivity {
                 productTitle = new ArrayList<>();
 
 
+                vendorsLocations = new ArrayList<>();
+
+                distance = new ArrayList<>();
+
+                int vendorLoc1 = 1;
+                int vendorLoc2 = 2;
+                int vendorLoc3 = 11;
+                int vendorLoc4 = 7;
+                int vendorLoc5 = 5;
+                int vendorLoc6 = 9;
+                int vendorLoc7 = 8;
+                int vendorLoc8 = 6;
+
+                vendorsLocations.add(vendorLoc1);
+                vendorsLocations.add(vendorLoc2);
+                vendorsLocations.add(vendorLoc3);
+                vendorsLocations.add(vendorLoc4);
+                vendorsLocations.add(vendorLoc5);
+                vendorsLocations.add(vendorLoc6);
+                vendorsLocations.add(vendorLoc7);
+                vendorsLocations.add(vendorLoc8);
+
+                for (int i = 0; i < vendorsLocations.size(); i++) {
+
+                    int r = 17;
+
+                    distance.add(r-vendorsLocations.get(i));
+
+                }
+
+                Collections.sort(distance);
+
+
+
+                // calculateDistance(15.556500, 32.582611, 15.577144, 32.548822))
+
+
 
 
 
                 Log.d("products in cart are: ", String.valueOf(pIDs));
 
+                Log.d("distance: ", String.valueOf(distance));
 
                 for (int i = 0; i < pIDs.size(); i++) {
 
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Products");
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Products");
 
-                query.orderByAscending("productId");
-
-
-                query.whereEqualTo("productId", pIDs.get(i));
-
-                query.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-
-                        if (e == null && objects.size() > 0) {
-
-                            for (ParseObject object : objects) {
-
-                                url.add(object.getString("imageURL"));
-
-                                productTitle.add(object.getString("title"));
-
-                                price.add(object.getInt("price"));
+                    query.orderByAscending("productId");
 
 
-                            }
-                        }
+                    query.whereEqualTo("productId", pIDs.get(i));
 
-                        if (allProducts.size() > 0) {
+                    query.findInBackground(new FindCallback<ParseObject>() {
+                        @Override
+                        public void done(List<ParseObject> objects, ParseException e) {
+
+                            if (e == null && objects.size() > 0) {
+
+                                for (ParseObject object : objects) {
+
+                                    url.add(object.getString("imageURL"));
+
+                                    productTitle.add(object.getString("title"));
+
+                                    price.add(object.getInt("price"));
 
 
-                            cartView.setVisibility(View.VISIBLE);
-                            mAdapter = new RecyclerViewWithFooterAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty);
-                            cartView.setAdapter(mAdapter);
-
-                            // int all = mDatabase.sumPriceCartItems(price);
-
-
-
-                            for (int g = 0; g < price.size(); g++) {
-
-                                sum += price.get(g) * mDatabase.getQty(pIDs.get(g));
+                                }
                             }
 
-                            totals.add(sum);
+                            if (allProducts.size() > 0) {
 
 
+                                cartView.setVisibility(View.VISIBLE);
+                                mAdapter = new RecyclerViewWithFooterAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty);
+                                cartView.setAdapter(mAdapter);
 
-                            Log.d("totals: ",  String.valueOf(totals.get(totals.size()-1)));
-
-
-                        } else {
-
-                            cartView.setVisibility(View.GONE);
+                                // int all = mDatabase.sumPriceCartItems(price);
 
 
-                            Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now", Toast.LENGTH_LONG).show();
+                                for (int g = 0; g < price.size(); g++) {
+
+                                    sum += price.get(g) * mDatabase.getQty(pIDs.get(g));
+                                }
+
+                                totals.add(sum);
+
+
+                                Log.d("totals: ", String.valueOf(totals.get(totals.size() - 1)));
+
+
+                            } else {
+
+                                cartView.setVisibility(View.GONE);
+
+
+                                Toast.makeText(CheckoutActivity.this, "There is no contact in the database. Start adding now", Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
-                });
-            }
-
-
+                    });
+                }
 
 
             }
