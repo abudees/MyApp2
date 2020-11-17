@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,14 +28,18 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.lang.Math.min;
@@ -43,6 +48,9 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+    Location someLocation;
+
+    List<Location> locations;
 
     private SqliteDatabase mDatabase;
 
@@ -138,6 +146,11 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+     String z;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +195,11 @@ public class CheckoutActivity extends AppCompatActivity {
 
                 distance = new ArrayList<>();
 
+             //   z = "";
+
+                /*
+
+
                 int vendorLoc1 = 1;
                 int vendorLoc2 = 2;
                 int vendorLoc3 = 11;
@@ -207,20 +225,34 @@ public class CheckoutActivity extends AppCompatActivity {
                     distance.add(r-vendorsLocations.get(i));
 
                 }
+             //   Collections.sort(distance);
 
-                Collections.sort(distance);
-
-
-
-                // calculateDistance(15.556500, 32.582611, 15.577144, 32.548822))
+               //  calculateDistance(15.556500, 32.582611, 15.577144, 32.548822));
 
 
 
+
+
+
+
+
+
+
+                final Location deliveryLocation = someLocation;
+
+                Collections.sort(locations, new Comparator<Location>() {
+                    @Override
+                    public int compare(Location o1, Location o2) {
+                        Float dist1 = o1.distanceTo(deliveryLocation);
+                        Float dist2 = o2.distanceTo(deliveryLocation);
+                        return dist1.compareTo(dist2);
+                    }
+                });*/
 
 
                 Log.d("products in cart are: ", String.valueOf(pIDs));
 
-                Log.d("distance: ", String.valueOf(distance));
+                Log.d("distance: ", String.valueOf(locations));
 
                 for (int i = 0; i < pIDs.size(); i++) {
 
@@ -244,6 +276,8 @@ public class CheckoutActivity extends AppCompatActivity {
                                     productTitle.add(object.getString("title"));
 
                                     price.add(object.getInt("price"));
+
+
 
 
                                 }

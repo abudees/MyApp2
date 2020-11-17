@@ -2,8 +2,10 @@ package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+
     public void logout (View view){
 
         ParseUser.logOut();
@@ -81,8 +84,22 @@ public class MainActivity extends AppCompatActivity  {
 
                         areaList.add(object.getString("AreaName"));
 
-                        // a = object.getString("areaName");
+
+
+
+                        int z = Integer.parseInt(object.getObjectId());
+
+                        Log.d("zzzzzzz: ", String.valueOf(z));
+
+
+
+
+
+
+
                     }
+
+
 
                     adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
 
@@ -181,6 +198,17 @@ public class MainActivity extends AppCompatActivity  {
         startActivity(intent);
     }
 
+/*
+    public String createOrderId(int mNumber) {
+
+
+
+        String a = String.valueOf(mNumber);
+
+
+        return a;
+    }*/
+
 
 
 
@@ -210,12 +238,20 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
     }
-    */
+    
 
 
 
 
 
+    public void incrementNumber(){
+        int count = 1;
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        int defaultValue = getPreferences(MODE_PRIVATE).getInt("count_key",count);
+        ++defaultValue;
+        getPreferences(MODE_PRIVATE).edit().putInt("count_key",defaultValue).apply();
+    }
+*/
 
 
 
@@ -249,6 +285,12 @@ public class MainActivity extends AppCompatActivity  {
             if (checkConnection.isNetwork()) {
 
                 if (ParseUser.getCurrentUser() != null) {
+
+
+
+
+
+                  //  Log.d("numver: ", createOrderId(ParseUser.getCurrentUser().getInt("mobileNumber")));
 
                     login.setVisibility(View.INVISIBLE);
 
