@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     TextView changeSignUpTextView;
 
-    EditText passwordEditText, usernameEditText, firstNameEditText, lastNameEditText, rePassword;
+    EditText passwordEditText, usernameEditText, firstNameEditText, lastNameEditText, rePassword, mobileNumber;
 
     Button signUpButton;
 
@@ -48,8 +48,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             rePassword.setVisibility(View.INVISIBLE);
             firstNameEditText.setVisibility(View.INVISIBLE);
             lastNameEditText.setVisibility(View.INVISIBLE);
+            mobileNumber.setVisibility(View.INVISIBLE);
             usernameEditText.getText();
             passwordEditText.getText();
+
 
         } else {
 
@@ -59,6 +61,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             rePassword.setVisibility(View.VISIBLE);
             firstNameEditText.setVisibility(View.VISIBLE);
             lastNameEditText.setVisibility(View.VISIBLE);
+            mobileNumber.setVisibility(View.VISIBLE);
 
         }
     }
@@ -137,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             } else {
                 if (firstNameEditText.getText().toString().matches("") || lastNameEditText.getText().toString().matches("")
                         || usernameEditText.getText().toString().matches("") || passwordEditText.getText().toString().matches("")
-                        || rePassword.getText().toString().matches("")) {
+                        || rePassword.getText().toString().matches("") || mobileNumber.getText().toString().matches("")) {
                 } else {
                     String email = usernameEditText.getText().toString();
 
@@ -152,6 +155,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 user.put("firstName", firstNameEditText.getText().toString());
                                 user.put("lastName", lastNameEditText.getText().toString());
                                 user.put("userType","c");
+                                user.put("mobileNumber", mobileNumber.getText());
 
                                 user.signUpInBackground(new SignUpCallback() {
                                     @Override
@@ -163,6 +167,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             signUpButton.setText("Login");
                                             changeSignUpTextView.setText("Or, SignUp");
                                             rePassword.setVisibility(View.INVISIBLE);
+                                            mobileNumber.setVisibility(View.INVISIBLE);
                                             firstNameEditText.setVisibility(View.INVISIBLE);
                                             lastNameEditText.setVisibility(View.INVISIBLE);
                                             usernameEditText.getText();
@@ -242,6 +247,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     passwordEditText.setOnKeyListener(this);
 
                     signUpButton = findViewById(R.id.button2);
+
+                    mobileNumber =findViewById(R.id.mobileNumber);
+
 
                 }
             }

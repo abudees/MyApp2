@@ -87,14 +87,9 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-                        int z = Integer.parseInt(object.getObjectId());
+                     //   int z = Integer.parseInt(object.getObjectId());
 
-                        Log.d("zzzzzzz: ", String.valueOf(z));
-
-
-
-
-
+                    //    Log.d("zzzzzzz: ", String.valueOf(z));
 
 
                     }
@@ -198,16 +193,7 @@ public class MainActivity extends AppCompatActivity  {
         startActivity(intent);
     }
 
-/*
-    public String createOrderId(int mNumber) {
 
-
-
-        String a = String.valueOf(mNumber);
-
-
-        return a;
-    }*/
 
 
 
@@ -289,8 +275,10 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+                    int f = (int) ParseUser.getCurrentUser().getNumber("mobileNumber");
+                    int v = f + 11112222;
 
-                  //  Log.d("numver: ", createOrderId(ParseUser.getCurrentUser().getInt("mobileNumber")));
+                    Log.d("numver: ", String.valueOf(v) );
 
                     login.setVisibility(View.INVISIBLE);
 
