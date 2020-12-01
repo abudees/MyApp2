@@ -2,7 +2,6 @@ package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
@@ -84,17 +83,10 @@ public class MainActivity extends AppCompatActivity  {
 
                         areaList.add(object.getString("AreaName"));
 
-
-
-
                      //   int z = Integer.parseInt(object.getObjectId());
 
                     //    Log.d("zzzzzzz: ", String.valueOf(z));
-
-
                     }
-
-
 
                     adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
 
@@ -113,7 +105,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
     public void redirect (View view) {
-
+/*
         if (ParseUser.getCurrentUser() != null) {
 
             login.setVisibility(View.INVISIBLE);
@@ -179,7 +171,13 @@ public class MainActivity extends AppCompatActivity  {
 
             }
         }
-    }
+  */
+
+        intent = new Intent(getApplicationContext(), DriverLocationActivity.class);
+
+
+
+        startActivity(intent);}
 
 
 
@@ -224,20 +222,41 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
     }
-    
 
 
 
 
-
-    public void incrementNumber(){
-        int count = 1;
-        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        int defaultValue = getPreferences(MODE_PRIVATE).getInt("count_key",count);
-        ++defaultValue;
-        getPreferences(MODE_PRIVATE).edit().putInt("count_key",defaultValue).apply();
-    }
 */
+
+    public String[] getParseSingleValue(String classNeeded, String conditionColumn, String conditionValue, String resultColumn ){
+
+        final String[] valueResult = new String[1];
+        ParseQuery<ParseObject> query = new ParseQuery<>(classNeeded);
+
+        query.whereEqualTo(conditionColumn, conditionValue);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                if (e == null) {
+
+                    for (ParseObject object : objects) {
+
+                        valueResult[0] = object.getString(resultColumn);
+
+                    }
+
+                }
+            }
+        });
+
+
+
+        return valueResult;
+    }
+
 
 
 
@@ -273,12 +292,21 @@ public class MainActivity extends AppCompatActivity  {
                 if (ParseUser.getCurrentUser() != null) {
 
 
-
-
+                    //put 11112222 + user mobile (as mask)+ serial = order number
                     int f = (int) ParseUser.getCurrentUser().getNumber("mobileNumber");
                     int v = f + 11112222;
 
-                    Log.d("numver: ", String.valueOf(v) );
+                    // check previus orders and add 1 to last 1
+
+                    int lastOrderNo = v + 3 ;
+
+                    int newOrderNo = lastOrderNo + 1;
+
+                    Log.d("numver: ", String.valueOf(newOrderNo) );
+
+
+
+
 
                     login.setVisibility(View.INVISIBLE);
 

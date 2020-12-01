@@ -31,8 +31,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class DriverLocationActivity extends AppCompatActivity/* implements OnMapReadyCallback*/ {
 
+    /*
     private GoogleMap mMap;
     Intent intent;
 
@@ -73,7 +74,7 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
             }
         });
     }
-
+*/
 
 
 
@@ -81,7 +82,7 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_location);
-
+/*
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
@@ -130,7 +131,7 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
 
-        }
+        }*/
     }
 
 
@@ -142,13 +143,13 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
 
 
-    }
+    }*/
 }
 

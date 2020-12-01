@@ -9,6 +9,7 @@
     <string name="cheese">cheese</string>
     <string name="First_Name">First Name</string>
     <string name="Email_Address">Email Address</string>
+    <string name="title_activity_delivery_location">Map</string>
 
 
 </resources>
