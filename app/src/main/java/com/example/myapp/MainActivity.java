@@ -1,14 +1,18 @@
 package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +27,7 @@ import com.parse.ParseUser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity  {
@@ -50,6 +55,8 @@ public class MainActivity extends AppCompatActivity  {
   //  String user;
 
     //Button button;
+
+
 
 
 
@@ -173,11 +180,11 @@ public class MainActivity extends AppCompatActivity  {
         }
   */
 
-        intent = new Intent(getApplicationContext(), MapsActivity.class);
+       intent = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivity(intent);
 
 
-
-        startActivity(intent);}
+    }
 
 
 
@@ -262,6 +269,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+    ConstraintLayout popupLayout1;
 
 
     @Override
@@ -269,6 +277,12 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+
+        popupLayout1 = findViewById(R.id.popupLayout);
+
+        popupLayout1.setVisibility(View.INVISIBLE);
         getSupportActionBar().hide(); //hide the title bar
 
         ParseAnalytics.trackAppOpenedInBackground(getIntent());
@@ -310,7 +324,7 @@ public class MainActivity extends AppCompatActivity  {
 
                     login.setVisibility(View.INVISIBLE);
 
-                    switch (ParseUser.getCurrentUser().getString("userType")) {
+                    switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
 
                         case "Vendor":
 

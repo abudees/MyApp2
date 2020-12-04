@@ -9,6 +9,70 @@
     tools:context=".MainActivity"
     android:id="@+id/backgroundReleativeLayout">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/popupLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#3F51B5"
+        app:layout_constraintBottom_toTopOf="@+id/guideline27"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="@+id/guideline18"
+        app:layout_constraintTop_toTopOf="@+id/guideline16">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline56"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.42" />
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline56"
+            app:layout_constraintTop_toTopOf="@+id/guideline55" />
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline56"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline55" />
+
+        <EditText
+            android:id="@+id/editText4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name"
+            app:layout_constraintBottom_toTopOf="@+id/guideline55"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline57" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline55"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".9" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline57"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <Spinner
         android:id="@+id/areaSelect"
         android:layout_width="0dp"
