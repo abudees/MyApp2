@@ -180,8 +180,11 @@ public class MainActivity extends AppCompatActivity  {
         }
   */
 
-       intent = new Intent(getApplicationContext(), MapsActivity.class);
-        startActivity(intent);
+       intent = new Intent(getApplicationContext(), DeliveryDetailsActivity.class);
+
+       intent.putExtra("area", area);
+
+       startActivity(intent);
 
 
     }

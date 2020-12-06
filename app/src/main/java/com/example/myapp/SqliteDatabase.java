@@ -21,6 +21,13 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_QTY = "qtySelected";
 
 
+    private static final String COLUMN_NAME = "recipientName";
+    private static final String COLUMN_RMOBILE = "recipientMobile";
+    private static final String COLUMN_LOCATION = "deliveryLocation";
+    private static final String COLUMN_MSG = "message";
+    private static final String COLUMN_VOUCHER = "discountVoucher";
+
+
 
 
     SqliteDatabase(Context context) {
@@ -32,10 +39,19 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART
                 + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_PID + " INTEGER NOT NULL UNIQUE,"
-                + COLUMN_QTY + " INTEGER NOT NULL"
+                + COLUMN_QTY + " INTEGER NOT NULL,"
+
+                + COLUMN_NAME + " NCHAR NOT NULL,"
+                + COLUMN_RMOBILE + " INTEGER NOT NULL UNIQUE,"
+                + COLUMN_LOCATION + " NCHAR NOT NULL UNIQUE,"
+                + COLUMN_MSG + " NCHAR NOT NULL UNIQUE,"
+                + COLUMN_VOUCHER + " NCHAR NOT NULL UNIQUE"
+
                 + ")";
         db.execSQL(CREATE_CART_TABLE);
     }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
