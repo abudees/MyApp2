@@ -15,13 +15,15 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "CartDB";
+
     private static final String TABLE_CART = "Cart";
+
     private static final String COLUMN_ID = "cartId";
     private static final String COLUMN_PID = "productId";
     private static final String COLUMN_QTY = "qtySelected";
 
 
-    private static final String COLUMN_NAME = "recipientName";
+    private static final String COLUMN_RNAME = "recipientName";
     private static final String COLUMN_RMOBILE = "recipientMobile";
     private static final String COLUMN_LOCATION = "deliveryLocation";
     private static final String COLUMN_MSG = "message";
@@ -41,7 +43,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
                 + COLUMN_PID + " INTEGER NOT NULL UNIQUE,"
                 + COLUMN_QTY + " INTEGER NOT NULL,"
 
-                + COLUMN_NAME + " NCHAR NOT NULL,"
+                + COLUMN_RNAME + " NCHAR NOT NULL,"
                 + COLUMN_RMOBILE + " INTEGER NOT NULL UNIQUE,"
                 + COLUMN_LOCATION + " NCHAR NOT NULL UNIQUE,"
                 + COLUMN_MSG + " NCHAR NOT NULL UNIQUE,"
