@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+
+
     public void logout (View view){
 
         ParseUser.logOut();
@@ -180,7 +182,7 @@ public class MainActivity extends AppCompatActivity  {
         }
   */
 
-       intent = new Intent(getApplicationContext(), MapsActivity.class);
+       intent = new Intent(getApplicationContext(), Main2Activity.class);
 
        intent.putExtra("area", area);
 
