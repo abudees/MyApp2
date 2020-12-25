@@ -145,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     List<String>  allPoints= new ArrayList<>();
+    Context context;
 
 
 
@@ -332,6 +333,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.addMarker(new MarkerOptions().position(latLng));
 
                 Log.d("are:", latLng.latitude+"---"+ latLng.longitude);
+
+
+                try {
+
+                    Geocoder geoCoder = new Geocoder(MapsActivity.this);
+                    List<Address> matches = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
+
+
+                    Log.d("are:", String.valueOf(bestMatch));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
