@@ -15,22 +15,10 @@ public class SqliteDatabase extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "CartDB";
-
     private static final String TABLE_CART = "Cart";
-    private static final String TABLE_PREORDER = "PreOrder";
-
     private static final String COLUMN_ID = "cartId";
     private static final String COLUMN_PID = "productId";
     private static final String COLUMN_QTY = "qtySelected";
-
-
-
-    private static final String COLUMN_RNAME = "recipientName";
-    private static final String COLUMN_RMOBILE = "recipientMobile";
-    private static final String COLUMN_LOCATION = "deliveryLocation";
-    private static final String COLUMN_MSG = "message";
-    private static final String COLUMN_VOUCHER = "discountVoucher";
-
 
 
 
@@ -47,15 +35,6 @@ public class SqliteDatabase extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_CART_TABLE);
 
-        String CREATE_PREORDER_TABLE = "CREATE TABLE " + TABLE_PREORDER
-                + "(" + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_RNAME + " NCHAR NOT NULL,"
-                + COLUMN_RMOBILE + " INTEGER NOT NULL UNIQUE,"
-                + COLUMN_LOCATION + " NCHAR NOT NULL UNIQUE,"
-                + COLUMN_MSG + " NCHAR NOT NULL UNIQUE,"
-                + COLUMN_VOUCHER + " NCHAR NOT NULL UNIQUE"
-                + ")";
-        db.execSQL(CREATE_PREORDER_TABLE);
     }
 
 

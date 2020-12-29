@@ -95,6 +95,16 @@ public class CheckoutActivity extends AppCompatActivity {
     ArrayList<Integer> distance ;
 
 
+    private static final String COLUMN_RNAME = "recipientName";
+    private static final String COLUMN_RMOBILE = "recipientMobile";
+    private static final String COLUMN_LOCATION = "deliveryLocation";
+    private static final String COLUMN_MSG = "message";
+    private static final String COLUMN_VOUCHER = "discountVoucher";
+
+
+
+
+
     public double countTotal (List<Integer> pID, List<Integer> qty){
 
         double total =0;

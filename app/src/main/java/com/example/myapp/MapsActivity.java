@@ -15,6 +15,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -133,17 +134,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
-    LocationManager locationManager;
+  //  LocationManager locationManager;
+   // LocationListener locationListener;
 
-    LocationListener locationListener;
+   // boolean isTapOnMap;
+
 
     private TextView mTapTextView;
-
-
-
-    boolean isTapOnMap;
-
-
     List<String>  allPoints= new ArrayList<>();
     Context context;
 
@@ -158,14 +155,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mTapTextView = (TextView) findViewById(R.id.tap_text);
+        mTapTextView = findViewById(R.id.tap_text);
 
      //   setUpMapIfNeeded();
 
 
 
 
+        SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.myapp", Context.MODE_PRIVATE);
 
+
+        ArrayList<String> newFriends = new ArrayList<>();
+
+        try {
+
+            newFriends = (ArrayList<String>)  ObjectSerializer.deserialize(sharedPreferences.getString("friends", ObjectSerializer.serialize(new ArrayList<String>())));
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.i("newFriends", newFriends.toString());
 
     }
 
