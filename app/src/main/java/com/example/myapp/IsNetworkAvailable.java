@@ -11,4 +11,11 @@ public class IsNetworkAvailable {
 
        return true;
     }
+
+
+    public boolean isParseServerAvailable() throws InterruptedException, IOException {
+
+        return true;
+
+    }
 }

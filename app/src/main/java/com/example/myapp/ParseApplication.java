@@ -28,7 +28,7 @@ public class ParseApplication extends Application {
                 .applicationId("myappID")
                 // if defined
                 .clientKey("4xCcfsfgftRY")
-                .server("http://52.14.50.65/parse/")
+                .server("http://18.221.80.2/parse/")
                 .build()
         );
 

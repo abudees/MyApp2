@@ -155,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 user.put("firstName", firstNameEditText.getText().toString());
                                 user.put("lastName", lastNameEditText.getText().toString());
                                 user.put("userType","c");
-                                user.put("mobileNumber", mobileNumber.getText());
+                                user.put("mobileNumber", mobileNumber.getText().toString());
 
                                 user.signUpInBackground(new SignUpCallback() {
                                     @Override
