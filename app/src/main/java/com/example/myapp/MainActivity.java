@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity  {
         }
   */
 
-       intent = new Intent(getApplicationContext(), MapsActivity.class);
+       intent = new Intent(getApplicationContext(), MobileVerificationActivity.class);
 
        intent.putExtra("area", area);
 
@@ -312,9 +312,19 @@ public class MainActivity extends AppCompatActivity  {
                 if (ParseUser.getCurrentUser() != null) {
 
 
+                   // Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
+                    int mobile = 0;
+
+                    try {
+                        mobile = Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
+                    } catch(NumberFormatException nfe) {
+                        Log.d("Could not parse " , String.valueOf(nfe));
+                    }
+
+
                     //put 11112222 + user mobile (as mask)+ serial = order number
-                    int f = (int) ParseUser.getCurrentUser().getNumber("mobileNumber");
-                    int v = f + 11112222;
+
+                    int v = mobile + 11112222;
 
                     // check previus orders and add 1 to last 1
 

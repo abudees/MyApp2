@@ -3,27 +3,35 @@ package com.example.myapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
 
     Boolean signUpModeActive = true;
@@ -32,10 +40,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     EditText passwordEditText, usernameEditText, firstNameEditText, lastNameEditText, rePassword, mobileNumber;
 
+
+
     Button signUpButton;
 
     Intent intent;
 
+    MobileVerificationActivity mobileVerificationActivity;
+
+
+    List<String> arrContryCode;
+
+    Spinner spinner;
+    String userCountryCode, spinner_item ,   myString,  countryCode, lang;
+
+    int spinner_position;
 
 
     public void changeMode(View view){
@@ -84,6 +103,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+    private boolean isValidMobile(String phone) {
+        if(!Pattern.matches("[a-zA-Z]+", phone)) {
+            return phone.length()>= 9 && phone.length() <= 15;
+        }
+        return false;
+    }
+
+
 
 
     //closing the keyboard while clicking anywhere else
@@ -116,12 +143,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (signUpModeActive) {
 
 
+
+
                 ParseUser user = new ParseUser();
 
                 user.setUsername(usernameEditText.getText().toString());
                 user.setPassword(passwordEditText.getText().toString());
 
-                ParseUser.logInInBackground(usernameEditText.getText().toString(), passwordEditText.getText().toString(), new LogInCallback() {
+                ParseUser.logInInBackground(usernameEditText.getText().toString(), passwordEditText.getText().toString(),
+                        new LogInCallback() {
                     public void done(ParseUser user, ParseException error) {
                         if (error == null) {
 
@@ -143,42 +173,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         || rePassword.getText().toString().matches("") || mobileNumber.getText().toString().matches("")) {
                 } else {
                     String email = usernameEditText.getText().toString();
+                    String mobile = mobileNumber.getText().toString();
 
                     if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                         if (passwordEditText.getText().length() >= 6 && passwordEditText.getText().length() < 15) {
                             if (passwordEditText.getText().toString().matches(rePassword.getText().toString())) {
-                                ParseUser user = new ParseUser();
+                                if (isValidMobile(mobile)) {
+                                    ParseUser user = new ParseUser();
 
-                                user.setUsername(usernameEditText.getText().toString());
-                                user.setEmail(usernameEditText.getText().toString());
-                                user.setPassword(passwordEditText.getText().toString());
-                                user.put("firstName", firstNameEditText.getText().toString());
-                                user.put("lastName", lastNameEditText.getText().toString());
-                                user.put("userType","c");
-                                user.put("mobileNumber", mobileNumber.getText().toString());
 
-                                user.signUpInBackground(new SignUpCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
+                                    user.setUsername(usernameEditText.getText().toString());
+                                    user.setEmail(usernameEditText.getText().toString());
+                                    user.setPassword(passwordEditText.getText().toString());
+                                    user.put("firstName", firstNameEditText.getText().toString());
+                                    user.put("lastName", lastNameEditText.getText().toString());
+                                    user.put("mobileNumber", mobileNumber.getText().toString());
+                                    user.put("userType", "c");
 
-                                        if (e == null) {
+                                    user.signUpInBackground(new SignUpCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
 
-                                            signUpModeActive = false;
-                                            signUpButton.setText("Login");
-                                            changeSignUpTextView.setText("Or, SignUp");
-                                            rePassword.setVisibility(View.INVISIBLE);
-                                            mobileNumber.setVisibility(View.INVISIBLE);
-                                            firstNameEditText.setVisibility(View.INVISIBLE);
-                                            lastNameEditText.setVisibility(View.INVISIBLE);
-                                            usernameEditText.getText();
-                                            passwordEditText.getText();
+                                            if (e == null) {
 
-                                            Toast.makeText(LoginActivity.this, "SignUp Successfully", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(LoginActivity.this, "signup error " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                                signUpButton.setText("Login");
+                                                changeSignUpTextView.setText("Or, SignUp");
+                                                rePassword.setVisibility(View.INVISIBLE);
+                                                mobileNumber.setVisibility(View.INVISIBLE);
+                                                firstNameEditText.setVisibility(View.INVISIBLE);
+                                                lastNameEditText.setVisibility(View.INVISIBLE);
+                                                usernameEditText.getText();
+                                                passwordEditText.getText();
+
+                                                Toast.makeText(LoginActivity.this, "SignUp Successfully",
+                                                        Toast.LENGTH_SHORT).show();
+
+                                                signUpModeActive = false;
+                                            } else {
+                                                Toast.makeText(LoginActivity.this, "signup error " +
+                                                        e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Mobile no not valid!", Toast.LENGTH_SHORT).show();
+                                }
                             } else {
                                 Toast.makeText(LoginActivity.this, "Password doesn't match!", Toast.LENGTH_SHORT).show();
                             }
@@ -194,6 +234,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+
+    public String getCountryDialCode(){
+        String contryId = null;
+        String contryDialCode = null;
+
+        TelephonyManager telephonyMngr = (TelephonyManager) LoginActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
+
+        contryId = telephonyMngr.getSimCountryIso().toUpperCase();
+        String[] arrContryCode=this.getResources().getStringArray(R.array.DialingCountryCode);
+        for(int i=0; i<arrContryCode.length; i++){
+            String[] arrDial = arrContryCode[i].split(",");
+            if(arrDial[1].trim().equals(contryId.trim())){
+                contryDialCode = arrDial[0];
+                break;
+            }
+        }
+        return contryDialCode;
+    }
 
 
 
@@ -216,6 +274,45 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
+
+
+
+
+
+
+
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                 countryCode = tm.getSimCountryIso();
+                 lang = Locale.getDefault().getDisplayLanguage();
+               userCountryCode =  getCountryDialCode();
+
+
+
+                spinner = findViewById(R.id.spinner);
+                ArrayAdapter<String> spinnerCountShoesArrayAdapter = new ArrayAdapter<String>(
+                        this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        getResources().getStringArray(R.array.DialingCountryCode));
+                spinner.setAdapter(spinnerCountShoesArrayAdapter);
+
+
+                 myString =  getCountryDialCode() +"," +countryCode ; //the value you want the position for
+
+               int spinnerPosition = spinnerCountShoesArrayAdapter.getPosition(getCountryDialCode() +"," +countryCode);
+
+
+               // set the default according to value
+                spinner.setSelection(spinnerPosition);
+
+
+
+
+
+
+
+
+
+                Log.d("that : ", myString);
 
                 if (ParseUser.getCurrentUser() != null) {
 
@@ -250,6 +347,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     mobileNumber =findViewById(R.id.mobileNumber);
 
+                 //   countryCode =findViewById(R.id.countryCode);
 
                 }
             }
@@ -259,5 +357,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             e.printStackTrace();
         }
     }
+
 }
 
