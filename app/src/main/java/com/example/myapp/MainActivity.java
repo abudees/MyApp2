@@ -78,35 +78,7 @@ public class MainActivity extends AppCompatActivity  {
 
     public void customer(){
 
-        areaList = new ArrayList<>();
 
-        ParseQuery<ParseObject> query = new ParseQuery<>("Area");
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null) {
-
-                    for (ParseObject object : objects) {
-
-                        areaList.add(object.getString("AreaName"));
-
-                     //   int z = Integer.parseInt(object.getObjectId());
-
-                    //    Log.d("zzzzzzz: ", String.valueOf(z));
-                    }
-
-                    adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
-
-                    // Apply the adapter to the spinner
-                    spinner.setAdapter(adapter);
-
-                    spinner.setOnItemSelectedListener(new mySpinnerListener());
-                }
-            }
-        });
     }
 
 
@@ -284,14 +256,11 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
 
-
-
         popupLayout1 = findViewById(R.id.popupLayout);
 
         popupLayout1.setVisibility(View.INVISIBLE);
         getSupportActionBar().hide(); //hide the title bar
 
-        ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
         languageTextView = findViewById(R.id.languageTextView);
         spinner = findViewById(R.id.areaSelect);
@@ -303,22 +272,29 @@ public class MainActivity extends AppCompatActivity  {
         logout = findViewById(R.id.logout1);
 
 
-
         try {
 
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
             if (checkConnection.isNetwork()) {
 
-                if (ParseUser.getCurrentUser() != null) {
+                if (ParseUser.getCurrentUser() == null) {
+
+                    intent = new Intent(getApplicationContext(), LoginActivity.class);
 
 
-                   // Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
+                    startActivity(intent);
+                } else {
+
+                    ParseAnalytics.trackAppOpenedInBackground(getIntent());
+
+
+                    // Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
                     int mobile = 0;
 
                     try {
-                        mobile = Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
-                    } catch(NumberFormatException nfe) {
-                        Log.d("Could not parse " , String.valueOf(nfe));
+//                        mobile = Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
+                    } catch (NumberFormatException nfe) {
+                        Log.d("Could not parse ", String.valueOf(nfe));
                     }
 
 
@@ -328,14 +304,11 @@ public class MainActivity extends AppCompatActivity  {
 
                     // check previus orders and add 1 to last 1
 
-                    int lastOrderNo = v + 3 ;
+                    int lastOrderNo = v + 3;
 
                     int newOrderNo = lastOrderNo + 1;
 
-                    Log.d("numver: ", String.valueOf(newOrderNo) );
-
-
-
+                    Log.d("numver: ", String.valueOf(newOrderNo));
 
 
                     login.setVisibility(View.INVISIBLE);
@@ -363,13 +336,42 @@ public class MainActivity extends AppCompatActivity  {
                         default:
                             throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
                     }
-                } else {
-
-                  logout.setVisibility(View.INVISIBLE);
-
-                  customer();
-
                 }
+
+
+                logout.setVisibility(View.INVISIBLE);
+
+                areaList = new ArrayList<>();
+
+                ParseQuery<ParseObject> query = new ParseQuery<>("Area");
+
+                query.findInBackground(new FindCallback<ParseObject>() {
+
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+
+                        if (e == null) {
+
+                            for (ParseObject object : objects) {
+
+                                areaList.add(object.getString("AreaName"));
+
+                                //   int z = Integer.parseInt(object.getObjectId());
+
+                                //    Log.d("zzzzzzz: ", String.valueOf(z));
+                            }
+
+                            adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
+
+                            // Apply the adapter to the spinner
+                            spinner.setAdapter(adapter);
+
+                            spinner.setOnItemSelectedListener(new mySpinnerListener());
+                        }
+                    }
+                });
+
+
             } else {
                 //do something, net is not connected
                 intent = new Intent(getApplicationContext(), InternetFailActivity.class);
