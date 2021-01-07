@@ -25,10 +25,9 @@ public class ParseApplication extends Application {
        // ParseCrashReporting.enable(this);
         Parse.enableLocalDatastore(this);
         Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId("myappID")
-                // if defined
-                .clientKey("4xCcfsfgftRY")
-                .server("http://18.221.80.2/parse/")
+                .applicationId(getString(R.string.back4app_app_id))
+                .clientKey(getString(R.string.back4app_client_key))
+                .server(getString(R.string.back4app_server_url))
                 .build()
         );
 

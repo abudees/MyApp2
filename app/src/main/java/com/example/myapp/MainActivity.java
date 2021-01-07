@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity  {
 
     Intent intent;
 
-    TextView languageTextView, login , logout, noConnection ;
+    TextView languageTextView, login , logout, noConnection , welcomeText;
 
     Button redirectButton, retry ;
 
@@ -52,6 +52,10 @@ public class MainActivity extends AppCompatActivity  {
     ArrayList<String> areaList;
 
     ArrayAdapter<String> adapter;
+
+    String name = "Guest";
+
+    String welcomeMessage = "Welcome Guest";
 
   //  String user;
 
@@ -73,6 +77,10 @@ public class MainActivity extends AppCompatActivity  {
         logout.setVisibility(View.INVISIBLE);
 
         login.setVisibility(View.VISIBLE);
+
+      //  intent = new Intent(getApplicationContext(), LoginActivity.class);
+
+       // startActivity(intent);
     }
 
 
@@ -87,12 +95,12 @@ public class MainActivity extends AppCompatActivity  {
 
 
     public void redirect (View view) {
-/*
+
         if (ParseUser.getCurrentUser() != null) {
 
             login.setVisibility(View.INVISIBLE);
 
-            switch (ParseUser.getCurrentUser().getString("userType")) {
+            switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
 
                 case "Vendor":
 
@@ -115,7 +123,7 @@ public class MainActivity extends AppCompatActivity  {
                 case "c":
                 case "":
 
-                    customer();
+                   // customer();
 
                     if (area.matches("Please select your Area")) {
 
@@ -150,16 +158,9 @@ public class MainActivity extends AppCompatActivity  {
                 intent.putExtra("area", area);
 
                 startActivity(intent);
-
             }
         }
-  */
 
-       intent = new Intent(getApplicationContext(), MobileVerificationActivity.class);
-
-       intent.putExtra("area", area);
-
-       startActivity(intent);
 
 
     }
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+    // redirect to Login Page if clicked on Login text
     public void login (View view){
 
         intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -213,41 +215,14 @@ public class MainActivity extends AppCompatActivity  {
 
 */
 
-    public String[] getParseSingleValue(String classNeeded, String conditionColumn, String conditionValue, String resultColumn ){
-
-        final String[] valueResult = new String[1];
-        ParseQuery<ParseObject> query = new ParseQuery<>(classNeeded);
-
-        query.whereEqualTo(conditionColumn, conditionValue);
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null) {
-
-                    for (ParseObject object : objects) {
-
-                        valueResult[0] = object.getString(resultColumn);
-
-                    }
-
-                }
-            }
-        });
-
-
-
-        return valueResult;
-    }
 
 
 
 
 
 
-    ConstraintLayout popupLayout1;
+
+
 
 
     @Override
@@ -255,14 +230,10 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        popupLayout1 = findViewById(R.id.popupLayout);
-
-        popupLayout1.setVisibility(View.INVISIBLE);
         getSupportActionBar().hide(); //hide the title bar
 
-
         languageTextView = findViewById(R.id.languageTextView);
+
         spinner = findViewById(R.id.areaSelect);
 
         redirectButton = findViewById(R.id.redirect);
@@ -271,49 +242,42 @@ public class MainActivity extends AppCompatActivity  {
 
         logout = findViewById(R.id.logout1);
 
+        welcomeText = findViewById(R.id.welcomeText);
+
+        welcomeText.setText(welcomeMessage);
+
 
         try {
 
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
+
             if (checkConnection.isNetwork()) {
 
-                if (ParseUser.getCurrentUser() == null) {
-
-                    intent = new Intent(getApplicationContext(), LoginActivity.class);
+                ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
 
-                    startActivity(intent);
-                } else {
+                if (ParseUser.getCurrentUser() != null) {
 
-                    ParseAnalytics.trackAppOpenedInBackground(getIntent());
+                    welcomeText.setVisibility(View.VISIBLE);
 
+                    welcomeMessage= "Welcome "+ ParseUser.getCurrentUser().getString("name");
 
-                    // Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
-                    int mobile = 0;
-
-                    try {
-//                        mobile = Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
-                    } catch (NumberFormatException nfe) {
-                        Log.d("Could not parse ", String.valueOf(nfe));
-                    }
-
-
-                    //put 11112222 + user mobile (as mask)+ serial = order number
-
-                    int v = mobile + 11112222;
-
-                    // check previus orders and add 1 to last 1
-
-                    int lastOrderNo = v + 3;
-
-                    int newOrderNo = lastOrderNo + 1;
-
-                    Log.d("numver: ", String.valueOf(newOrderNo));
-
+                    welcomeText.setText( welcomeMessage);
 
                     login.setVisibility(View.INVISIBLE);
 
-                    switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
+                    logout.setVisibility(View.VISIBLE);
+
+                } else {
+
+
+
+
+
+
+
+
+                   /* switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
 
                         case "Vendor":
 
@@ -335,42 +299,43 @@ public class MainActivity extends AppCompatActivity  {
 
                         default:
                             throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
-                    }
-                }
+                    }*/
 
 
-                logout.setVisibility(View.INVISIBLE);
+                    //  logout.setVisibility(View.INVISIBLE);
 
-                areaList = new ArrayList<>();
+                    areaList = new ArrayList<>();
+                    areaList.add("Please select your Area");
 
-                ParseQuery<ParseObject> query = new ParseQuery<>("Area");
+                    ParseQuery<ParseObject> query = new ParseQuery<>("Area");
 
-                query.findInBackground(new FindCallback<ParseObject>() {
+                    query.findInBackground(new FindCallback<ParseObject>() {
 
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
+                        @Override
+                        public void done(List<ParseObject> objects, ParseException e) {
 
-                        if (e == null) {
+                            if (e == null) {
 
-                            for (ParseObject object : objects) {
+                                for (ParseObject object : objects) {
 
-                                areaList.add(object.getString("AreaName"));
+                                    areaList.add(object.getString("AreaName"));
 
-                                //   int z = Integer.parseInt(object.getObjectId());
+                                    //   int z = Integer.parseInt(object.getObjectId());
 
-                                //    Log.d("zzzzzzz: ", String.valueOf(z));
+                                    //    Log.d("zzzzzzz: ", String.valueOf(z));
+                                }
+
+                                adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,
+                                        areaList);
+
+                                // Apply the adapter to the spinner
+                                spinner.setAdapter(adapter);
+
+                                spinner.setOnItemSelectedListener(new mySpinnerListener());
                             }
-
-                            adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, areaList);
-
-                            // Apply the adapter to the spinner
-                            spinner.setAdapter(adapter);
-
-                            spinner.setOnItemSelectedListener(new mySpinnerListener());
                         }
-                    }
-                });
-
+                    });
+                }
 
             } else {
                 //do something, net is not connected

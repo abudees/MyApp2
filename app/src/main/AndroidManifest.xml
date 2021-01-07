@@ -25,7 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".EmailRegistration"></activity>
+        <activity android:name=".NewUser"></activity>
+        <activity android:name=".EmailRegistration" />
         <activity android:name=".MobileVerificationActivity" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".OrderConfirmationActivity" />
@@ -41,6 +42,16 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.parse.SERVER_URL"
+            android:value="@string/back4app_server_url" />
+
+        <meta-data
+            android:name="com.parse.APPLICATION_ID"
+            android:value="@string/back4app_app_id" />
+        <meta-data
+            android:name="com.parse.CLIENT_KEY"
+            android:value="@string/back4app_client_key" />
 
         <activity android:name=".DeliveryDetailsActivity" />
         <activity
