@@ -82,7 +82,7 @@ public class CategoriesActivity extends FragmentActivity {
 
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Categories");
 
-                query.whereEqualTo("Status", true);
+                query.whereEqualTo("status", true);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> objects, ParseException e) {
@@ -95,7 +95,7 @@ public class CategoriesActivity extends FragmentActivity {
 
                                 title.add(object.getString("categoryName"));
 
-                                id.add(object.getInt("catId"));
+                                id.add(object.getInt("categoryNo"));
                             }
 
                             adapter = new CategoriesAdapter(CategoriesActivity.this, url, title, id);

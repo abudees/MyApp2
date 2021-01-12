@@ -97,7 +97,7 @@ public class ProductsActivity extends AppCompatActivity {
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Products");
                 query.whereEqualTo("catId", categoryNumber);
-                query.orderByAscending("productId");
+                query.orderByAscending("productNo");
                 query.whereEqualTo("status", true);
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override

@@ -26,6 +26,8 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -43,7 +45,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     String callingCode= "";
     MobileVerificationActivity mobileVerificationActivity;
 
+    List<String> callingC ;
 
+/*
     public void changeMode(View view) {
 
         if (!signUpModeActive) {
@@ -67,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
          //   emailEditText.setVisibility(View.VISIBLE);
         }
     }
-
+*/
 
     //closes the keyboard if the user clicks anywhere else
     @Override
@@ -109,6 +113,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // Login or SignUp
     public void login(View view) {
 
+        callingC = Arrays.asList(callingCode.split(" - "));
+
         if (mobileEditText.getText().toString().matches("") || !isValidMobile(mobileEditText.getText().toString())) {
 
             Toast.makeText(this, "A username and password are required- login", Toast.LENGTH_SHORT).show();
@@ -119,14 +125,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     ParseUser user = new ParseUser();
 
-                    user.setUsername(callingCode + (mobileEditText.getText().toString()));
 
-                    ParseUser.logInInBackground(callingCode + (mobileEditText.getText().toString()), "000000",
+
+
+                    user.setUsername(callingC.get(1) + (mobileEditText.getText().toString()));
+
+                    ParseUser.logInInBackground(callingC.get(1) + (mobileEditText.getText().toString()), "000000",
                             new LogInCallback() {
                                 public void done(ParseUser user, ParseException error) {
                                     if (error == null) {
 
-                                        Log.d("that : ", callingCode + (mobileEditText.getText().toString()));
+                                        Log.d("that : ", callingC.get(1) + (mobileEditText.getText().toString()));
 
 
                                         // after mobile verification
@@ -165,7 +174,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                             // ParseUser user = new ParseUser();
 
-                            user.setUsername(callingCode + (mobileEditText.getText().toString()));
+
+                            user.setUsername(callingC.get(1) + (mobileEditText.getText().toString()));
 
                             user.put("name", name);
 
@@ -189,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                       //  Toast.makeText(LoginActivity.this, "SignUp Successfully",     Toast.LENGTH_SHORT).show();
 
 
-                                        ParseUser.logInInBackground(callingCode + (mobileEditText.getText().toString()), "000000",
+                                        ParseUser.logInInBackground(callingC.get(1) + (mobileEditText.getText().toString()), "000000",
                                                 new LogInCallback() {
                                                     public void done(ParseUser user, ParseException error) {
                                                         if (error == null) {
@@ -245,6 +255,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                // callingCode = myString;
 
 
+
+
+
                 ArrayAdapter<String> spinnerCountShoesArrayAdapter = new ArrayAdapter<String>(
                         this,
                         android.R.layout.simple_spinner_dropdown_item,
@@ -257,13 +270,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Log.d("that2 : ", callingCode );
 
 
-               // telephonyMngr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+
+                // telephonyMngr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 
                 TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
 
                 String countryCodeValue = tm.getNetworkCountryIso();
 
-                myString =  Iso2phone.getPhone(countryCodeValue) ; //the value you want the position for
+                myString =  countryCodeValue + " - "+  Iso2phone.getPhone(countryCodeValue);  //the value you want the position for
+
+               // Log.d("code is ", "fdfd");
 
                 int spinnerPosition = spinnerCountShoesArrayAdapter.getPosition(myString);
 
@@ -279,7 +295,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     startActivity(intent);
 
                 } else {
-                    changeSignUpTextView = findViewById(R.id.changeSignUp);
+                 //   changeSignUpTextView = findViewById(R.id.changeSignUp);
 
 
                     ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundConstraintLayout);
@@ -324,7 +340,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
 
-        callingCode = parent.getItemAtPosition(pos).toString();
+        String c = parent.getItemAtPosition(pos).toString();
+        callingC =  Arrays.asList(c.split(" - "));
+
+        callingCode = callingC.get(1);
 
         Log.d("thoooose: ", callingCode);
 
@@ -334,6 +353,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+
 
         callingCode = myString;
 

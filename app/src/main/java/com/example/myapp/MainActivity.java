@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity  {
 
                                 for (ParseObject object : objects) {
 
-                                    areaList.add(object.getString("AreaName"));
+                                    areaList.add(object.getString("areaName"));
 
                                     //   int z = Integer.parseInt(object.getObjectId());
 
