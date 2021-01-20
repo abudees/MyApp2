@@ -49,11 +49,15 @@ public class CategoriesActivity extends FragmentActivity {
 
 
 
-        ParseAnalytics.trackAppOpenedInBackground(getIntent());
+
+
 
 
 
         try {
+
+            
+
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
@@ -61,6 +65,7 @@ public class CategoriesActivity extends FragmentActivity {
 
 
 
+                ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
                 recyclerView = findViewById(R.id.recyclerview);
 

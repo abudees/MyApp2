@@ -205,7 +205,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                 ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Products");
 
-                query.whereEqualTo("productId", productSelected);
+                query.whereEqualTo("productNo", productSelected);
 
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
@@ -219,7 +219,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                                     productTitle.setText(object.getString("title"));
 
-                                    Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL")).fitCenter().into(productDetailImage);
+                                    Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL")).centerInside().into(productDetailImage);
 
 
                                     productPrice.setText(String.valueOf(object.getInt("price")));

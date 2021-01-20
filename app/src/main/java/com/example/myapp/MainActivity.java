@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity  {
 
                    // customer();
 
-                    if (area.matches("Please select your Area")) {
+                    if ( spinner.getSelectedItemPosition() == 0) {
 
                         Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
 
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity  {
         } else {
 
 
-            if (area.matches("Please select your Area")) {
+            if ( spinner.getSelectedItemPosition() == 0) {
 
                 Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
 
@@ -230,21 +230,20 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         getSupportActionBar().hide(); //hide the title bar
 
         languageTextView = findViewById(R.id.languageTextView);
-
         spinner = findViewById(R.id.areaSelect);
 
         redirectButton = findViewById(R.id.redirect);
-
         login = findViewById(R.id.redirectToLogin);
-
         logout = findViewById(R.id.logout1);
-
         welcomeText = findViewById(R.id.welcomeText);
-
         welcomeText.setText(welcomeMessage);
+
+
 
 
         try {
@@ -274,38 +273,10 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-
-
-
-                   /* switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
-
-                        case "Vendor":
-
-                            break;
-
-                        case "Driver":
-
-                            break;
-
-                        case "Manager":
-
-                            break;
-
-                        case "c":
-                        case "":
-
-                            customer();
-                            break;
-
-                        default:
-                            throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
-                    }*/
-
-
                     //  logout.setVisibility(View.INVISIBLE);
 
                     areaList = new ArrayList<>();
-                    areaList.add("Please select your Area");
+                    areaList.add("Please Select your Area");
 
                     ParseQuery<ParseObject> query = new ParseQuery<>("Area");
 
@@ -319,10 +290,6 @@ public class MainActivity extends AppCompatActivity  {
                                 for (ParseObject object : objects) {
 
                                     areaList.add(object.getString("areaName"));
-
-                                    //   int z = Integer.parseInt(object.getObjectId());
-
-                                    //    Log.d("zzzzzzz: ", String.valueOf(z));
                                 }
 
                                 adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,
@@ -369,6 +336,8 @@ public class MainActivity extends AppCompatActivity  {
 
             // TODO Auto-generated method stub
             // Do nothing.
+
+
         }
     }
 }
