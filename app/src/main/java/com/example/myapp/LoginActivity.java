@@ -31,8 +31,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import com.twilio.verification.external.Via;
+//import com.twilio.verification.sample.failure.VerificationFailedActivity;
+//import com.twilio.verification.sample.success.VerificationSuccessfulActivity;
+
+
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnKeyListener, AdapterView.OnItemSelectedListener {
+
+
+
 
 
     Boolean signUpModeActive = true;
@@ -46,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     MobileVerificationActivity mobileVerificationActivity;
 
     List<String> callingC ;
+
 
 /*
     public void changeMode(View view) {
