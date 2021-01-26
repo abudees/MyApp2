@@ -32,8 +32,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import com.twilio.verification.external.Via;
-//import com.twilio.verification.sample.failure.VerificationFailedActivity;
-//import com.twilio.verification.sample.success.VerificationSuccessfulActivity;
+
 
 
 
@@ -237,6 +236,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
+    // UI
+    private Button verifyButton;
+    private View progressBar;
+
+
+
+
+
+
+
 
 
 
@@ -337,6 +346,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                  //   countryCode =findViewById(R.id.countryCode);
 
                 }
+
+
+
+
+
+                
             }
         }
 
