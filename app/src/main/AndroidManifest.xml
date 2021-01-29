@@ -25,9 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".NewUser"></activity>
         <activity android:name=".EmailRegistration" />
-        <activity android:name=".MobileVerificationActivity" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".OrderConfirmationActivity" />
         <activity android:name=".CartPreviewActivity" />

@@ -1,12 +1,15 @@
 package com.example.myapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,25 +22,54 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.twilio.verification.external.Via;
 
-
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnKeyListener, AdapterView.OnItemSelectedListener {
+
+
+
+    // Find your Account Sid and Token at twilio.com/console
+    // and set the environment variables. See http://twil.io/secure
+    public String ACCOUNT_SID = "ACc2050a7f1942814404b2e15d8f74f9f2";
+    public String AUTH_TOKEN = "85015ecada0bcbbcf39df344030c1348";
 
 
 
@@ -51,9 +83,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Spinner spinner;
     String  myString;
     String callingCode= "";
-    MobileVerificationActivity mobileVerificationActivity;
+
 
     List<String> callingC ;
+
+
 
 
 /*
@@ -132,19 +166,58 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if (signUpModeActive) {
 
-                    ParseUser user = new ParseUser();
+                ParseUser user = new ParseUser();
+
+               user.setUsername(callingCode + (mobileEditText.getText().toString()));
 
 
+                Log.d("hgjghj", callingCode + (mobileEditText.getText().toString()));
+
+               HttpClient httpclient = new DefaultHttpClient();
+
+                HttpPost httppost = new HttpPost(
+                        "https://api.twilio.com/2010-04-01/Accounts/{ACc2050a7f1942814404b2e15d8f74f9f2}/SMS/Messages");
+                String base64EncodedCredentials = "Basic "
+                        + Base64.encodeToString(
+                        (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
+                        Base64.NO_WRAP);
+
+                httppost.setHeader("Authorization",
+                        base64EncodedCredentials);
 
 
-                    user.setUsername(callingC.get(1) + (mobileEditText.getText().toString()));
+                Log.d("hgjghj", String.valueOf(httppost));
+                try {
 
-                    ParseUser.logInInBackground(callingC.get(1) + (mobileEditText.getText().toString()), "000000",
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                    nameValuePairs.add(new BasicNameValuePair("From",
+                            "+123424353534"));
+                    nameValuePairs.add(new BasicNameValuePair("To",
+                            "+914342423434"));
+                    nameValuePairs.add(new BasicNameValuePair("Body",
+                            "Welcome to Twilio"));
+
+                    httppost.setEntity(new UrlEncodedFormEntity(
+                            nameValuePairs));
+
+                    // Execute HTTP Post Request
+                    HttpResponse response = httpclient.execute(httppost);
+                    HttpEntity entity = response.getEntity();
+                    System.out.println("Entity post is: "
+                            + EntityUtils.toString(entity));
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                ParseUser.logInInBackground(callingCode + (mobileEditText.getText().toString()), "000000",
                             new LogInCallback() {
                                 public void done(ParseUser user, ParseException error) {
                                     if (error == null) {
 
-                                        Log.d("that : ", callingC.get(1) + (mobileEditText.getText().toString()));
+                                        Log.d("that : ", callingCode + (mobileEditText.getText().toString()));
 
 
                                         // after mobile verification
@@ -236,9 +309,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
-    // UI
-    private Button verifyButton;
-    private View progressBar;
+
+
 
 
 
@@ -268,10 +340,64 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
-                // userCountryCode =  getCountryDialCode();
 
 
-               // callingCode = myString;
+
+        // Get an instance of SmsRetrieverClient, used to start listening for a matching
+        // SMS message.
+        SmsRetrieverClient client = SmsRetriever.getClient(this /* context */);
+
+        // Starts SmsRetriever, which waits for ONE matching SMS message until timeout
+        // (5 minutes). The matching SMS message will be sent via a Broadcast Intent with
+        // action SmsRetriever#SMS_RETRIEVED_ACTION.
+        Task<Void> task = client.startSmsRetriever();
+
+        // Listen for success/failure of the start Task. If in a background thread, this
+        // can be made blocking using Tasks.await(task, [timeout]);
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // Successfully started retriever, expect broadcast intent
+                // ...
+            }
+        });
+
+        task.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Failed to start retriever, inspect Exception for more details
+                // ...
+            }
+        });
+
+
+
+
+
+
+
+
+
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("APIs");
+                query.whereEqualTo("name", "sms");
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+                        if (e == null && objects.size() > 0) {
+                            for (ParseObject object : objects) {
+
+                                Log.d("sid", Objects.requireNonNull(object.getString("accountSID")));
+
+                                Log.d("token", Objects.requireNonNull(object.getString("authToken")));
+                            }
+                        }
+                    }
+                });
+
+
+
+
+
 
 
 
@@ -351,7 +477,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
-                
+
             }
         }
 
@@ -382,7 +508,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         callingCode = myString;
 
+
+
     }
+
+
 
 
 }
