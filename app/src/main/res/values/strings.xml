@@ -19,9 +19,9 @@
     <string name="title_activity_maps2">Map</string>
     <string name="mobileno">MobileNo</string>
     <string name="welcome">"Welcome, "</string>
-    <string name="back4app_server_url" >https://parseapi.back4app.com/</string>
-    <string name="back4app_app_id" >JmRRaWGOY81URMVf9mwQS1Pm48NV3bIxf7UXQInr</string>
-    <string name="back4app_client_key" >Bo3IKZ2OgPUmaoopGWFnj4tmUfH3BusBYAs84VEe</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+    <string name="back4app_app_id">JmRRaWGOY81URMVf9mwQS1Pm48NV3bIxf7UXQInr</string>
+    <string name="back4app_client_key">Bo3IKZ2OgPUmaoopGWFnj4tmUfH3BusBYAs84VEe</string>
 
 
     <string-array name="DialingCountryCode">
@@ -266,7 +266,6 @@
         <item>zm - +260</item>
         <item>zw - +263</item>
     </string-array>
-
 
 
 </resources>

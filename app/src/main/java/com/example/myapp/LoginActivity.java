@@ -1,15 +1,12 @@
 package com.example.myapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -22,15 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.gms.auth.api.phone.SmsRetriever;
-import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
@@ -50,15 +38,7 @@ import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
@@ -66,14 +46,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
-    // Find your Account Sid and Token at twilio.com/console
-    // and set the environment variables. See http://twil.io/secure
-    public String ACCOUNT_SID = "ACc2050a7f1942814404b2e15d8f74f9f2";
-    public String AUTH_TOKEN = "85015ecada0bcbbcf39df344030c1348";
 
 
+    HttpResponse response ;
+    HttpEntity entity;
+    String ACCOUNT_SID ="ACc2050a7f1942814404b2e15d8f74f9f2";
+    String AUTH_TOKEN= "85015ecada0bcbbcf39df344030c1348";
 
-
+    HttpPost httppost;
 
     Boolean signUpModeActive = true;
     TextView changeSignUpTextView;
@@ -86,6 +66,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     List<String> callingC ;
+
+     List<String> userNames ;
+
+    String username ;
+
 
 
 
@@ -156,6 +141,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // Login or SignUp
     public void login(View view) {
 
+        username = callingCode + (mobileEditText.getText().toString());
+
         callingC = Arrays.asList(callingCode.split(" - "));
 
         if (mobileEditText.getText().toString().matches("") || !isValidMobile(mobileEditText.getText().toString())) {
@@ -164,159 +151,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         } else {
 
-            if (signUpModeActive) {
 
-                ParseUser user = new ParseUser();
+            intent = new Intent(getApplicationContext(), SmsVerificationActivity.class);
 
-               user.setUsername(callingCode + (mobileEditText.getText().toString()));
+            intent.putExtra("mobileNumber", username);
 
+            startActivity(intent);
 
-                Log.d("hgjghj", callingCode + (mobileEditText.getText().toString()));
-
-               HttpClient httpclient = new DefaultHttpClient();
-
-                HttpPost httppost = new HttpPost(
-                        "https://api.twilio.com/2010-04-01/Accounts/{ACc2050a7f1942814404b2e15d8f74f9f2}/SMS/Messages");
-                String base64EncodedCredentials = "Basic "
-                        + Base64.encodeToString(
-                        (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
-                        Base64.NO_WRAP);
-
-                httppost.setHeader("Authorization",
-                        base64EncodedCredentials);
-
-
-                Log.d("hgjghj", String.valueOf(httppost));
-                try {
-
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                    nameValuePairs.add(new BasicNameValuePair("From",
-                            "+123424353534"));
-                    nameValuePairs.add(new BasicNameValuePair("To",
-                            "+914342423434"));
-                    nameValuePairs.add(new BasicNameValuePair("Body",
-                            "Welcome to Twilio"));
-
-                    httppost.setEntity(new UrlEncodedFormEntity(
-                            nameValuePairs));
-
-                    // Execute HTTP Post Request
-                    HttpResponse response = httpclient.execute(httppost);
-                    HttpEntity entity = response.getEntity();
-                    System.out.println("Entity post is: "
-                            + EntityUtils.toString(entity));
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
-                ParseUser.logInInBackground(callingCode + (mobileEditText.getText().toString()), "000000",
-                            new LogInCallback() {
-                                public void done(ParseUser user, ParseException error) {
-                                    if (error == null) {
-
-                                        Log.d("that : ", callingCode + (mobileEditText.getText().toString()));
-
-
-                                        // after mobile verification
-                                        Toast.makeText(LoginActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
-
-
-                                        intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        startActivity(intent);
-
-                                    } else {
-                                        Toast.makeText(LoginActivity.this, "Please Signup " /*+ error.getMessage()*/,
-                                                Toast.LENGTH_SHORT).show();
-
-                                        signUpModeActive = false;
-
-                                        signUpButton.setText("SignUp");
-                                        changeSignUpTextView.setText("Or, Login");
-                                        //  rePassword.setVisibility(View.VISIBLE);
-                                        nameEditText.setVisibility(View.VISIBLE);
-                                    }
-                                }
-                            }
-                    );
-            } else {
-
-                if (!mobileEditText.getText().toString().matches("") && isValidMobile(mobileEditText.getText().toString())) {
-
-
-                    if (!nameEditText.getText().toString().matches("")) {
-
-                        String mobile = mobileEditText.getText().toString();
-                        String name = nameEditText.getText().toString();
-
-                        ParseUser user = new ParseUser();
-                        if (isValidMobile(mobile)) {
-
-                            // ParseUser user = new ParseUser();
-
-
-                            user.setUsername(callingC.get(1) + (mobileEditText.getText().toString()));
-
-                            user.put("name", name);
-
-                            user.setPassword("000000");
-
-                            user.put("userType", "c");
-
-                            user.signUpInBackground(new SignUpCallback() {
-                                @Override
-                                public void done(ParseException e) {
-
-                                    if (e == null) {
-
-                                     //   signUpButton.setText("Login");
-                                      //  changeSignUpTextView.setText("Or, SignUp");
-                                      //  nameEditText.setVisibility(View.INVISIBLE);
-
-                                        mobileEditText.getText();
-                                        nameEditText.getText();
-
-                                      //  Toast.makeText(LoginActivity.this, "SignUp Successfully",     Toast.LENGTH_SHORT).show();
-
-
-                                        ParseUser.logInInBackground(callingC.get(1) + (mobileEditText.getText().toString()), "000000",
-                                                new LogInCallback() {
-                                                    public void done(ParseUser user, ParseException error) {
-                                                        if (error == null) {
-
-                                                            intent = new Intent(getApplicationContext(), MainActivity.class);
-                                                            startActivity(intent);
-                                                        }
-                                                    }
-                                                }
-                                        );
-                                    } else {
-                                        Toast.makeText(LoginActivity.this, "signup error " +
-                                                e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Mobile no not valid!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -333,51 +176,111 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         spinner = findViewById(R.id.spinner);
 
+
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
-
             if (checkConnection.isNetwork()) {
-
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
 
+                ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundConstraintLayout);
+
+                backgroundReleativeLayout.setOnClickListener(this);
+
+                mobileEditText = findViewById(R.id.mobileEditText);
+
+                signUpButton = findViewById(R.id.button2);
+
+                userNames = new ArrayList<>();
 
 
-        // Get an instance of SmsRetrieverClient, used to start listening for a matching
-        // SMS message.
-        SmsRetrieverClient client = SmsRetriever.getClient(this /* context */);
+                TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 
-        // Starts SmsRetriever, which waits for ONE matching SMS message until timeout
-        // (5 minutes). The matching SMS message will be sent via a Broadcast Intent with
-        // action SmsRetriever#SMS_RETRIEVED_ACTION.
-        Task<Void> task = client.startSmsRetriever();
+                String countryCodeValue = tm.getNetworkCountryIso();
 
-        // Listen for success/failure of the start Task. If in a background thread, this
-        // can be made blocking using Tasks.await(task, [timeout]);
-        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
+                myString = countryCodeValue + " - " + Iso2phone.getPhone(countryCodeValue);  //the value you want the position for
+
+                ArrayAdapter<String> spinnerCountShoesArrayAdapter = new ArrayAdapter<String>(
+                        this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        getResources().getStringArray(R.array.DialingCountryCode));
+                spinner.setAdapter(spinnerCountShoesArrayAdapter);
+
+                spinner.setOnItemSelectedListener(this);
+
+                //let spinner stops on user country code
+                int spinnerPosition = spinnerCountShoesArrayAdapter.getPosition(myString);
+                // set the default according to value
+                spinner.setSelection(spinnerPosition);
+
+                Log.d("that2 : ", callingCode);
+
+                callingC = Arrays.asList(myString.split(" - "));
+
+                callingCode = callingC.get(1);
+
+//                HttpClient httpclient = new DefaultHttpClient();
+
+//                httppost = new HttpPost(
+//                        "https://api.twilio.com/2010-04-01/Accounts/ACc2050a7f1942814404b2e15d8f74f9f2/SMS/Messages");
+//                String base64EncodedCredentials = "Basic "
+//                        + Base64.encodeToString(
+//                        (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
+//                        Base64.NO_WRAP);
+
+//                httppost.setHeader("Authorization",
+//                        base64EncodedCredentials);
+
+//                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+//                    nameValuePairs.add(new BasicNameValuePair("From",
+//                            "+249904009994"));
+//                    nameValuePairs.add(new BasicNameValuePair("To",
+//                            "+966547414030"));
+//                    nameValuePairs.add(new BasicNameValuePair("Body",
+//                            "Welcome to Twilio"));
+
+//                    httppost.setEntity(new UrlEncodedFormEntity(
+//                            nameValuePairs));
+
+                // Execute HTTP Post Request
+                //   response = httpclient.execute(httppost);
+                //  entity = response.getEntity();
+
+//                    Log.d("hgjghj", String.valueOf(httppost));
+
+
+//                    Log.d("Entity post is: ",  EntityUtils.toString(entity));
+
+
+                // Get an instance of SmsRetrieverClient, used to start listening for a matching
+                // SMS message.
+//        SmsRetrieverClient client = SmsRetriever.getClient(this // context
+//        );
+
+                // Starts SmsRetriever, which waits for ONE matching SMS message until timeout
+                // (5 minutes). The matching SMS message will be sent via a Broadcast Intent with
+                // action SmsRetriever#SMS_RETRIEVED_ACTION.
+//        Task<Void> task = client.startSmsRetriever();
+
+                // Listen for success/failure of the start Task. If in a background thread, this
+                // can be made blocking using Tasks.await(task, [timeout]);
+//        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
                 // Successfully started retriever, expect broadcast intent
                 // ...
-            }
-        });
+//            }
+//        });
 
-        task.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+//        task.addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
                 // Failed to start retriever, inspect Exception for more details
                 // ...
-            }
-        });
+//            }
+//        });
 
-
-
-
-
-
-
-
-
+/*
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("APIs");
                 query.whereEqualTo("name", "sms");
                 query.findInBackground(new FindCallback<ParseObject>() {
@@ -393,85 +296,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 });
+*/
 
 
 
 
 
-
-
-
-
-
-                ArrayAdapter<String> spinnerCountShoesArrayAdapter = new ArrayAdapter<String>(
-                        this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        getResources().getStringArray(R.array.DialingCountryCode));
-                spinner.setAdapter(spinnerCountShoesArrayAdapter);
-
-                spinner.setOnItemSelectedListener(this);
-
-
-                Log.d("that2 : ", callingCode );
-
-
-
-                // telephonyMngr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-
-                TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-
-                String countryCodeValue = tm.getNetworkCountryIso();
-
-                myString =  countryCodeValue + " - "+  Iso2phone.getPhone(countryCodeValue);  //the value you want the position for
-
-               // Log.d("code is ", "fdfd");
-
-                int spinnerPosition = spinnerCountShoesArrayAdapter.getPosition(myString);
-
-
-                // set the default according to value
-                spinner.setSelection(spinnerPosition);
-
-
-
-                if (ParseUser.getCurrentUser() != null) {
-
-                    intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-
-                } else {
-                 //   changeSignUpTextView = findViewById(R.id.changeSignUp);
-
-
-                    ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundConstraintLayout);
-
-                    // ImageView logoImageView = findViewById(R.id.imageView);
-
-                    // logoImageView.setOnClickListener(this);
-
-                    backgroundReleativeLayout.setOnClickListener(this);
-
-
-
-
-
-                    mobileEditText = findViewById(R.id.mobileEditText);
-
-                    nameEditText = findViewById(R.id.nameEditText);
-
-                  //  lastNameEditText = findViewById(R.id.lastNameEditText);
-
-                  //  rePassword = findViewById(R.id.rePassword);
-
-                  //  passwordEditText.setOnKeyListener(this);
-
-                    signUpButton = findViewById(R.id.button2);
-
-                   // mobileNumber =findViewById(R.id.mobileNumber);
-
-                 //   countryCode =findViewById(R.id.countryCode);
-
-                }
 
 
 
@@ -479,10 +309,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
             }
-        }
-
-        catch (InterruptedException | IOException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
+
         }
     }
 
@@ -497,23 +326,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         callingCode = callingC.get(1);
 
         Log.d("thoooose: ", callingCode);
-
-
-
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
-
-        callingCode = myString;
-
-
-
     }
-
-
-
-
 }
 
