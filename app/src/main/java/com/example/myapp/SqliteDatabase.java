@@ -71,6 +71,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         String sql = "select * from " + TABLE_CART;
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Integer> storeCart = new ArrayList<>();
+
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToFirst()) {
             do {
@@ -107,6 +108,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         cursor.close();
         return storeCart;
     }
+
+
 
 
 
@@ -157,7 +160,6 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_PID, product.getProductId());
         values.put(COLUMN_QTY, 1);
 
-
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_CART, null, values);
     }
@@ -177,8 +179,6 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("delete from "+TABLE_CART+" WHERE "+COLUMN_PID+" = "+pid);
-
-
     }
 
     void clearCart() {

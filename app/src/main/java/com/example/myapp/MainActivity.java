@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -43,9 +45,9 @@ public class MainActivity extends AppCompatActivity  {
 
     Intent intent;
 
-    TextView languageTextView, login , logout, noConnection , welcomeText;
+    TextView languageTextView, login , logout,  welcomeText;
 
-    Button redirectButton, retry ;
+   // Button redirectButton, retry ;
 
     Spinner spinner;
 
@@ -53,14 +55,11 @@ public class MainActivity extends AppCompatActivity  {
 
     ArrayAdapter<String> adapter;
 
-    String name = "Guest";
+   // String name = "Guest";
 
     String welcomeMessage = "Welcome Guest";
 
-  //  String user;
-
-    //Button button;
-
+    String userType;
 
 
 
@@ -77,17 +76,8 @@ public class MainActivity extends AppCompatActivity  {
         logout.setVisibility(View.INVISIBLE);
 
         login.setVisibility(View.VISIBLE);
-
-      //  intent = new Intent(getApplicationContext(), LoginActivity.class);
-
-       // startActivity(intent);
     }
 
-
-    public void customer(){
-
-
-    }
 
 
 
@@ -96,74 +86,24 @@ public class MainActivity extends AppCompatActivity  {
 
     public void redirect (View view) {
 
-        if (ParseUser.getCurrentUser() != null) {
 
-            login.setVisibility(View.INVISIBLE);
+        if (spinner.getSelectedItemPosition() == 0) {
 
-            switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
+            Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
 
-                case "Vendor":
-
-                    intent = new Intent(getApplicationContext(), VendorActivity.class);
-                    startActivity(intent);
-
-                    break;
-
-                case "Driver":
-
-                    intent = new Intent(getApplicationContext(), DriverActivity.class);
-                    startActivity(intent);
-                    break;
-
-                case "Manager":
-                    intent = new Intent(getApplicationContext(), ManagerActivity.class);
-                    startActivity(intent);
-                    break;
-
-                case "c":
-                case "":
-
-                   // customer();
-
-                    if ( spinner.getSelectedItemPosition() == 0) {
-
-                        Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
-
-                    } else {
-
-                        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
-
-                        intent.putExtra("area", area);
-
-                        startActivity(intent);
-
-                    }
-
-                    break;
-
-                default:
-                    throw new IllegalStateException("Unexpected value: " + ParseUser.getCurrentUser().getString("userType"));
-            }
         } else {
 
+            intent = new Intent(getApplicationContext(), CategoriesActivity.class);
 
-            if ( spinner.getSelectedItemPosition() == 0) {
+            intent.putExtra("area", area);
 
-                Toast.makeText(this, "Please select your Area!", Toast.LENGTH_LONG).show();
-
-            } else {
-
-                intent = new Intent(getApplicationContext(), CategoriesActivity.class);
-
-                intent.putExtra("area", area);
-
-                startActivity(intent);
-            }
+            startActivity(intent);
         }
-
-
-
     }
+
+
+
+
 
 
 
@@ -225,6 +165,8 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -237,7 +179,7 @@ public class MainActivity extends AppCompatActivity  {
         languageTextView = findViewById(R.id.languageTextView);
         spinner = findViewById(R.id.areaSelect);
 
-        redirectButton = findViewById(R.id.redirect);
+       // redirectButton = findViewById(R.id.redirect);
         login = findViewById(R.id.redirectToLogin);
         logout = findViewById(R.id.logout1);
         welcomeText = findViewById(R.id.welcomeText);
@@ -255,13 +197,51 @@ public class MainActivity extends AppCompatActivity  {
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
 
+
+
                 if (ParseUser.getCurrentUser() != null) {
+
+                    ParseQuery<ParseUser> query = ParseUser.getQuery();
+
+                    query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+
+                    query.findInBackground(new FindCallback<ParseUser>() {
+                        public void done(List<ParseUser> objects, ParseException e) {
+                            if (e == null && objects.size() > 0) {
+                                // The query was successful.
+                                for (ParseUser object : objects) {
+
+                                    userType = object.getString("userType");
+                                }
+                            }
+
+
+                            switch (userType) {
+                                case "c":
+                                    Log.d("haa", userType);
+
+                                    break;
+                                case "m":
+                                    Log.d("haa", userType);
+                                    intent = new Intent(getApplicationContext(), VendorActivity.class);
+                                    startActivity(intent);
+                                    break;
+                                case "d":
+                                    Log.d("haa", userType);
+                                    break;
+                                default:
+
+                                    break;
+                            }
+
+                        }
+                    });
 
                     welcomeText.setVisibility(View.VISIBLE);
 
-                    welcomeMessage= "Welcome "+ ParseUser.getCurrentUser().getString("name");
+                    welcomeMessage = "Welcome " + ParseUser.getCurrentUser().getString("name");
 
-                    welcomeText.setText( welcomeMessage);
+                    welcomeText.setText(welcomeMessage);
 
                     login.setVisibility(View.INVISIBLE);
 
@@ -269,11 +249,7 @@ public class MainActivity extends AppCompatActivity  {
 
                 } else {
 
-
-
-
-
-                    //  logout.setVisibility(View.INVISIBLE);
+                    logout.setVisibility(View.INVISIBLE);
 
                     areaList = new ArrayList<>();
                     areaList.add("Please Select your Area");
@@ -336,7 +312,6 @@ public class MainActivity extends AppCompatActivity  {
 
             // TODO Auto-generated method stub
             // Do nothing.
-
 
         }
     }

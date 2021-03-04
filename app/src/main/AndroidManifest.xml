@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SignUpActivity"></activity>
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".SmsVerificationActivity" />
         <activity android:name=".EmailRegistration" />
         <activity android:name=".PaymentActivity" />
@@ -61,7 +61,6 @@
         <activity android:name=".ProductsActivity" />
         <activity android:name=".ProductDetailsActivity" />
         <activity android:name=".PreparingCheckListActivity" />
-        <activity android:name=".PasswordResetActivity" />
         <activity android:name=".ManagerActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".InventoryActivity" />

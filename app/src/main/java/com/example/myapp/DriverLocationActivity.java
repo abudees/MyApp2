@@ -40,12 +40,12 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
 
     private GoogleMap mMap;
 
-    /*
+
     Intent intent;
     LocationManager locationManager;
 
     LocationListener locationListener;
-
+/*
     public void centerMapOnLocation(Location location, String title) {
 
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
@@ -61,7 +61,7 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 10));
 
     }
-
+*/
 
     public void acceptRequest(View view) {
 
@@ -102,7 +102,7 @@ public class DriverLocationActivity extends AppCompatActivity implements OnMapRe
     }
 
 
-*/
+
 
     private GoogleMap mGoogleMap;
     // Create a LatLngBounds that includes Australia.

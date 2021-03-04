@@ -64,13 +64,16 @@ public class CheckoutActivity extends AppCompatActivity {
 
     public ArrayList<Integer> orderItems ;
 
-     List<Integer> price = new ArrayList<>();
+
+    List<Integer> price = new ArrayList<>();
 
     List<String> url = new ArrayList<>();
 
-   // List<Integer> stack = new ArrayList<Integer>();
 
-  //  final ArrayList<String> size = new ArrayList<>();
+    // List<Integer> stack = new ArrayList<Integer>();
+
+
+    //  final ArrayList<String> size = new ArrayList<>();
 
     List<String> productTitle = new ArrayList<>();
 
@@ -78,11 +81,12 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ArrayList<Integer> qty;
 
-  //  ArrayList<Integer> pId;
+
+    //  ArrayList<Integer> pId;
 
     ArrayList<Products> allProducts;
 
-     ArrayList<Integer> totals = new ArrayList<>();
+    ArrayList<Integer> totals = new ArrayList<>();
 
 
     //int total ;

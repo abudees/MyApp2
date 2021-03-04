@@ -41,6 +41,8 @@ public class SmsVerificationActivity extends AppCompatActivity {
     String mobileNumber;
     List<String> userNames ;
     Intent intent;
+    String userType;
+    ParseUser user;
 
 
 
@@ -56,32 +58,76 @@ public class SmsVerificationActivity extends AppCompatActivity {
                 if (e == null && objects.size() > 0) {
                     // The query was successful.
                     for (ParseUser object : objects) {
-                        //  userNames.add(object.getUsername());
+                          userNames.add(object.getUsername());
 
-                        Log.d("haa", "fdfdfd");
+                        userType = object.getString("userType");
+                       // Log.d("haa", userType);
                     }
                 }
 
                 if ((userNames).contains(mobileNumber)) {
 
 
-                    ParseUser user = new ParseUser();
 
-                    user.setUsername(mobileNumber);
+                    switch(userType) {
+                        case "c":
+                            Log.d("haa", userType);
 
-                    ParseUser.logInInBackground(mobileNumber, "000000",
-                            new LogInCallback() {
-                                public void done(ParseUser user, ParseException error) {
-                                    if (error == null) {
+                            user.setUsername(mobileNumber);
 
-                                        // after mobile verification
-                                        Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+                            ParseUser.logInInBackground(mobileNumber, "000000",
+                                    new LogInCallback() {
+                                        public void done(ParseUser user, ParseException error) {
+                                            if (error == null) {
 
-                                         intent = new Intent(getApplicationContext(), MainActivity.class);
-                                         startActivity(intent);
-                                    }
-                                }
-                            });
+                                                // after mobile verification
+                                                Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+
+                                                intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    });
+                            break;
+                        case "m":
+                            Log.d("haa", userType);
+                            user = new ParseUser();
+
+                            user.setUsername(mobileNumber);
+
+                            ParseUser.logInInBackground(mobileNumber, "000000",
+                                    new LogInCallback() {
+                                        public void done(ParseUser user, ParseException error) {
+                                            if (error == null) {
+                                                intent = new Intent(getApplicationContext(), VendorActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    });
+
+                            break;
+                        case "d":
+                            Log.d("haa", userType);
+                            user = new ParseUser();
+
+                            user.setUsername(mobileNumber);
+
+                            ParseUser.logInInBackground(mobileNumber, "000000",
+                                    new LogInCallback() {
+                                        public void done(ParseUser user, ParseException error) {
+                                            if (error == null) {
+                                                intent = new Intent(getApplicationContext(), DriverActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    });
+                            break;
+                        default:
+
+                            break;
+                    }
+
+
                 } else {
 
                     // delete this toast
@@ -97,7 +143,7 @@ public class SmsVerificationActivity extends AppCompatActivity {
     }
 
 
-    public void notVerified(){
+    public void notVerified(View view){
 
         Toast.makeText(SmsVerificationActivity.this, "Number not verified", Toast.LENGTH_SHORT).show();
 
@@ -124,6 +170,94 @@ public class SmsVerificationActivity extends AppCompatActivity {
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
                 userNames = new ArrayList<>();
+
+                user = new ParseUser();
+
+
+
+
+
+                //                HttpClient httpclient = new DefaultHttpClient();
+
+//                httppost = new HttpPost(
+//                        "https://api.twilio.com/2010-04-01/Accounts/ACc2050a7f1942814404b2e15d8f74f9f2/SMS/Messages");
+//                String base64EncodedCredentials = "Basic "
+//                        + Base64.encodeToString(
+//                        (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
+//                        Base64.NO_WRAP);
+
+//                httppost.setHeader("Authorization",
+//                        base64EncodedCredentials);
+
+//                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+//                    nameValuePairs.add(new BasicNameValuePair("From",
+//                            "+249904009994"));
+//                    nameValuePairs.add(new BasicNameValuePair("To",
+//                            "+966547414030"));
+//                    nameValuePairs.add(new BasicNameValuePair("Body",
+//                            "Welcome to Twilio"));
+
+//                    httppost.setEntity(new UrlEncodedFormEntity(
+//                            nameValuePairs));
+
+                // Execute HTTP Post Request
+                //   response = httpclient.execute(httppost);
+                //  entity = response.getEntity();
+
+//                    Log.d("hgjghj", String.valueOf(httppost));
+
+
+//                    Log.d("Entity post is: ",  EntityUtils.toString(entity));
+
+
+                // Get an instance of SmsRetrieverClient, used to start listening for a matching
+                // SMS message.
+//        SmsRetrieverClient client = SmsRetriever.getClient(this // context
+//        );
+
+                // Starts SmsRetriever, which waits for ONE matching SMS message until timeout
+                // (5 minutes). The matching SMS message will be sent via a Broadcast Intent with
+                // action SmsRetriever#SMS_RETRIEVED_ACTION.
+//        Task<Void> task = client.startSmsRetriever();
+
+                // Listen for success/failure of the start Task. If in a background thread, this
+                // can be made blocking using Tasks.await(task, [timeout]);
+//        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+                // Successfully started retriever, expect broadcast intent
+                // ...
+//            }
+//        });
+
+//        task.addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+                // Failed to start retriever, inspect Exception for more details
+                // ...
+//            }
+//        });
+
+/*
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("APIs");
+                query.whereEqualTo("name", "sms");
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> objects, ParseException e) {
+                        if (e == null && objects.size() > 0) {
+                            for (ParseObject object : objects) {
+
+                                Log.d("sid", Objects.requireNonNull(object.getString("accountSID")));
+
+                                Log.d("token", Objects.requireNonNull(object.getString("authToken")));
+                            }
+                        }
+                    }
+                });
+*/
+
+
+
 
             }
         } catch (InterruptedException | IOException e) {

@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -22,9 +23,13 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class VendorActivity extends AppCompatActivity {
@@ -36,10 +41,9 @@ public class VendorActivity extends AppCompatActivity {
     ArrayList<Integer> orderNo = new ArrayList<>();
     ArrayAdapter arrayAdapter;
 
-    private IntentIntegrator qrScan;
+    TextView textView;
 
-    String user = "ahmed";
-
+    Intent intent;
 
 
 
@@ -55,34 +59,13 @@ public class VendorActivity extends AppCompatActivity {
 
 
 
+    public void logout (View view){
 
-    public void releaseOrder(View view) {
+        ParseUser.logOut();
 
-        qrScan = new IntentIntegrator(this);
-        qrScan.setOrientationLocked(false);
-        qrScan.initiateScan();
+        intent = new Intent(getApplicationContext(), MainActivity.class);
 
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                //scan have an error
-                Toast.makeText(this, "Please rescan the barcode again!", Toast.LENGTH_LONG).show();
-
-            } else {
-                //scan is successful
-                Log.i("result", result.getContents());
-
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-
+        startActivity(intent);
     }
 
 
@@ -94,13 +77,16 @@ public class VendorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vendor);
 
+        getSupportActionBar().hide(); //hide the title bar
+
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
 
+                textView = findViewById(R.id.textView3);
 
-                setTitle(user + " Orders");
+                textView.setText(ParseUser.getCurrentUser().getString("name") + " Orders");
 
 
                 vendorOrdersList = findViewById(R.id.venOrdersList);
@@ -117,21 +103,27 @@ public class VendorActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                        // Intent intent = new Intent(getApplicationContext(), PreparingCheckListActivity.class);
+                          intent = new Intent(getApplicationContext(), PreparingCheckListActivity.class);
 
 
-                        //   startActivity(intent);
+                          startActivity(intent);
                     }
                 });
 
 
                 vendorOrdersList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
+                java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
+
+
+                android.text.format.DateFormat df = new android.text.format.DateFormat();
+                df.format("yyyy-MM-dd hh:mm:ss a", new java.util.Date());
+
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Orders");
 
                 // change to loggedin vendor
-                query.whereEqualTo("vendorId", 1);
-                query.whereEqualTo("prepared", false);
+                query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+               // query.whereEqualTo("prepared", false);
 
                 query.orderByAscending("orderItemId");
 
@@ -148,9 +140,12 @@ public class VendorActivity extends AppCompatActivity {
 
                                 for (ParseObject object : objects) {
 
-                                    vOrders.add(object.getInt("orderId")
-                                            + " - " + object.getDate("confirmationDate")
-                                            + " - " + object.getString("username"));
+
+
+                                    vOrders.add(object.getInt("orderNo")
+                                            + " - " + DateFormat.getDateInstance(DateFormat.SHORT).format(object.getDate("deliveryDate"))
+                                            + " - " + object.getString("status")
+                                            + " - " + object.getInt("totalQty"));
 
                                     orderNo.add(object.getInt("orderId"));
                                 }

@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import com.parse.SignUpCallback;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -43,9 +45,6 @@ import org.apache.http.client.methods.HttpPost;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnKeyListener, AdapterView.OnItemSelectedListener {
-
-
-
 
 
     HttpResponse response ;
@@ -64,42 +63,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     String  myString;
     String callingCode= "";
 
-
     List<String> callingC ;
 
-     List<String> userNames ;
+    List<String> userNames ;
 
     String username ;
-
-
-
-
-
-/*
-    public void changeMode(View view) {
-
-        if (!signUpModeActive) {
-            signUpModeActive = true;
-            signUpButton.setText("Login");
-            changeSignUpTextView.setText("Or, SignUp");
-           // rePassword.setVisibility(View.INVISIBLE);
-            nameEditText.setVisibility(View.INVISIBLE);
-            //emailEditText.setVisibility(View.INVISIBLE);
-          //  mobileNumber.setVisibility(View.INVISIBLE);
-            mobileEditText.getText();
-          //  passwordEditText.getText();
-
-        } else {
-            signUpModeActive = false;
-            signUpButton.setText("SignUp");
-            changeSignUpTextView.setText("Or, Login");
-          //  rePassword.setVisibility(View.VISIBLE);
-            nameEditText.setVisibility(View.VISIBLE);
-           // lastNameEditText.setVisibility(View.VISIBLE);
-         //   emailEditText.setVisibility(View.VISIBLE);
-        }
-    }
-*/
 
     //closes the keyboard if the user clicks anywhere else
     @Override
@@ -147,12 +115,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (mobileEditText.getText().toString().matches("") || !isValidMobile(mobileEditText.getText().toString())) {
 
-            Toast.makeText(this, "A username and password are required- login", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter a valid mobile number", Toast.LENGTH_SHORT).show();
 
         } else {
 
 
-            intent = new Intent(getApplicationContext(), SmsVerificationActivity.class);
+            intent = new Intent(getApplicationContext(), OrderConfirmationActivity.class);
 
             intent.putExtra("mobileNumber", username);
 
@@ -161,6 +129,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /**
+     *
+     * @param datePicker
+     * @return a java.util.Date
+     */
+    public static java.util.Date getDateFromDatePicker(DatePicker datePicker){
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year =  datePicker.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+
+        return calendar.getTime();
+    }
 
 
 
@@ -182,133 +165,54 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (checkConnection.isNetwork()) {
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
-
-                ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundConstraintLayout);
-
-                backgroundReleativeLayout.setOnClickListener(this);
-
-                mobileEditText = findViewById(R.id.mobileEditText);
-
-                signUpButton = findViewById(R.id.button2);
-
-                userNames = new ArrayList<>();
+                if (ParseUser.getCurrentUser() != null) {
 
 
-                TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+                    intent = new Intent(getApplicationContext(), OrderConfirmationActivity.class);
 
-                String countryCodeValue = tm.getNetworkCountryIso();
+                    intent.putExtra("mobileNumber", username);
 
-                myString = countryCodeValue + " - " + Iso2phone.getPhone(countryCodeValue);  //the value you want the position for
+                    startActivity(intent);
 
-                ArrayAdapter<String> spinnerCountShoesArrayAdapter = new ArrayAdapter<String>(
-                        this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        getResources().getStringArray(R.array.DialingCountryCode));
-                spinner.setAdapter(spinnerCountShoesArrayAdapter);
+                } else {
+                    ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundConstraintLayout);
 
-                spinner.setOnItemSelectedListener(this);
+                    backgroundReleativeLayout.setOnClickListener(this);
 
-                //let spinner stops on user country code
-                int spinnerPosition = spinnerCountShoesArrayAdapter.getPosition(myString);
-                // set the default according to value
-                spinner.setSelection(spinnerPosition);
+                    mobileEditText = findViewById(R.id.mobileEditText);
 
-                Log.d("that2 : ", callingCode);
+                    signUpButton = findViewById(R.id.button2);
 
-                callingC = Arrays.asList(myString.split(" - "));
-
-                callingCode = callingC.get(1);
-
-//                HttpClient httpclient = new DefaultHttpClient();
-
-//                httppost = new HttpPost(
-//                        "https://api.twilio.com/2010-04-01/Accounts/ACc2050a7f1942814404b2e15d8f74f9f2/SMS/Messages");
-//                String base64EncodedCredentials = "Basic "
-//                        + Base64.encodeToString(
-//                        (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
-//                        Base64.NO_WRAP);
-
-//                httppost.setHeader("Authorization",
-//                        base64EncodedCredentials);
-
-//                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-//                    nameValuePairs.add(new BasicNameValuePair("From",
-//                            "+249904009994"));
-//                    nameValuePairs.add(new BasicNameValuePair("To",
-//                            "+966547414030"));
-//                    nameValuePairs.add(new BasicNameValuePair("Body",
-//                            "Welcome to Twilio"));
-
-//                    httppost.setEntity(new UrlEncodedFormEntity(
-//                            nameValuePairs));
-
-                // Execute HTTP Post Request
-                //   response = httpclient.execute(httppost);
-                //  entity = response.getEntity();
-
-//                    Log.d("hgjghj", String.valueOf(httppost));
+                    userNames = new ArrayList<>();
 
 
-//                    Log.d("Entity post is: ",  EntityUtils.toString(entity));
+                    TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 
+                    String countryCodeValue = tm.getNetworkCountryIso();
 
-                // Get an instance of SmsRetrieverClient, used to start listening for a matching
-                // SMS message.
-//        SmsRetrieverClient client = SmsRetriever.getClient(this // context
-//        );
+                    myString = countryCodeValue + " - " + Iso2phone.getPhone(countryCodeValue);  //the value you want the position for
 
-                // Starts SmsRetriever, which waits for ONE matching SMS message until timeout
-                // (5 minutes). The matching SMS message will be sent via a Broadcast Intent with
-                // action SmsRetriever#SMS_RETRIEVED_ACTION.
-//        Task<Void> task = client.startSmsRetriever();
+                    ArrayAdapter<String> spinnerCountShoesArrayAdapter = new ArrayAdapter<String>(
+                            this,
+                            android.R.layout.simple_spinner_dropdown_item,
+                            getResources().getStringArray(R.array.DialingCountryCode));
+                    spinner.setAdapter(spinnerCountShoesArrayAdapter);
 
-                // Listen for success/failure of the start Task. If in a background thread, this
-                // can be made blocking using Tasks.await(task, [timeout]);
-//        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-                // Successfully started retriever, expect broadcast intent
-                // ...
-//            }
-//        });
+                    spinner.setOnItemSelectedListener(this);
 
-//        task.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-                // Failed to start retriever, inspect Exception for more details
-                // ...
-//            }
-//        });
+                    //let spinner stops on user country code
+                    int spinnerPosition = spinnerCountShoesArrayAdapter.getPosition(myString);
+                    // set the default according to value
+                    spinner.setSelection(spinnerPosition);
 
-/*
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("APIs");
-                query.whereEqualTo("name", "sms");
-                query.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-                        if (e == null && objects.size() > 0) {
-                            for (ParseObject object : objects) {
+                    Log.d("that2 : ", callingCode);
 
-                                Log.d("sid", Objects.requireNonNull(object.getString("accountSID")));
+                    callingC = Arrays.asList(myString.split(" - "));
 
-                                Log.d("token", Objects.requireNonNull(object.getString("authToken")));
-                            }
-                        }
-                    }
-                });
-*/
-
-
-
-
-
-
-
-
-
-
-
+                    callingCode = callingC.get(1);
+                }
             }
+
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
 

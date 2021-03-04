@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -36,6 +40,18 @@ public class PreparingCheckListActivity extends AppCompatActivity {
     Intent intent;
 
     ImageView imageView;
+
+    private IntentIntegrator qrScan;
+
+
+    public void releaseOrder(View view) {
+
+        qrScan = new IntentIntegrator(this);
+        qrScan.setOrientationLocked(false);
+        qrScan.initiateScan();
+
+    }
+
 
 
 

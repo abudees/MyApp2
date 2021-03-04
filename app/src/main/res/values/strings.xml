@@ -22,6 +22,8 @@
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
     <string name="back4app_app_id">JmRRaWGOY81URMVf9mwQS1Pm48NV3bIxf7UXQInr</string>
     <string name="back4app_client_key">Bo3IKZ2OgPUmaoopGWFnj4tmUfH3BusBYAs84VEe</string>
+    <string name="pick_time" />
+    <string name="pick_date" />
 
 
     <string-array name="DialingCountryCode">

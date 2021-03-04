@@ -40,7 +40,8 @@ public class RecyclerViewWithFooterAdapter extends RecyclerView.Adapter<Recycler
     int maxQty =25;
 
 
-    RecyclerViewWithFooterAdapter(Context context, List<Integer> pIDs, List<String> url, List<String> productTitle, ArrayList<Products> listProducts, List<Integer> price, List<Integer> qty ) {
+    RecyclerViewWithFooterAdapter(Context context, List<Integer> pIDs, List<String> url, List<String> productTitle,
+                                  ArrayList<Products> listProducts, List<Integer> price, List<Integer> qty ) {
         this.context = context;
         this.mPID = pIDs;
         this.mListProducts = listProducts;

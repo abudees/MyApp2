@@ -128,6 +128,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
    // Context context;
 
 
+    public void selectArea(View view){
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
