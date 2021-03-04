@@ -38,109 +38,89 @@ import java.util.regex.Pattern;
 public class SmsVerificationActivity extends AppCompatActivity {
 
 
-    String mobileNumber;
-    List<String> userNames ;
+    String mobileNumber="";
+    String cameFromActivity ="";
+  //  List<String> userNames ;
     Intent intent;
-    String userType;
-    ParseUser user;
+  //  String userType;
+
+
+
 
 
 
 
     public void verified (View view) {
 
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
 
-        query.whereEqualTo("username", mobileNumber);
+        ParseUser user = new ParseUser();
 
-        query.findInBackground(new FindCallback<ParseUser>() {
-            public void done(List<ParseUser> objects, ParseException e) {
-                if (e == null && objects.size() > 0) {
-                    // The query was successful.
-                    for (ParseUser object : objects) {
-                          userNames.add(object.getUsername());
+        user.setUsername(mobileNumber);
 
-                        userType = object.getString("userType");
-                       // Log.d("haa", userType);
+        ParseUser.logInInBackground(mobileNumber, "000000",
+                new LogInCallback() {
+                    public void done(ParseUser user, ParseException error) {
+                        if (error == null) {
+
+                            switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
+
+                                case "c":
+
+                                    // after mobile verification
+                                    Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+
+
+
+                                    if (cameFromActivity.matches("mainActivity")) {
+
+                                        intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                                        startActivity(intent);
+                                    }
+
+                                    break;
+                                case "m":
+
+                                    intent = new Intent(getApplicationContext(), VendorActivity.class);
+
+                                    startActivity(intent);
+                                    break;
+
+
+                                case "d":
+
+                                    intent = new Intent(getApplicationContext(), DriverActivity.class);
+                                    startActivity(intent);
+                                    break;
+
+                                default:
+                                    Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+
+                                    break;
+                            }
+                        } else {
+
+                            // delete this toast
+                            Toast.makeText(SmsVerificationActivity.this, "Signup ", Toast.LENGTH_SHORT).show();
+
+                            intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                            intent.putExtra("mobileNumber", mobileNumber);
+                            startActivity(intent);
+                        }
                     }
-                }
-
-                if ((userNames).contains(mobileNumber)) {
-
-
-
-                    switch(userType) {
-                        case "c":
-                            Log.d("haa", userType);
-
-                            user.setUsername(mobileNumber);
-
-                            ParseUser.logInInBackground(mobileNumber, "000000",
-                                    new LogInCallback() {
-                                        public void done(ParseUser user, ParseException error) {
-                                            if (error == null) {
-
-                                                // after mobile verification
-                                                Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
-
-                                                intent = new Intent(getApplicationContext(), MainActivity.class);
-                                                startActivity(intent);
-                                            }
-                                        }
-                                    });
-                            break;
-                        case "m":
-                            Log.d("haa", userType);
-                            user = new ParseUser();
-
-                            user.setUsername(mobileNumber);
-
-                            ParseUser.logInInBackground(mobileNumber, "000000",
-                                    new LogInCallback() {
-                                        public void done(ParseUser user, ParseException error) {
-                                            if (error == null) {
-                                                intent = new Intent(getApplicationContext(), VendorActivity.class);
-                                                startActivity(intent);
-                                            }
-                                        }
-                                    });
-
-                            break;
-                        case "d":
-                            Log.d("haa", userType);
-                            user = new ParseUser();
-
-                            user.setUsername(mobileNumber);
-
-                            ParseUser.logInInBackground(mobileNumber, "000000",
-                                    new LogInCallback() {
-                                        public void done(ParseUser user, ParseException error) {
-                                            if (error == null) {
-                                                intent = new Intent(getApplicationContext(), DriverActivity.class);
-                                                startActivity(intent);
-                                            }
-                                        }
-                                    });
-                            break;
-                        default:
-
-                            break;
-                    }
-
-
-                } else {
-
-                    // delete this toast
-                    Toast.makeText(SmsVerificationActivity.this, "Signup ", Toast.LENGTH_SHORT).show();
-
-                    intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                    intent.putExtra("mobileNumber", mobileNumber);
-                    startActivity(intent);
-                }
-            }
-        });
+                });
 
     }
+
+
+         //       } else {
+
+
+           //     }
+    //        }
+      //  });
+
+
 
 
     public void notVerified(View view){
@@ -151,8 +131,9 @@ public class SmsVerificationActivity extends AppCompatActivity {
         intent = new Intent(getApplicationContext(), LoginActivity.class);
 
         startActivity(intent);
-
     }
+
+
 
 
     @Override
@@ -169,9 +150,9 @@ public class SmsVerificationActivity extends AppCompatActivity {
 
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
-                userNames = new ArrayList<>();
+               // userNames = new ArrayList<>();
 
-                user = new ParseUser();
+               // user = new ParseUser();
 
 
 

@@ -120,6 +120,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else {
 
 
+
+
             intent = new Intent(getApplicationContext(), OrderConfirmationActivity.class);
 
             intent.putExtra("mobileNumber", username);
@@ -129,21 +131,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    /**
-     *
-     * @param datePicker
-     * @return a java.util.Date
-     */
-    public static java.util.Date getDateFromDatePicker(DatePicker datePicker){
-        int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth();
-        int year =  datePicker.getYear();
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-
-        return calendar.getTime();
-    }
 
 
 
@@ -165,53 +153,44 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (checkConnection.isNetwork()) {
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
-                if (ParseUser.getCurrentUser() != null) {
+
+                ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundConstraintLayout);
+
+                backgroundReleativeLayout.setOnClickListener(this);
+
+                mobileEditText = findViewById(R.id.mobileEditText);
+
+                signUpButton = findViewById(R.id.button2);
+
+                userNames = new ArrayList<>();
 
 
-                    intent = new Intent(getApplicationContext(), OrderConfirmationActivity.class);
+                TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 
-                    intent.putExtra("mobileNumber", username);
+                String countryCodeValue = tm.getNetworkCountryIso();
 
-                    startActivity(intent);
+                myString = countryCodeValue + " - " + Iso2phone.getPhone(countryCodeValue);  //the value you want the position for
 
-                } else {
-                    ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundConstraintLayout);
+                ArrayAdapter<String> spinnerCountShoesArrayAdapter = new ArrayAdapter<String>(
+                        this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        getResources().getStringArray(R.array.DialingCountryCode));
+                spinner.setAdapter(spinnerCountShoesArrayAdapter);
 
-                    backgroundReleativeLayout.setOnClickListener(this);
+                spinner.setOnItemSelectedListener(this);
 
-                    mobileEditText = findViewById(R.id.mobileEditText);
+                //let spinner stops on user country code
+                int spinnerPosition = spinnerCountShoesArrayAdapter.getPosition(myString);
+                // set the default according to value
+                spinner.setSelection(spinnerPosition);
 
-                    signUpButton = findViewById(R.id.button2);
+                Log.d("that2 : ", callingCode);
 
-                    userNames = new ArrayList<>();
+                callingC = Arrays.asList(myString.split(" - "));
 
-
-                    TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-
-                    String countryCodeValue = tm.getNetworkCountryIso();
-
-                    myString = countryCodeValue + " - " + Iso2phone.getPhone(countryCodeValue);  //the value you want the position for
-
-                    ArrayAdapter<String> spinnerCountShoesArrayAdapter = new ArrayAdapter<String>(
-                            this,
-                            android.R.layout.simple_spinner_dropdown_item,
-                            getResources().getStringArray(R.array.DialingCountryCode));
-                    spinner.setAdapter(spinnerCountShoesArrayAdapter);
-
-                    spinner.setOnItemSelectedListener(this);
-
-                    //let spinner stops on user country code
-                    int spinnerPosition = spinnerCountShoesArrayAdapter.getPosition(myString);
-                    // set the default according to value
-                    spinner.setSelection(spinnerPosition);
-
-                    Log.d("that2 : ", callingCode);
-
-                    callingC = Arrays.asList(myString.split(" - "));
-
-                    callingCode = callingC.get(1);
-                }
+                callingCode = callingC.get(1);
             }
+
 
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
