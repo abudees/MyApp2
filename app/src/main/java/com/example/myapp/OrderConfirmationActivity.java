@@ -69,12 +69,33 @@ public class OrderConfirmationActivity extends AppCompatActivity {
     public int m;
     public int d;
 
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
 
 
 
     public void clearsharedPreferences (){
 
       //  SharedPreferences.Editor.clear().commit();
+    }
+
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
     }
 
 
@@ -258,22 +279,4 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
             }
         }
-/*    public void showDatePickerDialog () {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                this,
-                Calendar.getInstance().get(Calendar.YEAR),
-                Calendar.getInstance().get(Calendar.MONTH),
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.show();
-    }
-
-    @Override
-    public void onDateSet (DatePicker view,int year, int month, int dayOfMonth){
-        String date = "day/month/year: " + month + "/" + dayOfMonth + "/" + year;
-        dateText.setText(date);
-        Log.d("a", String.valueOf(dayOfMonth));
-        Log.d("b", String.valueOf(myDate));
-    }*/
-
     }

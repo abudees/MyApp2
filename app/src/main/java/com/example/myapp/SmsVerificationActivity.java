@@ -70,6 +70,7 @@ public class SmsVerificationActivity extends AppCompatActivity {
                                     Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
 
 
+                                    Log.d("ooooo",cameFromActivity);
 
                                     if (cameFromActivity.matches("mainActivity")) {
 
@@ -154,6 +155,8 @@ public class SmsVerificationActivity extends AppCompatActivity {
 
                // user = new ParseUser();
 
+
+                cameFromActivity = getIntent().getStringExtra("cameFromActivity");
 
 
 

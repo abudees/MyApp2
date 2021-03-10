@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity  {
 
    // Boolean englishLanguageActive = true;
 
+    TextView textCartItemCount;
+
     String area;
 
     Intent intent;
@@ -56,6 +60,10 @@ public class MainActivity extends AppCompatActivity  {
     String welcomeMessage = "Welcome Guest";
 
     String userType;
+
+    private SqliteDatabase mDatabase;
+
+    int mCartItemCount;
 
 
 
@@ -110,11 +118,43 @@ public class MainActivity extends AppCompatActivity  {
     public void login (View view){
 
         intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.putExtra("cameFromActivity", "mainActivity");
 
         startActivity(intent);
     }
 
 
+
+    public void areaList () {
+
+        areaList = new ArrayList<>();
+        areaList.add("Please Select your Area");
+
+        ParseQuery<ParseObject> query = new ParseQuery<>("Area");
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                if (e == null) {
+
+                    for (ParseObject object : objects) {
+
+                        areaList.add(object.getString("areaName"));
+                    }
+
+                    adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,
+                            areaList);
+
+                    // Apply the adapter to the spinner
+                    spinner.setAdapter(adapter);
+
+                    spinner.setOnItemSelectedListener(new mySpinnerListener());
+                }
+            }
+        });
+    }
 
 
 
@@ -170,7 +210,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-        getSupportActionBar().hide(); //hide the title bar
+       // getSupportActionBar().hide(); //hide the title bar
 
         languageTextView = findViewById(R.id.languageTextView);
         spinner = findViewById(R.id.areaSelect);
@@ -192,10 +232,17 @@ public class MainActivity extends AppCompatActivity  {
 
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
-
+                mDatabase = new SqliteDatabase(this);
 
 
                 if (ParseUser.getCurrentUser() != null) {
+
+
+
+
+                        setupBadge();
+
+
 
                     ParseQuery<ParseUser> query = ParseUser.getQuery();
 
@@ -243,37 +290,13 @@ public class MainActivity extends AppCompatActivity  {
 
                     logout.setVisibility(View.VISIBLE);
 
+                    areaList();
+
                 } else {
 
                     logout.setVisibility(View.INVISIBLE);
 
-                    areaList = new ArrayList<>();
-                    areaList.add("Please Select your Area");
-
-                    ParseQuery<ParseObject> query = new ParseQuery<>("Area");
-
-                    query.findInBackground(new FindCallback<ParseObject>() {
-
-                        @Override
-                        public void done(List<ParseObject> objects, ParseException e) {
-
-                            if (e == null) {
-
-                                for (ParseObject object : objects) {
-
-                                    areaList.add(object.getString("areaName"));
-                                }
-
-                                adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,
-                                        areaList);
-
-                                // Apply the adapter to the spinner
-                                spinner.setAdapter(adapter);
-
-                                spinner.setOnItemSelectedListener(new mySpinnerListener());
-                            }
-                        }
-                    });
+                    areaList();
                 }
 
             } else {
@@ -309,6 +332,65 @@ public class MainActivity extends AppCompatActivity  {
             // TODO Auto-generated method stub
             // Do nothing.
 
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+
+            final MenuItem menuItem = menu.findItem(R.id.action_cart);
+
+            View actionView = menuItem.getActionView();
+
+
+            textCartItemCount = actionView.findViewById(R.id.cart_badge);
+
+            mCartItemCount = mDatabase.listAll().size();
+            setupBadge();
+
+            actionView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onOptionsItemSelected(menuItem);
+                }
+            });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_cart) {
+            // Do something
+
+            intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+            intent.putExtra("cameFromActivity", "MainActivity");
+
+            startActivity(intent);
+
+
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupBadge() {
+
+        if (textCartItemCount != null) {
+            if (mCartItemCount == 0) {
+                if (textCartItemCount.getVisibility() != View.GONE) {
+                    textCartItemCount.setVisibility(View.GONE);
+                }
+            } else {
+                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+                if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                    textCartItemCount.setVisibility(View.VISIBLE);
+                }
+            }
         }
     }
 }

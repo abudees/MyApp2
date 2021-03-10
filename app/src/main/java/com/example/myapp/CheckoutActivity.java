@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,12 +100,21 @@ public class CheckoutActivity extends AppCompatActivity {
     ArrayList<Integer> vendorsLocations ;
     ArrayList<Integer> distance ;
 
+    String cameFromActivity ="";
 
-    private static final String COLUMN_RNAME = "recipientName";
-    private static final String COLUMN_RMOBILE = "recipientMobile";
-    private static final String COLUMN_LOCATION = "deliveryLocation";
-    private static final String COLUMN_MSG = "message";
-    private static final String COLUMN_VOUCHER = "discountVoucher";
+    Intent intent;
+
+    int productSelected;
+
+    TextView currentQty;
+
+    int categoryNumber;
+
+
+
+
+
+
 
 
 
@@ -124,45 +135,114 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
-    public void placeOrder (View view){
 
 
-
-    }
 
    // double subTotal = 0;
-
 
     int sum;
 
 
-    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1))
-                * Math.sin(deg2rad(lat2))
-                + Math.cos(deg2rad(lat1))
-                * Math.cos(deg2rad(lat2))
-                * Math.cos(deg2rad(theta));
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        return (dist);
+
+    public void addItemToCart(View view) {
+
+        try {
+            mDatabase = new SqliteDatabase(this);
+
+
+
+            if (mDatabase.checkProduct(productSelected)) {
+
+                // Log.i("price  ", String.valueOf(price));
+
+                mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
+                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
+
+                Toast.makeText(this, "added twice", Toast.LENGTH_LONG).show();
+
+            } else {
+
+                Products newProduct = new Products(productSelected);
+
+                mDatabase.addProduct(newProduct);
+                currentQty.setText(String.valueOf(1));
+
+
+                Toast.makeText(this, "added", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
     }
 
 
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
+    public void removeItem(View view) {
+
+        try {
+
+            if (mDatabase.checkProduct(productSelected)) {
+
+                if (mDatabase.getQty(productSelected) == 1) {
+
+                    mDatabase.deleteProduct(productSelected);
+
+                    currentQty.setText(0);
+
+                } else if (mDatabase.getQty(productSelected) > 1) {
+
+                    mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) - 1);
+
+                    currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
+                    Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, ("Item selected not in cart " + mDatabase.getQty(productSelected)), Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception error) {
+
+            error.printStackTrace();
+
+        }
     }
 
-    private double rad2deg(double rad) {
-        return (rad * 180.0 / Math.PI);
+
+    public void continueShopping (View view){
+
+        switch (Objects.requireNonNull(cameFromActivity)) {
+
+            case "ProductsActivity":
+
+                intent = new Intent(getApplicationContext(), ProductsActivity.class);
+                intent.putExtra("categoryNumber", categoryNumber);
+
+                startActivity(intent);
+
+
+                break;
+            case "MainActivity":
+
+                intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                startActivity(intent);
+                break;
+
+
+            case "CategoriesActivity":
+
+                intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+                startActivity(intent);
+                break;
+
+            default:
+                Toast.makeText(CheckoutActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+
+                break;
+
+
+        }
     }
-
-
-
-     String z;
-
-
 
 
 
@@ -172,7 +252,7 @@ public class CheckoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
 
-        ParseAnalytics.trackAppOpenedInBackground(getIntent());
+
 
 
 
@@ -181,6 +261,17 @@ public class CheckoutActivity extends AppCompatActivity {
         pIDs = mDatabase.listProducts();
         qty = mDatabase.listQty();
 
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras == null) {
+                categoryNumber = 0;
+            } else {
+                categoryNumber = extras.getInt("categoryNumber");
+            }
+        } else {
+            categoryNumber = (int) savedInstanceState.getSerializable("categoryNumber");
+        }
 
 
 
@@ -192,6 +283,8 @@ public class CheckoutActivity extends AppCompatActivity {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
+
+                ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
                 linearLayoutManager = new LinearLayoutManager(this);
                 cartView = findViewById(R.id.myCartList);
@@ -208,6 +301,8 @@ public class CheckoutActivity extends AppCompatActivity {
                 vendorsLocations = new ArrayList<>();
 
                 distance = new ArrayList<>();
+
+                cameFromActivity = getIntent().getStringExtra("cameFromActivity");
 
              //   z = "";
 
@@ -290,15 +385,10 @@ public class CheckoutActivity extends AppCompatActivity {
                                     productTitle.add(object.getString("title"));
 
                                     price.add(object.getInt("price"));
-
-
-
-
                                 }
                             }
 
                             if (allProducts.size() > 0) {
-
 
                                 cartView.setVisibility(View.VISIBLE);
                                 mAdapter = new RecyclerViewWithFooterAdapter(CheckoutActivity.this, pIDs, url, productTitle, allProducts, price, qty);
@@ -306,14 +396,12 @@ public class CheckoutActivity extends AppCompatActivity {
 
                                 // int all = mDatabase.sumPriceCartItems(price);
 
-
                                 for (int g = 0; g < price.size(); g++) {
 
                                     sum += price.get(g) * mDatabase.getQty(pIDs.get(g));
                                 }
 
                                 totals.add(sum);
-
 
                                 Log.d("totals: ", String.valueOf(totals.get(totals.size() - 1)));
 
@@ -328,8 +416,6 @@ public class CheckoutActivity extends AppCompatActivity {
                         }
                     });
                 }
-
-
             }
         } catch (InterruptedException | IOException e) {
 

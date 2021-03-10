@@ -119,12 +119,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         } else {
 
-
-
-
-            intent = new Intent(getApplicationContext(), OrderConfirmationActivity.class);
+            intent = new Intent(getApplicationContext(), SmsVerificationActivity.class);
 
             intent.putExtra("mobileNumber", username);
+            intent.putExtra("cameFromActivity", getIntent().getStringExtra("cameFromActivity"));
 
             startActivity(intent);
 

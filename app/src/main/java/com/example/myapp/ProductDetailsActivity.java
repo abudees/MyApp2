@@ -63,19 +63,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                // Log.i("price  ", String.valueOf(price));
 
-                mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
-                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
+
 
                 setupBadge();
 
-                Toast.makeText(this, "added twice", Toast.LENGTH_LONG).show();
 
             } else {
 
                 Products newProduct = new Products(productSelected);
 
                 mDatabase.addProduct(newProduct);
-                currentQty.setText(String.valueOf(1));
+
 
                 setupBadge();
 
@@ -87,37 +86,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
 
-    public void removeItem(View view) {
 
-        try {
-
-            if (mDatabase.checkProduct(productSelected)) {
-
-                if (mDatabase.getQty(productSelected) == 1) {
-
-                    mDatabase.deleteProduct(productSelected);
-
-                    currentQty.setText(0);
-                    setupBadge();
-
-                } else if (mDatabase.getQty(productSelected) > 1) {
-
-                    mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) - 1);
-
-                    currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
-                    setupBadge();
-
-                    Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(this, ("Item selected not in cart " + mDatabase.getQty(productSelected)), Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception error) {
-
-            error.printStackTrace();
-
-        }
-    }
 
 
     public void clearCart(View view) {

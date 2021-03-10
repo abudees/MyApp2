@@ -30,7 +30,6 @@
         <activity android:name=".EmailRegistration" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".OrderConfirmationActivity" />
-        <activity android:name=".CartPreviewActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
