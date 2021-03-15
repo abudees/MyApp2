@@ -156,7 +156,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 // Log.i("price  ", String.valueOf(price));
 
                 mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
-                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
 
 
                 Toast.makeText(this, "added twice", Toast.LENGTH_LONG).show();

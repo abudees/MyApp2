@@ -24,6 +24,11 @@
     <string name="back4app_client_key">Bo3IKZ2OgPUmaoopGWFnj4tmUfH3BusBYAs84VEe</string>
     <string name="pick_time" />
     <string name="pick_date" />
+    <string name="mail" />
+    <string name="upload" />
+    <string name="share" />
+    <string name="action_settings" />
+    <string name="cart">Cart</string>
 
 
     <string-array name="DialingCountryCode">

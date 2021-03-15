@@ -22,6 +22,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +52,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     TextView textCartItemCount;
 
+    Intent intent;
+
+
+    private MenuItem sigInMenu;
+    private MenuItem signoutMenu;
 
     public void addItemToCart(View view) {
 
@@ -58,13 +64,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
             mDatabase = new SqliteDatabase(this);
 
 
-
             if (mDatabase.checkProduct(productSelected)) {
 
                // Log.i("price  ", String.valueOf(price));
 
-
-
+                mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
+                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
 
                 setupBadge();
 
@@ -110,7 +115,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     public void checkOut(View view) {
 
-        Intent intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+        intent = new Intent(getApplicationContext(), CheckoutActivity.class);
 
         startActivity(intent);
     }
@@ -188,7 +193,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                                     productTitle.setText(object.getString("title"));
 
-                                    Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL")).centerInside().into(productDetailImage);
+                                    Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL"))
+                                            .centerInside().into(productDetailImage);
 
 
                                     productPrice.setText(String.valueOf(object.getInt("price")));
@@ -208,36 +214,86 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         final MenuItem menuItem = menu.findItem(R.id.action_cart);
 
         View actionView = menuItem.getActionView();
 
+        sigInMenu = menu.findItem(R.id.signInMenu);
+        signoutMenu = menu.findItem(R.id.signOutInMenu);
+        // View signInActionView = menuSignIn.getActionView();
+
+        // View signoutView = menuSignOut.getActionView();
 
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
+
         mCartItemCount = mDatabase.listAll().size();
         setupBadge();
 
-        actionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOptionsItemSelected(menuItem);
-            }
-        });
+        if(ParseUser.getCurrentUser() != null) {
 
+
+
+            MenuItem item = menu.findItem(R.id.signInMenu);
+            item.setVisible(false);//
+            MenuItem item1 = menu.findItem(R.id.signOutInMenu);
+            item1.setVisible(true);
+
+
+        } else {
+
+            MenuItem item = menu.findItem(R.id.signInMenu);
+            item.setVisible(true);//
+            MenuItem item1 = menu.findItem(R.id.signOutInMenu);
+            item1.setVisible(false);
+
+
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        if (item.getItemId() == R.id.action_cart) {// Do something
-            return true;
+        switch (id) {
+            case R.id.action_cart:
+                // do something
+
+                intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+                intent.putExtra("cameFromActivity", "MainActivity");
+
+                startActivity(intent);
+                break;
+            case R.id.signInMenu:
+                // do something
+
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra("cameFromActivity", "MainActivity");
+
+                startActivity(intent);
+                break;
+
+            case R.id.signOutInMenu:
+
+                ParseUser.logOut();
+
+                signoutMenu.setVisible(false);
+                // show the menu item
+                sigInMenu.setVisible(true);
+
+
+                break;
+
         }
+
         return super.onOptionsItemSelected(item);
     }
-
     private void setupBadge() {
 
         if (textCartItemCount != null) {
@@ -253,6 +309,4 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }

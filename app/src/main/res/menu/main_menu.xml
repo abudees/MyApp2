@@ -7,7 +7,19 @@
     <item
         android:id="@+id/action_cart"
         android:icon="@drawable/ic_action_cart"
-        android:title="Cart"
+        android:title="@string/cart"
         app:actionLayout="@layout/custom_action_item_layout"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/signInMenu"
+        android:title="SignIn"
+        app:showAsAction="never"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/signOutInMenu"
+        android:title="SignOut"
+        app:showAsAction="never"
+        android:visible="false"/>
 </menu>

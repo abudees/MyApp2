@@ -72,7 +72,7 @@ public class SmsVerificationActivity extends AppCompatActivity {
 
                                     Log.d("ooooo",cameFromActivity);
 
-                                    if (cameFromActivity.matches("mainActivity")) {
+                                    if (cameFromActivity.matches("MainActivity")) {
 
                                         intent = new Intent(getApplicationContext(), MainActivity.class);
 

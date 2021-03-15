@@ -51,8 +51,12 @@ public class CategoriesActivity extends AppCompatActivity {
 
      int mCartItemCount;
 
+    private MenuItem sigInMenu;
+    private MenuItem signoutMenu;
 
-     @Override
+
+
+    @Override
      protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
@@ -166,63 +170,102 @@ public class CategoriesActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
-
 
         final MenuItem menuItem = menu.findItem(R.id.action_cart);
 
         View actionView = menuItem.getActionView();
 
+        sigInMenu = menu.findItem(R.id.signInMenu);
+        signoutMenu = menu.findItem(R.id.signOutInMenu);
+        // View signInActionView = menuSignIn.getActionView();
+
+        // View signoutView = menuSignOut.getActionView();
 
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
 
         mCartItemCount = mDatabase.listAll().size();
         setupBadge();
 
-        actionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOptionsItemSelected(menuItem);
-            }
-        });
+        if(ParseUser.getCurrentUser() != null) {
 
+
+
+            MenuItem item = menu.findItem(R.id.signInMenu);
+            item.setVisible(false);//
+            MenuItem item1 = menu.findItem(R.id.signOutInMenu);
+            item1.setVisible(true);
+
+
+        } else {
+
+            MenuItem item = menu.findItem(R.id.signInMenu);
+            item.setVisible(true);//
+            MenuItem item1 = menu.findItem(R.id.signOutInMenu);
+            item1.setVisible(false);
+
+
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        if (item.getItemId() == R.id.action_cart) {
-            // Do something
-            intent = new Intent(getApplicationContext(), CheckoutActivity.class);
-            intent.putExtra("cameFromActivity", "CategoriesActivity");
+        switch (id) {
+            case R.id.action_cart:
+                // do something
 
-            startActivity(intent);
+                intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+                intent.putExtra("cameFromActivity", "CategoriesActivity");
+
+                startActivity(intent);
+                break;
+            case R.id.signInMenu:
+                // do something
+
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra("cameFromActivity", "CategoriesActivity");
+
+                startActivity(intent);
+                break;
+
+            case R.id.signOutInMenu:
+
+                ParseUser.logOut();
+
+                signoutMenu.setVisible(false);
+                // show the menu item
+                sigInMenu.setVisible(true);
 
 
-            return true;
+                break;
+
         }
+
         return super.onOptionsItemSelected(item);
     }
-
     private void setupBadge() {
 
-
-        if (ParseUser.getCurrentUser() != null) {
-
-
-            if (textCartItemCount != null) {
-                if (mCartItemCount == 0) {
-                    if (textCartItemCount.getVisibility() != View.GONE) {
-                        textCartItemCount.setVisibility(View.GONE);
-                    }
-                } else {
-                    textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-                    if (textCartItemCount.getVisibility() != View.VISIBLE) {
-                        textCartItemCount.setVisibility(View.VISIBLE);
-                    }
+        if (textCartItemCount != null) {
+            if (mCartItemCount == 0) {
+                if (textCartItemCount.getVisibility() != View.GONE) {
+                    textCartItemCount.setVisibility(View.GONE);
+                }
+            } else {
+                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+                if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                    textCartItemCount.setVisibility(View.VISIBLE);
                 }
             }
         }
     }
 }
+
+
+

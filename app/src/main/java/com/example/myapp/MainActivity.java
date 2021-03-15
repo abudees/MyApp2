@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity  {
 
     int mCartItemCount;
 
+    private MenuItem sigInMenu;
+    private MenuItem signoutMenu;
+
 
 
 
@@ -80,6 +83,8 @@ public class MainActivity extends AppCompatActivity  {
         logout.setVisibility(View.INVISIBLE);
 
         login.setVisibility(View.VISIBLE);
+
+        setupBadge();
     }
 
 
@@ -118,9 +123,15 @@ public class MainActivity extends AppCompatActivity  {
     public void login (View view){
 
         intent = new Intent(getApplicationContext(), LoginActivity.class);
-        intent.putExtra("cameFromActivity", "mainActivity");
+        intent.putExtra("cameFromActivity", "MainActivity");
 
         startActivity(intent);
+    }
+
+
+    public void loginMode(){
+
+
     }
 
 
@@ -155,6 +166,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
     }
+
 
 
 
@@ -203,6 +215,8 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -234,13 +248,14 @@ public class MainActivity extends AppCompatActivity  {
 
                 mDatabase = new SqliteDatabase(this);
 
+                setupBadge();
 
                 if (ParseUser.getCurrentUser() != null) {
 
 
 
 
-                        setupBadge();
+
 
 
 
@@ -296,6 +311,8 @@ public class MainActivity extends AppCompatActivity  {
 
                     logout.setVisibility(View.INVISIBLE);
 
+
+
                     areaList();
                 }
 
@@ -337,47 +354,91 @@ public class MainActivity extends AppCompatActivity  {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
+        final MenuItem menuItem = menu.findItem(R.id.action_cart);
 
-            final MenuItem menuItem = menu.findItem(R.id.action_cart);
+        View actionView = menuItem.getActionView();
 
-            View actionView = menuItem.getActionView();
+        sigInMenu = menu.findItem(R.id.signInMenu);
+        signoutMenu = menu.findItem(R.id.signOutInMenu);
+       // View signInActionView = menuSignIn.getActionView();
+
+       // View signoutView = menuSignOut.getActionView();
+
+        textCartItemCount = actionView.findViewById(R.id.cart_badge);
+
+        mCartItemCount = mDatabase.listAll().size();
+        setupBadge();
+
+        if(ParseUser.getCurrentUser() != null) {
 
 
-            textCartItemCount = actionView.findViewById(R.id.cart_badge);
 
-            mCartItemCount = mDatabase.listAll().size();
-            setupBadge();
+            MenuItem item = menu.findItem(R.id.signInMenu);
+            item.setVisible(false);//
+            MenuItem item1 = menu.findItem(R.id.signOutInMenu);
+            item1.setVisible(true);
 
-            actionView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onOptionsItemSelected(menuItem);
-                }
-            });
 
+        } else {
+
+            MenuItem item = menu.findItem(R.id.signInMenu);
+            item.setVisible(true);//
+            MenuItem item1 = menu.findItem(R.id.signOutInMenu);
+            item1.setVisible(false);
+
+
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        if (item.getItemId() == R.id.action_cart) {
-            // Do something
+        switch (id) {
+            case R.id.action_cart:
+                // do something
 
-            intent = new Intent(getApplicationContext(), CheckoutActivity.class);
-            intent.putExtra("cameFromActivity", "MainActivity");
+                intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+                intent.putExtra("cameFromActivity", "MainActivity");
 
-            startActivity(intent);
+                startActivity(intent);
+                break;
+
+            case R.id.signInMenu:
+                // do something
+
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra("cameFromActivity", "MainActivity");
+
+                startActivity(intent);
+                break;
+
+            case R.id.signOutInMenu:
+
+                ParseUser.logOut();
+
+                logout.setVisibility(View.INVISIBLE);
+
+                login.setVisibility(View.VISIBLE);
+
+                signoutMenu.setVisible(false);
+                // show the menu item
+                sigInMenu.setVisible(true);
 
 
+                break;
 
-            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
-
     private void setupBadge() {
 
         if (textCartItemCount != null) {
@@ -394,5 +455,6 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 }
+
 
 
