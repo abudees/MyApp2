@@ -245,6 +245,18 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
 
+    public void checkOut (View view){
+        if (ParseUser.getCurrentUser() != null) {
+
+            intent = new Intent(getApplicationContext(), RecipentsDetailsActivity.class);
+            startActivity(intent);
+        } else {
+            intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -367,10 +379,10 @@ public class CheckoutActivity extends AppCompatActivity {
 
                     ParseQuery<ParseObject> query = ParseQuery.getQuery("Products");
 
-                    query.orderByAscending("productId");
+                    query.orderByAscending("productNo");
 
 
-                    query.whereEqualTo("productId", pIDs.get(i));
+                    query.whereEqualTo("productNo", pIDs.get(i));
 
                     query.findInBackground(new FindCallback<ParseObject>() {
                         @Override

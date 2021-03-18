@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".RecipentsDetailsActivity"></activity>
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SmsVerificationActivity" />
         <activity android:name=".EmailRegistration" />

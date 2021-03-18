@@ -248,15 +248,12 @@ public class MainActivity extends AppCompatActivity  {
 
                 mDatabase = new SqliteDatabase(this);
 
+
+                Log.d("cart has", String.valueOf(mDatabase.listProducts()));
+
                 setupBadge();
 
                 if (ParseUser.getCurrentUser() != null) {
-
-
-
-
-
-
 
 
                     ParseQuery<ParseUser> query = ParseUser.getQuery();
@@ -372,6 +369,19 @@ public class MainActivity extends AppCompatActivity  {
         mCartItemCount = mDatabase.listAll().size();
         setupBadge();
 
+        actionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+                intent.putExtra("cameFromActivity", "MainActivity");
+
+                startActivity(intent);
+
+            }
+        });
+
         if(ParseUser.getCurrentUser() != null) {
 
 
@@ -402,14 +412,7 @@ public class MainActivity extends AppCompatActivity  {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_cart:
-                // do something
 
-                intent = new Intent(getApplicationContext(), CheckoutActivity.class);
-                intent.putExtra("cameFromActivity", "MainActivity");
-
-                startActivity(intent);
-                break;
 
             case R.id.signInMenu:
                 // do something

@@ -232,6 +232,19 @@ public class ProductDetailsActivity extends AppCompatActivity {
         mCartItemCount = mDatabase.listAll().size();
         setupBadge();
 
+        actionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+                intent.putExtra("cameFromActivity", "ProductDetailsActivity");
+
+                startActivity(intent);
+
+            }
+        });
+
         if(ParseUser.getCurrentUser() != null) {
 
 
@@ -262,22 +275,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_cart:
-                // do something
 
-                intent = new Intent(getApplicationContext(), CheckoutActivity.class);
-                intent.putExtra("cameFromActivity", "MainActivity");
 
-                startActivity(intent);
-                break;
             case R.id.signInMenu:
                 // do something
 
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.putExtra("cameFromActivity", "MainActivity");
+                intent.putExtra("cameFromActivity", "ProductDetailsActivity");
 
                 startActivity(intent);
                 break;
+
+
 
             case R.id.signOutInMenu:
 
