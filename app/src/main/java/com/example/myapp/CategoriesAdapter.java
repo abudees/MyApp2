@@ -32,17 +32,21 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
 
     private Context context;
 
+    private String area;
 
 
 
 
-    CategoriesAdapter(Context context, List<String> url, List<String> title, List<Integer> id){
+
+    CategoriesAdapter(Context context, List<String> url, List<String> title, List<Integer> id , String area){
 
         inflater = LayoutInflater.from(context);
         this.url = url;
         this.title = title;
         this.id = id;
+        this.area = area;
         this.context = context;
+
 
     }
 
@@ -90,6 +94,7 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
                 Intent intent = new Intent(c, ProductsActivity.class);
 
                 intent.putExtra("categoryNumber", id.get(position));
+                intent.putExtra("area", area);
 
                 c.startActivity(intent);
 

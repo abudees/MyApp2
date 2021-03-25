@@ -45,6 +45,11 @@ public class SmsVerificationActivity extends AppCompatActivity {
   //  String userType;
 
 
+    EditText editText;
+    String text;
+    boolean delete = false;
+
+
 
 
 
@@ -154,6 +159,8 @@ public class SmsVerificationActivity extends AppCompatActivity {
                // userNames = new ArrayList<>();
 
                // user = new ParseUser();
+
+
 
 
                 cameFromActivity = getIntent().getStringExtra("cameFromActivity");

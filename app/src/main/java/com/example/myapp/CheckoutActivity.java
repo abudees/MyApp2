@@ -249,6 +249,7 @@ public class CheckoutActivity extends AppCompatActivity {
         if (ParseUser.getCurrentUser() != null) {
 
             intent = new Intent(getApplicationContext(), RecipentsDetailsActivity.class);
+
             startActivity(intent);
         } else {
             intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -359,6 +360,9 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
 
+
+
+
                 final Location deliveryLocation = someLocation;
 
                 Collections.sort(locations, new Comparator<Location>() {
@@ -369,6 +373,16 @@ public class CheckoutActivity extends AppCompatActivity {
                         return dist1.compareTo(dist2);
                     }
                 });*/
+
+
+                String area = "";
+
+                Bundle extras = getIntent().getExtras();
+                if (extras != null) {
+                    area = extras.getString("area");
+                }
+
+                Log.d("area5: ", area);
 
 
                 Log.d("products in cart are: ", String.valueOf(pIDs));

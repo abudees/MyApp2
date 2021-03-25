@@ -27,11 +27,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
     List<Integer> productId;
 
-    String currency;
+    String currency , area;
 
     private Context context;
 
-    public ProductsAdapter(Context context, List<String> mUrl, List<String> mTitle, List<Integer> mPrice, List<Integer> mProductId, String mCurrency){
+
+
+    public ProductsAdapter(Context context, List<String> mUrl, List<String> mTitle, List<Integer> mPrice, List<Integer> mProductId, String mCurrency, String area){
 
         inflater = LayoutInflater.from(context);
         this.url = mUrl;
@@ -39,6 +41,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         this.price = mPrice;
         this.productId = mProductId;
         this.currency = mCurrency;
+        this.area = area;
         this.context = context;
 
     }
@@ -86,6 +89,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
                 intent.putExtra("productId", productId.get(position));
 
+                intent.putExtra("area", area);
 
                 c.startActivity(intent);
 

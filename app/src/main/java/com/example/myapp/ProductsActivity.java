@@ -71,6 +71,10 @@ public class ProductsActivity extends AppCompatActivity {
     private MenuItem sigInMenu;
     private MenuItem signoutMenu;
 
+    String area;
+
+     String currency;
+
 
 
 
@@ -101,7 +105,7 @@ public class ProductsActivity extends AppCompatActivity {
         String countryCode = tm.getSimCountryIso();
         String lang = Locale.getDefault().getDisplayLanguage();
         Locale locale = new Locale(lang, countryCode);
-        final String currency = Currency.getInstance(locale).getCurrencyCode();
+        /*final String*/ currency = Currency.getInstance(locale).getCurrencyCode();
 
 
         recyclerView = findViewById(R.id.recyclerview1);
@@ -159,8 +163,16 @@ public class ProductsActivity extends AppCompatActivity {
                                 ptoductId.add(object.getInt("productNo"));
                             }
 
+                            String area = "";
+
+                            Bundle extras = getIntent().getExtras();
+                            if (extras != null) {
+                                area = extras.getString("area");
+                            }
+
+                               Log.d("area2", area);
                             GridLayoutManager mLayoutManager = new GridLayoutManager(ProductsActivity.this, 2);
-                            adapter = new ProductsAdapter(ProductsActivity.this, url, title, price, ptoductId, currency);
+                            adapter = new ProductsAdapter(ProductsActivity.this, url, title, price, ptoductId, currency,area);
 
                             recyclerView.setAdapter(adapter);
                             recyclerView.setLayoutManager(mLayoutManager);

@@ -28,6 +28,12 @@
     <string name="upload" />
     <string name="share" />
     <string name="action_settings" />
+
+    <string name="phone_number">Phone Number</string>
+    <string name="generate_otp">Generate OTP</string>
+    <string name="enter_otp">Enter OTP</string>
+    <string name="verify_sign_in">Verify and Sign In</string>
+    <string name="sign_out">sign out</string>
     <string name="cart">Cart</string>
 
 

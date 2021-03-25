@@ -102,9 +102,11 @@ public class MainActivity extends AppCompatActivity  {
 
         } else {
 
-            intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+            intent = new Intent(getApplicationContext(), OTPActivity.class);
 
-            intent.putExtra("area", area);
+            Log.d("area", area);
+          //  intent.putExtra("area", area);
+            intent.putExtra("area",area);
 
             startActivity(intent);
         }

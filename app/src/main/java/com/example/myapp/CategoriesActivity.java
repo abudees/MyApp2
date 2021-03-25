@@ -56,6 +56,11 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
 
+
+    Intent extras;
+
+
+
     @Override
      protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +89,7 @@ public class CategoriesActivity extends AppCompatActivity {
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
 
+
                 mDatabase = new SqliteDatabase(this);
 
 
@@ -110,6 +116,16 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
 
+              //  area = "lll";
+
+
+
+
+
+              //  area = intent.getStringExtra("area");
+
+             //   Log.d("area1", area);
+
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Categories");
 
                 query.whereEqualTo("status", true);
@@ -128,7 +144,17 @@ public class CategoriesActivity extends AppCompatActivity {
                                 id.add(object.getInt("categoryNo"));
                             }
 
-                            adapter = new CategoriesAdapter(CategoriesActivity.this, url, title, id);
+                            String area = "";
+
+                            Bundle extras = getIntent().getExtras();
+                            if (extras != null) {
+                                area = extras.getString("area");
+                            }
+
+
+
+                            adapter = new CategoriesAdapter(CategoriesActivity.this, url, title, id, area);
+
 
                             recyclerView.setAdapter(adapter);
 

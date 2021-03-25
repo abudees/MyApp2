@@ -54,6 +54,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     Intent intent;
 
+    String area = "";
+
+
+
 
     private MenuItem sigInMenu;
     private MenuItem signoutMenu;
@@ -117,6 +121,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         intent = new Intent(getApplicationContext(), CheckoutActivity.class);
 
+        intent.putExtra("area", area);
+
         startActivity(intent);
     }
 
@@ -145,6 +151,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
 
                 mDatabase = new SqliteDatabase(this);
+
+
+
+                Bundle extras = getIntent().getExtras();
+                if (extras != null) {
+                    area = extras.getString("area");
+                }
+
+
 
                 setupBadge();
                 productDetailImage = findViewById(R.id.productDetailImage);
@@ -206,7 +221,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
-
         }
     }
 
@@ -238,7 +252,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
                 intent = new Intent(getApplicationContext(), CheckoutActivity.class);
+
                 intent.putExtra("cameFromActivity", "ProductDetailsActivity");
+
+                intent.putExtra("area", intent.getStringExtra("area"));
 
                 startActivity(intent);
 
@@ -246,8 +263,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
         });
 
         if(ParseUser.getCurrentUser() != null) {
-
-
 
             MenuItem item = menu.findItem(R.id.signInMenu);
             item.setVisible(false);//

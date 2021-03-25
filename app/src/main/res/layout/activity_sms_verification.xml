@@ -6,16 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".SmsVerificationActivity">
 
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textNoSuggestions"
+        android:letterSpacing="0.4"
+        android:singleLine="true"
+        android:text="______"
+        app:layout_constraintBottom_toTopOf="@+id/guideline57"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" /><![CDATA[-->Its the spacing of letter
+    android:textSize="29sp" />
+
+    ]]>
+
     <Button
         android:id="@+id/button6"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="232dp"
         android:onClick="verified"
         android:text="Verified"
         app:layout_constraintBottom_toTopOf="@+id/guideline57"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
