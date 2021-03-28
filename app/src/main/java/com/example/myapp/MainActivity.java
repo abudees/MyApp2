@@ -37,6 +37,9 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity  {
 
+
+
+
    // Boolean englishLanguageActive = true;
 
     TextView textCartItemCount;
