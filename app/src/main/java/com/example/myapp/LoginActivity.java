@@ -38,21 +38,16 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnKeyListener, AdapterView.OnItemSelectedListener {
 
 
-    HttpResponse response ;
-    HttpEntity entity;
+
     String ACCOUNT_SID ="ACc2050a7f1942814404b2e15d8f74f9f2";
     String AUTH_TOKEN= "85015ecada0bcbbcf39df344030c1348";
 
-    HttpPost httppost;
 
     Boolean signUpModeActive = true;
     TextView changeSignUpTextView;

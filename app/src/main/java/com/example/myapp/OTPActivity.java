@@ -30,16 +30,30 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+
 public class OTPActivity extends AppCompatActivity/* implements View.OnClickListener */{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
     private EditText phoneNumber;
     private Button sendOtpBtn;
     char[] otp;
-
     Intent intent;
-
-
-
-
     Editable n;
 
     public void verifySMS (View view){
@@ -90,7 +104,7 @@ public class OTPActivity extends AppCompatActivity/* implements View.OnClickList
             e.printStackTrace();
         }
     }
-
+*/
 
 
     @Override
@@ -98,12 +112,25 @@ public class OTPActivity extends AppCompatActivity/* implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_o_t_p);
 
-        phoneNumber = findViewById(R.id.phoneNumber);
-        sendOtpBtn = findViewById(R.id.sendOtpBtn);
+      //  phoneNumber = findViewById(R.id.phoneNumber);
+       // sendOtpBtn = findViewById(R.id.sendOtpBtn);
 
-        n= phoneNumber.getText();
+       // n= phoneNumber.getText();
 
      //   sendOtpBtn.setOnClickListener(this);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
@@ -139,7 +166,7 @@ public class OTPActivity extends AppCompatActivity/* implements View.OnClickList
 
 
     }*/
-
+/*
     public class MyAsyncTask extends AsyncTask implements com.example.myapp.MyAsyncTask {
         URL Url;
         HttpURLConnection httpURLConnection = null;
@@ -176,5 +203,7 @@ public class OTPActivity extends AppCompatActivity/* implements View.OnClickList
         protected Object doInBackground(Object[] objects) {
             return null;
         }
-    }
+    }*/
+
+
 }

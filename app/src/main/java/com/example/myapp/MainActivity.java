@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity  {
     private MenuItem signoutMenu;
 
 
+    String  apiKey, token, url, url2;
+
+
 
 
 
@@ -128,6 +131,7 @@ public class MainActivity extends AppCompatActivity  {
     public void login (View view){
 
         intent = new Intent(getApplicationContext(), LoginActivity.class);
+
         intent.putExtra("cameFromActivity", "MainActivity");
 
         startActivity(intent);
@@ -174,6 +178,42 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+    public void verify (View view){
+
+
+        ParseQuery<ParseObject> query = new ParseQuery<>("APIs");
+
+        query.whereEqualTo("name", "sms");
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                if (e == null) {
+
+                    for (ParseObject object : objects) {
+
+                        apiKey = object.getString("accountSID");
+                        token = object.getString("authToken");
+                        url = object.getString("url");
+                        url2 =object.getString("url2");
+                    }
+
+                    intent = new Intent(getApplicationContext(), VerifyActivity.class);
+
+                    intent.putExtra("key", apiKey);
+                    intent.putExtra("token", token);
+                    intent.putExtra("url", url);
+                    intent.putExtra("url2", url2);
+
+                    startActivity(intent);
+
+                }
+            }
+        });
+
+    }
 
 
 
@@ -207,6 +247,8 @@ public class MainActivity extends AppCompatActivity  {
 
 
 */
+
+
 
 
 
@@ -257,6 +299,9 @@ public class MainActivity extends AppCompatActivity  {
                 Log.d("cart has", String.valueOf(mDatabase.listProducts()));
 
                 setupBadge();
+
+
+
 
                 if (ParseUser.getCurrentUser() != null) {
 
