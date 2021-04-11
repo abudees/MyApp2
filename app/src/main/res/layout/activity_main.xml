@@ -20,6 +20,7 @@
 
 
     <Button
+        android:id="@+id/button16"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -164,15 +165,6 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline18"
         app:layout_constraintTop_toTopOf="@+id/guideline16" />
-
-    <Button
-        android:id="@+id/button15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="verify"
-        android:text="Button"
-        tools:layout_editor_absoluteX="175dp"
-        tools:layout_editor_absoluteY="505dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

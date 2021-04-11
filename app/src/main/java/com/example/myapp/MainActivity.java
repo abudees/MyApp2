@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity  {
     private MenuItem signoutMenu;
 
 
-    String  apiKey, token, url, url2;
+
 
 
 
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity  {
 
         } else {
 
-            intent = new Intent(getApplicationContext(), OTPActivity.class);
+            intent = new Intent(getApplicationContext(), CategoriesActivity.class);
 
             Log.d("area", area);
           //  intent.putExtra("area", area);
@@ -178,42 +179,6 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-    public void verify (View view){
-
-
-        ParseQuery<ParseObject> query = new ParseQuery<>("APIs");
-
-        query.whereEqualTo("name", "sms");
-
-        query.findInBackground(new FindCallback<ParseObject>() {
-
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-
-                if (e == null) {
-
-                    for (ParseObject object : objects) {
-
-                        apiKey = object.getString("accountSID");
-                        token = object.getString("authToken");
-                        url = object.getString("url");
-                        url2 =object.getString("url2");
-                    }
-
-                    intent = new Intent(getApplicationContext(), VerifyActivity.class);
-
-                    intent.putExtra("key", apiKey);
-                    intent.putExtra("token", token);
-                    intent.putExtra("url", url);
-                    intent.putExtra("url2", url2);
-
-                    startActivity(intent);
-
-                }
-            }
-        });
-
-    }
 
 
 
@@ -376,6 +341,9 @@ public class MainActivity extends AppCompatActivity  {
 
             e.printStackTrace();
         }
+
+
+
     }
 
 
@@ -425,7 +393,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
                 intent = new Intent(getApplicationContext(), CheckoutActivity.class);
-                intent.putExtra("cameFromActivity", "MainActivity");
+                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
 
@@ -454,6 +422,7 @@ public class MainActivity extends AppCompatActivity  {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -468,7 +437,7 @@ public class MainActivity extends AppCompatActivity  {
                 // do something
 
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.putExtra("cameFromActivity", "MainActivity");
+                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
                 break;

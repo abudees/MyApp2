@@ -28,12 +28,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".VerifyActivity"></activity>
-        <activity android:name=".OTPVerificationActivity" />
-        <activity android:name=".OTPActivity" />
+        <activity android:name=".VerifyActivity" />
         <activity android:name=".RecipentsDetailsActivity" />
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".SmsVerificationActivity" />
         <activity android:name=".EmailRegistration" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".OrderConfirmationActivity" />

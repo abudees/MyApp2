@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import android.os.Bundle;
 
@@ -40,6 +41,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -60,29 +62,17 @@ import okhttp3.Response;
 public class VerifyActivity extends AppCompatActivity {
 
 
-    Button _btnLogin, _btnVerOTP;
-    EditText _txtName, _txtPhone, _txtVerOTP;
+    Button  _btnVerOTP;
+    EditText  _txtVerOTP;
     int randomNumber;
 
-    String apiKey, token, url1, url2;
+    String apiKey, token, url1, url2, message, defaultSenderNo, mobileNumber, cameFromActivity ;
 
-    //String  apiKey;
-
-    public static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
-    public static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
+    Intent intent;
 
 
 
-    Editable n;
 
-    String toPhoneNumber, message;
-
-    String sender ;
-    String number;
-
-
-
-    MySMSBroadcastReceiver mySMSBroadcastReceiver;
 
 
 
@@ -95,6 +85,10 @@ public class VerifyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify2);
 
+        defaultSenderNo= "+14142460442";
+
+
+
 
 
 
@@ -106,21 +100,25 @@ public class VerifyActivity extends AppCompatActivity {
                 token = "";
                 url1 ="";
                 url2="";
+                mobileNumber ="";
+
+                cameFromActivity ="";
 
             } else {
                 apiKey = extras.getString("key");
                 token = extras.getString("token");
                 url1 = extras.getString("url");
                 url2 = extras.getString("url2");
+                mobileNumber = extras.getString("mobileNumber");
+                cameFromActivity = extras.getString("cameFromActivity");
             }
         }
 
 
 
-        _txtName=(EditText)findViewById(R.id.txtName);
-        _txtPhone=(EditText)findViewById(R.id.txtPhone);
+
         _txtVerOTP=(EditText)findViewById(R.id.txtVerOTP);
-        _btnLogin=(Button)findViewById(R.id.btnLogin);
+
         _btnVerOTP=(Button)findViewById(R.id.btnVerOTP);
 
 
@@ -128,14 +126,23 @@ public class VerifyActivity extends AppCompatActivity {
 
 
 
-        _btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
+        try {
 
 
-                    // Construct data
+            // Construct data
 
+
+
+
+
+
+                if (mobileNumber.startsWith("+249")){
+                 // api for Sudan numbers
+
+
+                } else {
+
+                    // all numbers except Sudan
                     Random random = new Random();
                     randomNumber = random.nextInt(999999);
                     message = "<#> " + randomNumber + " Happy Birthday from  YazSeed .";
@@ -146,10 +153,9 @@ public class VerifyActivity extends AppCompatActivity {
 
                     String base64EncodedCredentials = "Basic " + Base64.encodeToString((apiKey + ":" + token).getBytes(), Base64.NO_WRAP);
 
-
                     RequestBody body = new FormBody.Builder()
-                            .add("From", "+14142460442")
-                            .add("To", _txtPhone.getText().toString())
+                            .add("From", defaultSenderNo)
+                            .add("To", mobileNumber)
                             .add("Body", message)
                             .build();
 
@@ -167,29 +173,16 @@ public class VerifyActivity extends AppCompatActivity {
 
 
                     Toast.makeText(getApplicationContext(), "OTP SEND SUCCESSFULLY", Toast.LENGTH_LONG).show();
-
-
-
-
-
-
-
-
-
-
-
-
-                } catch (Exception e) {
-
-                    //System.out.println("Error SMS "+e);
-                    // /return "Error "+e;
-                    Toast.makeText(getApplicationContext(), "ERROR SMS "+e, Toast.LENGTH_LONG).show();
-                    Toast.makeText(getApplicationContext(), "ERROR "+e, Toast.LENGTH_LONG).show();
-
-                    Log.d("error",e.toString());
                 }
-            }
-        });
+        } catch (Exception e) {
+
+            //System.out.println("Error SMS "+e);
+            // /return "Error "+e;
+            Toast.makeText(getApplicationContext(), "ERROR SMS " + e, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "ERROR " + e, Toast.LENGTH_LONG).show();
+
+            Log.d("error", e.toString());
+        }
 
 
 
@@ -198,6 +191,49 @@ public class VerifyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(randomNumber==Integer.valueOf(_txtVerOTP.getText().toString())){
                     Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+
+                    switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
+
+                        case "c":
+
+                            // after mobile verification
+                            Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+
+
+                            Log.d("ooooo",cameFromActivity);
+
+                            if (cameFromActivity.matches("MainActivity")) {
+
+                                intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                                startActivity(intent);
+                            }
+
+                            break;
+                        case "m":
+
+                            intent = new Intent(getApplicationContext(), VendorActivity.class);
+
+                            startActivity(intent);
+                            break;
+
+
+                        case "d":
+
+                            intent = new Intent(getApplicationContext(), DriverActivity.class);
+                            startActivity(intent);
+                            break;
+
+                        default:
+                            Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+
+                            break;
+                    }
+
+                    intent = new Intent(getApplicationContext(), cameFromActivity.class);
+
+
+                    intent.putExtra("mobileNumber", username);
 
                 }else{
                     Toast.makeText(getApplicationContext(), "WRONG OTP", Toast.LENGTH_LONG).show();

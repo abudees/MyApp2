@@ -64,6 +64,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     String username ;
 
+    String  apiKey, token, url, url2;
+
+
     //closes the keyboard if the user clicks anywhere else
     @Override
     public void onClick(View v) {
@@ -114,12 +117,41 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         } else {
 
-            intent = new Intent(getApplicationContext(), SmsVerificationActivity.class);
+            ParseQuery<ParseObject> query = new ParseQuery<>("APIs");
 
-            intent.putExtra("mobileNumber", username);
-            intent.putExtra("cameFromActivity", getIntent().getStringExtra("cameFromActivity"));
+            query.whereEqualTo("name", "sms");
 
-            startActivity(intent);
+            query.findInBackground(new FindCallback<ParseObject>() {
+
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
+
+                    if (e == null) {
+
+                        for (ParseObject object : objects) {
+
+                            apiKey = object.getString("accountSID");
+                            token = object.getString("authToken");
+                            url = object.getString("url");
+                            url2 =object.getString("url2");
+                        }
+
+                        intent = new Intent(getApplicationContext(), VerifyActivity.class);
+
+                        intent.putExtra("key", apiKey);
+                        intent.putExtra("token", token);
+                        intent.putExtra("url", url);
+                        intent.putExtra("url2", url2);
+
+                        intent.putExtra("mobileNumber", username);
+                        intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
+
+                        startActivity(intent);
+
+                    }
+                }
+            });
+
 
         }
     }
