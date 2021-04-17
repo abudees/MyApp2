@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Message;
 import android.os.StrictMode;
 import android.text.Editable;
@@ -63,18 +64,18 @@ public class VerifyActivity extends AppCompatActivity {
 
 
     Button  _btnVerOTP;
-    EditText  _txtVerOTP;
-    int randomNumber;
 
-    String apiKey, token, url1, url2, message, defaultSenderNo, mobileNumber, cameFromActivity ;
+    EditText  _txtVerOTP;
+
+    TextView mTextField;
 
     Intent intent;
 
+    int randomNumber;
 
+    Boolean counterValid = true;
 
-
-
-
+    String cameFromActivity;
 
 
 
@@ -85,34 +86,28 @@ public class VerifyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify2);
 
-        defaultSenderNo= "+14142460442";
-
-
-
 
 
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
-
             if (extras == null) {
-                apiKey = "";
-                token = "";
-                url1 ="";
-                url2="";
-                mobileNumber ="";
-
+                randomNumber = 0;
                 cameFromActivity ="";
-
             } else {
-                apiKey = extras.getString("key");
-                token = extras.getString("token");
-                url1 = extras.getString("url");
-                url2 = extras.getString("url2");
-                mobileNumber = extras.getString("mobileNumber");
+                randomNumber = extras.getInt("randomNumber");
                 cameFromActivity = extras.getString("cameFromActivity");
+
             }
+        } else {
+            randomNumber = (int) savedInstanceState.getSerializable("randomNumber");
         }
+
+
+
+
+
+
 
 
 
@@ -122,123 +117,78 @@ public class VerifyActivity extends AppCompatActivity {
         _btnVerOTP=(Button)findViewById(R.id.btnVerOTP);
 
 
+        mTextField = findViewById(R.id.textView);
 
 
 
+        new CountDownTimer(30000, 1000) {
 
-        try {
+            public void onTick(long millisUntilFinished) {
+                mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+                //here you can have your logic to set text to edittext
+            }
 
+            public void onFinish() {
+                mTextField.setText("done!");
 
-            // Construct data
+                counterValid = false;
+            }
 
-
-
-
-
-
-                if (mobileNumber.startsWith("+249")){
-                 // api for Sudan numbers
-
-
-                } else {
-
-                    // all numbers except Sudan
-                    Random random = new Random();
-                    randomNumber = random.nextInt(999999);
-                    message = "<#> " + randomNumber + " Happy Birthday from  YazSeed .";
-
-                    OkHttpClient client = new OkHttpClient();
-
-                    String url = url1 + apiKey + url2;
-
-                    String base64EncodedCredentials = "Basic " + Base64.encodeToString((apiKey + ":" + token).getBytes(), Base64.NO_WRAP);
-
-                    RequestBody body = new FormBody.Builder()
-                            .add("From", defaultSenderNo)
-                            .add("To", mobileNumber)
-                            .add("Body", message)
-                            .build();
-
-                    Request request = new Request.Builder()
-                            .url(url)
-                            .post(body)
-                            .header("Authorization", base64EncodedCredentials)
-                            .build();
-                    try {
-                        Response response = client.newCall(request).execute();
-                        Log.d("TAG", "sendSms: " + response.body().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        }.start();
 
 
-                    Toast.makeText(getApplicationContext(), "OTP SEND SUCCESSFULLY", Toast.LENGTH_LONG).show();
-                }
-        } catch (Exception e) {
-
-            //System.out.println("Error SMS "+e);
-            // /return "Error "+e;
-            Toast.makeText(getApplicationContext(), "ERROR SMS " + e, Toast.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(), "ERROR " + e, Toast.LENGTH_LONG).show();
-
-            Log.d("error", e.toString());
-        }
 
 
 
         _btnVerOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(randomNumber==Integer.valueOf(_txtVerOTP.getText().toString())){
-                    Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
 
-                    switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
+                if (counterValid) {
 
-                        case "c":
-
-                            // after mobile verification
-                            Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+                    if (randomNumber == Integer.parseInt(_txtVerOTP.getText().toString())) {
 
 
-                            Log.d("ooooo",cameFromActivity);
+                        Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
 
-                            if (cameFromActivity.matches("MainActivity")) {
+                        switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
 
-                                intent = new Intent(getApplicationContext(), MainActivity.class);
+                            case "c":
+
+                                // after mobile verification
+                                Toast.makeText(VerifyActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+
+
+                                break;
+                            case "m":
+
+                                intent = new Intent(getApplicationContext(), VendorActivity.class);
 
                                 startActivity(intent);
-                            }
-
-                            break;
-                        case "m":
-
-                            intent = new Intent(getApplicationContext(), VendorActivity.class);
-
-                            startActivity(intent);
-                            break;
+                                break;
 
 
-                        case "d":
+                            case "d":
 
-                            intent = new Intent(getApplicationContext(), DriverActivity.class);
-                            startActivity(intent);
-                            break;
+                                intent = new Intent(getApplicationContext(), DriverActivity.class);
+                                startActivity(intent);
+                                break;
 
-                        default:
-                            Toast.makeText(SmsVerificationActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+                            default:
+                                Toast.makeText(VerifyActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
 
-                            break;
+                                break;
+                        }
+
+                        intent = new Intent(getApplicationContext(), MainActivity.class);
+
+
+                        //intent.putExtra("mobileNumber", mobileNumber);
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "WRONG OTP", Toast.LENGTH_LONG).show();
                     }
-
-                    intent = new Intent(getApplicationContext(), cameFromActivity.class);
-
-
-                    intent.putExtra("mobileNumber", username);
-
-                }else{
-                    Toast.makeText(getApplicationContext(), "WRONG OTP", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 

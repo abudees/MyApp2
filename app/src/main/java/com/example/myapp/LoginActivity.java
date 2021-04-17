@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -35,36 +36,34 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.regex.Pattern;
 
-
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnKeyListener, AdapterView.OnItemSelectedListener {
 
 
+    EditText mobileEditText;
 
-    String ACCOUNT_SID ="ACc2050a7f1942814404b2e15d8f74f9f2";
-    String AUTH_TOKEN= "85015ecada0bcbbcf39df344030c1348";
-
-
-    Boolean signUpModeActive = true;
-    TextView changeSignUpTextView;
-    EditText mobileEditText, nameEditText,  emailEditText;
     Button signUpButton;
+
     Intent intent;
+
     Spinner spinner;
-    String  myString;
+
+    List<String> callingC, userNames ;
+
+    String username, apiKey, token, url, url2, cameFromActivity, url1, sudanOr, myString, sender ;
+
     String callingCode= "";
 
-    List<String> callingC ;
-
-    List<String> userNames ;
-
-    String username ;
-
-    String  apiKey, token, url, url2;
 
 
     //closes the keyboard if the user clicks anywhere else
@@ -81,8 +80,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-
-    //I dont know!
     // closing the keyboard if the user hit Enter
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -111,51 +108,101 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         callingC = Arrays.asList(callingCode.split(" - "));
 
+
         if (mobileEditText.getText().toString().matches("") || !isValidMobile(mobileEditText.getText().toString())) {
 
             Toast.makeText(this, "Please enter a valid mobile number", Toast.LENGTH_SHORT).show();
 
         } else {
 
-            ParseQuery<ParseObject> query = new ParseQuery<>("APIs");
-
-            query.whereEqualTo("name", "sms");
-
-            query.findInBackground(new FindCallback<ParseObject>() {
-
+            ParseQuery<ParseObject> queryUsers = new ParseQuery<>("User");
+            queryUsers.whereEqualTo("username", username);
+            queryUsers.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
+                    if (objects != null) {
 
-                    if (e == null) {
+                        ParseQuery<ParseObject> queryAPIs = new ParseQuery<>("APIs");
+                        if (username.startsWith("+249")) {
+                            // api for Sudan numbers
 
-                        for (ParseObject object : objects) {
+                            queryAPIs.whereEqualTo("name", "smsSudan");
 
-                            apiKey = object.getString("accountSID");
-                            token = object.getString("authToken");
-                            url = object.getString("url");
-                            url2 =object.getString("url2");
+                            queryAPIs.findInBackground(new FindCallback<ParseObject>() {
+
+                                @Override
+                                public void done(List<ParseObject> objects, ParseException e) {
+
+                                    if (e == null) {
+
+                                        for (ParseObject object : objects) {
+
+                                            apiKey = object.getString("accountSID");
+                                            token = object.getString("authToken");
+                                            url = object.getString("url");
+                                            url2 = object.getString("url2");
+                                            sender = object.getString("sender");
+
+                                        }
+                                        intent = new Intent(getApplicationContext(), OTPActivity.class);
+
+                                        intent.putExtra("mobileNumber", username);
+                                        intent.putExtra("apiKey", apiKey);
+                                        intent.putExtra("token", token);
+                                        intent.putExtra("url1", url1);
+                                        intent.putExtra("sender", sender);
+                                        intent.putExtra("cameFromActivity", cameFromActivity);
+                                        intent.putExtra("sudanOr",sudanOr);
+
+                                        startActivity(intent);
+                                    }
+                                }
+                            });
+                        } else {
+
+                            queryAPIs.whereEqualTo("name", "sms");
+
+                            queryAPIs.findInBackground(new FindCallback<ParseObject>() {
+
+                                @Override
+                                public void done(List<ParseObject> objects, ParseException e) {
+
+                                    if (e == null) {
+
+                                        for (ParseObject object : objects) {
+
+                                            apiKey = object.getString("accountSID");
+                                            token = object.getString("authToken");
+                                            url1 = object.getString("url");
+                                            url2 = object.getString("url2");
+                                        }
+                                    }
+                                    intent = new Intent(getApplicationContext(), OTPActivity.class);
+
+                                    intent.putExtra("mobileNumber", username);
+                                    intent.putExtra("apiKey", apiKey);
+                                    intent.putExtra("token", token);
+                                    intent.putExtra("url1", url1);
+                                    intent.putExtra("url2", url2);
+                                    intent.putExtra("cameFromActivity", cameFromActivity);
+                                    intent.putExtra("sudanOr",sudanOr);
+
+                                    startActivity(intent);
+                                }
+                            });
                         }
-
-                        intent = new Intent(getApplicationContext(), VerifyActivity.class);
-
-                        intent.putExtra("key", apiKey);
-                        intent.putExtra("token", token);
-                        intent.putExtra("url", url);
-                        intent.putExtra("url2", url2);
+                    } else {
+                        intent = new Intent(getApplicationContext(), SignUpActivity.class);
 
                         intent.putExtra("mobileNumber", username);
-                        intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
+                        intent.putExtra("cameFromActivity", cameFromActivity);
 
                         startActivity(intent);
-
                     }
                 }
             });
-
-
         }
     }
-
 
 
 
@@ -172,11 +219,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         spinner = findViewById(R.id.spinner);
 
-
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
             if (checkConnection.isNetwork()) {
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
+
+
+                if (savedInstanceState == null) {
+                    Bundle extras = getIntent().getExtras();
+
+                    if (extras == null) {
+
+                        cameFromActivity ="";
+                    } else {
+
+                        cameFromActivity = extras.getString("cameFromActivity");
+                    }
+                }
 
 
                 ConstraintLayout backgroundReleativeLayout = findViewById(R.id.backgroundConstraintLayout);
@@ -188,7 +247,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 signUpButton = findViewById(R.id.button2);
 
                 userNames = new ArrayList<>();
-
 
                 TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -215,11 +273,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 callingCode = callingC.get(1);
             }
-
-
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
-
         }
     }
 

@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
@@ -22,6 +25,9 @@ public class SignUpActivity extends AppCompatActivity {
     String mobileNumber;
     EditText nameEditText;
     Intent intent;
+
+    String username, apiKey, token, url, url2, cameFromActivity, url1, sender, sudanOr ;
+
 
 
     public void enterName(View view){
@@ -56,8 +62,73 @@ public class SignUpActivity extends AppCompatActivity {
                                 public void done(ParseUser user, ParseException error) {
                                     if (error == null) {
 
-                                        intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        startActivity(intent);
+                                        ParseQuery<ParseObject> queryAPIs = new ParseQuery<>("APIs");
+                                        if (mobileNumber.startsWith("+249")) {
+                                            // api for Sudan numbers
+
+                                            queryAPIs.whereEqualTo("name", "smsSudan");
+
+                                            queryAPIs.findInBackground(new FindCallback<ParseObject>() {
+
+                                                @Override
+                                                public void done(List<ParseObject> objects, ParseException e) {
+
+                                                    if (e == null) {
+
+                                                        for (ParseObject object : objects) {
+
+                                                            apiKey = object.getString("accountSID");
+                                                            token = object.getString("authToken");
+                                                            url = object.getString("url");
+                                                            url2 = object.getString("url2");
+                                                            sender = object.getString("sender");
+                                                        }
+                                                        intent = new Intent(getApplicationContext(), OTPActivity.class);
+
+                                                        intent.putExtra("mobileNumber", username);
+                                                        intent.putExtra("apiKey", apiKey);
+                                                        intent.putExtra("token", token);
+                                                        intent.putExtra("url1", url1);
+                                                        intent.putExtra("sender", sender);
+                                                        intent.putExtra("cameFromActivity", cameFromActivity);
+                                                        intent.putExtra("sudanOr",sudanOr);
+                                                        startActivity(intent);
+                                                    }
+                                                }
+                                            });
+                                        } else {
+
+                                            queryAPIs.whereEqualTo("name", "sms");
+
+                                            queryAPIs.findInBackground(new FindCallback<ParseObject>() {
+
+                                                @Override
+                                                public void done(List<ParseObject> objects, ParseException e) {
+
+                                                    if (e == null) {
+
+                                                        for (ParseObject object : objects) {
+
+                                                            apiKey = object.getString("accountSID");
+                                                            token = object.getString("authToken");
+                                                            url1 = object.getString("url");
+                                                            url2 = object.getString("url2");
+                                                        }
+                                                    }
+                                                    intent = new Intent(getApplicationContext(), OTPActivity.class);
+
+                                                    intent.putExtra("mobileNumber", username);
+                                                    intent.putExtra("apiKey", apiKey);
+                                                    intent.putExtra("token", token);
+                                                    intent.putExtra("url1", url1);
+                                                    intent.putExtra("url2", url2);
+                                                    intent.putExtra("cameFromActivity", cameFromActivity);
+                                                    intent.putExtra("sudanOr",sudanOr);
+
+                                                    startActivity(intent);
+                                                }
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -78,8 +149,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        mobileNumber = getIntent().getStringExtra("mobileNumber");
-        nameEditText = findViewById(R.id.nameEditText);
+
 
 
         try {
@@ -89,7 +159,19 @@ public class SignUpActivity extends AppCompatActivity {
 
 
 
+                nameEditText = findViewById(R.id.nameEditText);
 
+                if (savedInstanceState == null) {
+                    Bundle extras = getIntent().getExtras();
+
+                    if (extras == null) {
+
+                        mobileNumber ="";
+                    } else {
+
+                        mobileNumber = extras.getString("mobileNumber");
+                    }
+                }
 
 
             }
