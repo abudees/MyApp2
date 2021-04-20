@@ -28,7 +28,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".OTPActivity"></activity>
+        <activity android:name=".PasswordActivity"></activity>
+        <activity android:name=".OTPActivity" />
         <activity android:name=".VerifyActivity" />
         <activity android:name=".RecipentsDetailsActivity" />
         <activity android:name=".SignUpActivity" />

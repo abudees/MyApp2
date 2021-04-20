@@ -229,22 +229,13 @@ public class OTPActivity extends AppCompatActivity {
                 sendSms();
 
 
-
                 intent = new Intent(getApplicationContext(), VerifyActivity.class);
 
-
                 intent.putExtra("randomNumber", randomNumber);
-
                 intent.putExtra("mobileNumber", mobileNumber);
                 intent.putExtra("cameFromActivity", cameFromActivity);
 
                 startActivity(intent);
-
-
-
-
-
-
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();

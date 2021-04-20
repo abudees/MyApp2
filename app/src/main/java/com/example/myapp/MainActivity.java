@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity  {
 
     ArrayAdapter<String> adapter;
 
-   // String name = "Guest";
+    String name ;
 
     String welcomeMessage = "Welcome Guest";
 
@@ -116,6 +116,8 @@ public class MainActivity extends AppCompatActivity  {
 
     private MenuItem sigInMenu;
     private MenuItem signoutMenu;
+
+
 
 
 
@@ -176,11 +178,15 @@ public class MainActivity extends AppCompatActivity  {
     // redirect to Login Page if clicked on Login text
     public void login (View view){
 
-        intent = new Intent(getApplicationContext(), LoginActivity.class);
+       intent = new Intent(getApplicationContext(), LoginActivity.class);
 
         intent.putExtra("cameFromActivity", "MainActivity");
 
         startActivity(intent);
+
+
+
+
     }
 
 
@@ -280,6 +286,8 @@ public class MainActivity extends AppCompatActivity  {
         welcomeText = findViewById(R.id.welcomeText);
         welcomeText.setText(welcomeMessage);
 
+        name = "";
+
 
 
 
@@ -302,9 +310,11 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+
+
                 if (ParseUser.getCurrentUser() != null) {
 
-
+/*
                     ParseQuery<ParseUser> query = ParseUser.getQuery();
 
                     query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
@@ -339,7 +349,7 @@ public class MainActivity extends AppCompatActivity  {
                             }
 
                         }
-                    });
+                    });*/
 
                     welcomeText.setVisibility(View.VISIBLE);
 

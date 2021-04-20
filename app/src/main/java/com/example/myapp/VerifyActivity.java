@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.parse.FindCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -75,7 +76,33 @@ public class VerifyActivity extends AppCompatActivity {
 
     Boolean counterValid = true;
 
-    String cameFromActivity;
+    String cameFromActivity,  mobileNumber;
+
+    private void counterRun(){
+
+        if (counterValid) {
+            new CountDownTimer(60000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+                    //here you can have your logic to set text to edittext
+
+
+                }
+
+                public void onFinish() {
+                    mTextField.setText("done!");
+
+                    counterValid = false;
+                }
+
+            }.start();
+
+        } else {
+            
+        }
+
+    }
 
 
 
@@ -94,16 +121,16 @@ public class VerifyActivity extends AppCompatActivity {
             if (extras == null) {
                 randomNumber = 0;
                 cameFromActivity ="";
+                mobileNumber ="";
             } else {
                 randomNumber = extras.getInt("randomNumber");
                 cameFromActivity = extras.getString("cameFromActivity");
 
+                mobileNumber = extras.getString("mobileNumber");
             }
         } else {
             randomNumber = (int) savedInstanceState.getSerializable("randomNumber");
         }
-
-
 
 
 
@@ -121,11 +148,13 @@ public class VerifyActivity extends AppCompatActivity {
 
 
 
-        new CountDownTimer(30000, 1000) {
+        new CountDownTimer(60000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
                 //here you can have your logic to set text to edittext
+
+
             }
 
             public void onFinish() {
@@ -148,53 +177,71 @@ public class VerifyActivity extends AppCompatActivity {
 
                     if (randomNumber == Integer.parseInt(_txtVerOTP.getText().toString())) {
 
+                        Log.d("came from", cameFromActivity);
 
-                        Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
-
-                        switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
-
-                            case "c":
-
-                                // after mobile verification
-                                Toast.makeText(VerifyActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
+                        _txtVerOTP.setVisibility(View.INVISIBLE);
 
 
-                                break;
-                            case "m":
-
-                                intent = new Intent(getApplicationContext(), VendorActivity.class);
-
-                                startActivity(intent);
-                                break;
 
 
-                            case "d":
 
-                                intent = new Intent(getApplicationContext(), DriverActivity.class);
-                                startActivity(intent);
-                                break;
-
-                            default:
-                                Toast.makeText(VerifyActivity.this, "logging in ", Toast.LENGTH_SHORT).show();
-
-                                break;
-                        }
-
-                        intent = new Intent(getApplicationContext(), MainActivity.class);
+                        ParseUser.logInInBackground(mobileNumber, "000000", new LogInCallback() {
+                            public void done(ParseUser user, ParseException e) {
+                                if (user != null) {
 
 
-                        //intent.putExtra("mobileNumber", mobileNumber);
+
+
+
+                                    switch (cameFromActivity) {
+
+
+                                        case "CategoriesActivity":
+
+                                            intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+
+                                            startActivity(intent);
+                                            Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+                                            break;
+
+                                        case "MainActivity":
+
+                                            intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                                            startActivity(intent);
+                                            Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+                                            break;
+
+                                        case "ProductsActivity":
+
+                                            intent = new Intent(getApplicationContext(), ProductsActivity.class);
+
+                                            startActivity(intent);
+                                            Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+                                            break;
+
+
+                                            // copy all activities
+                                        default:
+
+
+                                            break;
+                                    }                    // Hooray! The user is logged in.
+                                } else {
+                                    // Signup failed. Look at the ParseException to see what happened.
+                                    Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+                        });
 
                     } else {
                         Toast.makeText(getApplicationContext(), "WRONG OTP", Toast.LENGTH_LONG).show();
                     }
                 }
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
             }
         });
-
-
-
-        StrictMode.ThreadPolicy policy= new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
     }
 }
