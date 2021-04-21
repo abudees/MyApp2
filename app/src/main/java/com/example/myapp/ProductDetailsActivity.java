@@ -94,6 +94,39 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
     }
 
+    public void removeItem(View view) {
+
+        try {
+
+            if (mDatabase.checkProduct(productSelected)) {
+
+                if (mDatabase.getQty(productSelected) == 1) {
+
+                    mDatabase.deleteProduct(productSelected);
+
+                    currentQty.setText(0);
+
+
+                    setupBadge();
+                } else if (mDatabase.getQty(productSelected) > 1) {
+
+                    mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) - 1);
+
+                    currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
+                    Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
+
+                    setupBadge();
+                }
+            } else {
+                Toast.makeText(this, ("Item selected not in cart " + mDatabase.getQty(productSelected)), Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception error) {
+
+            error.printStackTrace();
+
+        }
+    }
 
 
 
@@ -152,6 +185,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                 mDatabase = new SqliteDatabase(this);
 
+                mCartItemCount = 0;
 
 
                 Bundle extras = getIntent().getExtras();
@@ -316,21 +350,46 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         }
 
+
         return super.onOptionsItemSelected(item);
     }
     private void setupBadge() {
-
+        Log.d("here", "1");
         if (textCartItemCount != null) {
             if (mCartItemCount == 0) {
                 if (textCartItemCount.getVisibility() != View.GONE) {
                     textCartItemCount.setVisibility(View.GONE);
+
+                    textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
                 }
             } else {
                 textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
                 if (textCartItemCount.getVisibility() != View.VISIBLE) {
                     textCartItemCount.setVisibility(View.VISIBLE);
+
+                    mDatabase.listAll().size();
                 }
             }
         }
-    }
+
+        /*
+        Log.d("here", "1");
+        if (textCartItemCount != null) {
+            Log.d("here", "2");
+            if (mCartItemCount == 0) {
+                Log.d("here", "3");
+                if (textCartItemCount.getVisibility() != View.GONE) {
+                    textCartItemCount.setVisibility(View.GONE);
+                    Log.d("here", "4");
+                }
+            }
+        } else {
+            Log.d("here", "5");
+            textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+            if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                textCartItemCount.setVisibility(View.VISIBLE);
+                Log.d("here", "6");
+            }
+        }
+   */ }
 }

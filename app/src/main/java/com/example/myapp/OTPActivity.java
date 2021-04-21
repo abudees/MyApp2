@@ -213,6 +213,7 @@ public class OTPActivity extends AppCompatActivity {
                         sender = "";
                         cameFromActivity = "";
                         sudanOr = "";
+
                     } else {
                         mobileNumber = extras.getString("mobileNumber");
                         cameFromActivity = extras.getString("cameFromActivity");

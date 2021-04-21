@@ -34,59 +34,56 @@ public class PasswordActivity extends AppCompatActivity {
 
         query.findInBackground(new FindCallback<ParseUser>() {
             public void done(List<ParseUser> objects, ParseException e) {
-                if (e == null & objects != null)  {
+                if (e == null & objects != null) {
 
                     for (ParseUser object : objects) {
 
                         password = object.getString("password");
                     }
 
-                  //  if( editTextTextPassword.getText().toString().matches(password)) {
+                    //  if( editTextTextPassword.getText().toString().matches(password)) {
 
 
-                        ParseUser.logInInBackground(mobileNumber, String.valueOf(editTextTextPassword.getText()), new LogInCallback() {
-                            public void done(ParseUser user, ParseException e) {
-                                if (user != null) {
-                                    // Hooray! The user is logged in.
+                    ParseUser.logInInBackground(mobileNumber, String.valueOf(editTextTextPassword.getText()), new LogInCallback() {
+                        public void done(ParseUser user, ParseException e) {
+                            if (user != null) {
+                                // Hooray! The user is logged in.
 
 
-                                    switch (userType) {
+                                switch (userType) {
 
 
-                                        case "m":
+                                    case "m":
 
-                                            intent = new Intent(getApplicationContext(), VendorActivity.class);
+                                        intent = new Intent(getApplicationContext(), VendorActivity.class);
 
-                                            startActivity(intent);
+                                        startActivity(intent);
 
-                                            break;
+                                        break;
 
-                                        case "d":
-
-
-                                            intent = new Intent(getApplicationContext(), DriverActivity.class);
-
-                                            startActivity(intent);
-
-                                            break;
+                                    case "d":
 
 
+                                        intent = new Intent(getApplicationContext(), DriverActivity.class);
 
-                                        default:
+                                        startActivity(intent);
+
+                                        break;
 
 
-                                            break;
-                                    }
+                                    default:
 
-                                } else {
-                                    // Signup failed. Look at the ParseException to see what happened.
-                                    Toast.makeText(getApplicationContext(), "الرقم السري غير صحيح" + e, Toast.LENGTH_LONG).show();
+
+                                        break;
                                 }
+
+                            } else {
+                                // Signup failed. Look at the ParseException to see what happened.
+                                Toast.makeText(getApplicationContext(), "الرقم السري غير صحيح" + e, Toast.LENGTH_LONG).show();
                             }
-                        });
+                        }
 
-
-
+                    });
                 }
 
             }
