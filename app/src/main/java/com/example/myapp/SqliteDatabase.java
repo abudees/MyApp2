@@ -88,6 +88,8 @@ public class SqliteDatabase extends SQLiteOpenHelper {
         return storeCart;
     }
 
+
+
     ArrayList<Integer> listQty() {
         String sql = "select * from " + TABLE_CART;
         SQLiteDatabase db = this.getReadableDatabase();

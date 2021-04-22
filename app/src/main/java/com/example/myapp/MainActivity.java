@@ -517,7 +517,11 @@ public class MainActivity extends AppCompatActivity  {
                     textCartItemCount.setVisibility(View.GONE);
                 }
             } else {
-                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+
+                int sum = 0;
+                for(int i = 0; i < mDatabase.listQty().size(); i++)
+                    sum += mDatabase.listQty().get(i);
+                textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
                 if (textCartItemCount.getVisibility() != View.VISIBLE) {
                     textCartItemCount.setVisibility(View.VISIBLE);
                 }

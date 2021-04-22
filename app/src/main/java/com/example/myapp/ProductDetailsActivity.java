@@ -56,6 +56,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     String area = "";
 
+    ArrayList<Integer> g = new ArrayList<>();;
 
 
 
@@ -70,7 +71,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             if (mDatabase.checkProduct(productSelected)) {
 
-               // Log.i("price  ", String.valueOf(price));
+                int sum = 0;
+                for(int i = 0; i < mDatabase.listQty().size(); i++)
+                    sum += mDatabase.listQty().get(i);
+
+                Log.i("qty  ", String.valueOf(mDatabase.getQty(productSelected)));
+                Log.i("all  ", String.valueOf(mDatabase.listProducts().size()));
+                Log.i("all 1  ", String.valueOf(mDatabase.listQty()));
+                Log.i("all 2  ", String.valueOf(mDatabase.listQty().size()));
+
+
+                Log.i("all 3  ", String.valueOf(sum));
 
                 mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
                 currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
@@ -195,6 +206,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
+
+
                 setupBadge();
                 productDetailImage = findViewById(R.id.productDetailImage);
                 productTitle = findViewById(R.id.productTitle);
@@ -277,6 +290,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
 
+
         mCartItemCount = mDatabase.listAll().size();
         setupBadge();
 
@@ -354,20 +368,28 @@ public class ProductDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     private void setupBadge() {
-        Log.d("here", "1");
+
         if (textCartItemCount != null) {
+
+            Log.d("here", "1");
             if (mCartItemCount == 0) {
+                Log.d("here", "1-1");
                 if (textCartItemCount.getVisibility() != View.GONE) {
                     textCartItemCount.setVisibility(View.GONE);
 
+                    Log.d("here", "1-2");
                     textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
                 }
             } else {
+
+                Log.d("here", "2-1" + mDatabase.listAll().size());
                 textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
                 if (textCartItemCount.getVisibility() != View.VISIBLE) {
                     textCartItemCount.setVisibility(View.VISIBLE);
 
+                    Log.d("here", "2-2"+ mDatabase.listAll().size());
                     mDatabase.listAll().size();
+                    textCartItemCount.setText(mDatabase.listAll().size());
                 }
             }
         }
@@ -392,4 +414,32 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         }
    */ }
+
+    private void updateBadge() {
+
+        if (textCartItemCount != null) {
+
+
+            if (mCartItemCount == 0) {
+
+                if (textCartItemCount.getVisibility() != View.GONE) {
+                    textCartItemCount.setVisibility(View.GONE);
+
+
+                    textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+                }
+            } else {
+
+
+                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
+                if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                    textCartItemCount.setVisibility(View.VISIBLE);
+
+
+                    mDatabase.listAll().size();
+
+                }
+            }
+        }
+    }
 }
