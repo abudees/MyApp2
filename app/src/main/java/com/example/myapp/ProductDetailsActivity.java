@@ -152,15 +152,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                    // currentQty.setText(0);
 
-                    int sum = 0;
-
-                    for (int i = 0; i < mDatabase.listAll().size(); i++)
-                        sum += storeCart.get(i);
-//
-
-                    //  textCartItemCount.setVisibility(View.VISIBLE);
-                    //   cartBadgeIcon.setVisibility(View.VISIBLE);
-                    textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
+                   setupBadge();
 
                     if (mDatabase.listAll().size() == 0 ){
 
