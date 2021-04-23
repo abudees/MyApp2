@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -90,6 +92,8 @@ public class MainActivity extends AppCompatActivity  {
 
     TextView textCartItemCount;
 
+    ImageView cartBadgeIcon;
+
     String area;
 
     Intent intent;
@@ -116,13 +120,6 @@ public class MainActivity extends AppCompatActivity  {
 
     private MenuItem sigInMenu;
     private MenuItem signoutMenu;
-
-
-
-
-
-
-
 
 
 
@@ -302,12 +299,16 @@ public class MainActivity extends AppCompatActivity  {
                 mDatabase = new SqliteDatabase(this);
 
 
-                Log.d("cart has", String.valueOf(mDatabase.listProducts()));
+                Log.d("cart has", String.valueOf(mDatabase.listProductIds()));
 
-                setupBadge();
+               // setupBadge();
 
 
 
+              //  textCartItemCount.setVisibility(vie);
+
+
+                Log.d("list all2", String.valueOf(mDatabase.listAll().size()));
 
 
 
@@ -429,6 +430,11 @@ public class MainActivity extends AppCompatActivity  {
        // View signoutView = menuSignOut.getActionView();
 
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
+        cartBadgeIcon = actionView.findViewById(R.id.cartBadgeIcon);
+
+
+        cartBadgeIcon.setVisibility(View.GONE);
+        textCartItemCount.setVisibility(View.GONE);
 
         mCartItemCount = mDatabase.listAll().size();
         setupBadge();
@@ -511,21 +517,32 @@ public class MainActivity extends AppCompatActivity  {
     }
     private void setupBadge() {
 
-        if (textCartItemCount != null) {
-            if (mCartItemCount == 0) {
-                if (textCartItemCount.getVisibility() != View.GONE) {
-                    textCartItemCount.setVisibility(View.GONE);
-                }
-            } else {
+        if (mDatabase.listAll().size() > 0) {
 
-                int sum = 0;
-                for(int i = 0; i < mDatabase.listQty().size(); i++)
-                    sum += mDatabase.listQty().get(i);
-                textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
-                if (textCartItemCount.getVisibility() != View.VISIBLE) {
-                    textCartItemCount.setVisibility(View.VISIBLE);
-                }
-            }
+        //    if (textCartItemCount != null) {
+              //  if (mCartItemCount == 0) {
+              //      if (textCartItemCount.getVisibility() != View.GONE) {
+                    //    textCartItemCount.setVisibility(View.GONE);
+               //     }
+              //  } else {
+
+            cartBadgeIcon.setVisibility(View.VISIBLE);
+            textCartItemCount.setVisibility(View.VISIBLE);
+
+
+                    int sum = 0;
+                    for (int i = 0; i < mDatabase.listAll().size(); i++)
+                        sum += mDatabase.listQty().get(i);
+                    textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
+                   // if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                     //   textCartItemCount.setVisibility(View.VISIBLE);
+               //     }
+
+         //   }
+        } else {
+            cartBadgeIcon.setVisibility(View.GONE);
+            textCartItemCount.setVisibility(View.GONE);
+
         }
     }
 

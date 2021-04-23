@@ -67,7 +67,7 @@ public class SqliteDatabase extends SQLiteOpenHelper {
     }
 
 
-    ArrayList<Integer> listProducts() {
+    ArrayList<Integer> listProductIds() {
         String sql = "select * from " + TABLE_CART;
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Integer> storeCart = new ArrayList<>();

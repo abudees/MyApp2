@@ -271,7 +271,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
         mDatabase = new SqliteDatabase(this);
         allProducts = mDatabase.listAll();
-        pIDs = mDatabase.listProducts();
+        pIDs = mDatabase.listProductIds();
         qty = mDatabase.listQty();
 
 

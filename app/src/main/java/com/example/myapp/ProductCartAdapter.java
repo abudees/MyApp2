@@ -125,7 +125,7 @@ public class ProductCartAdapter  extends RecyclerView.Adapter<ProductCartAdapter
 
                 if (mDatabase.getQty(currentID) == 1){
 
-                    if (mDatabase.listProducts().size() == 1) {
+                    if (mDatabase.listAll().size() == 1) {
 
                         mDatabase.clearCart();
                         notifyDataSetChanged();

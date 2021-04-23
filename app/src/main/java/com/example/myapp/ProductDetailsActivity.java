@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -45,7 +46,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     ArrayList<Integer> qty;
 
-
     TextView currentQty;
 
     int mCartItemCount;
@@ -56,37 +56,59 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     String area = "";
 
-    ArrayList<Integer> g = new ArrayList<>();;
-
+    ArrayList<Integer> g = new ArrayList<>();
 
 
     private MenuItem sigInMenu;
     private MenuItem signoutMenu;
 
+    ImageView cartBadgeIcon;
+
+    TextView login , logout;
+
+   // int sum = 0;
+
+
+    ArrayList<Integer> storeCart = new ArrayList<>();
+
+
+
     public void addItemToCart(View view) {
 
         try {
+
             mDatabase = new SqliteDatabase(this);
 
 
+            Log.i("all qty ", String.valueOf(mDatabase.listQty()));
+
+
+//            Log.d("1", String.valueOf(sum));
+
             if (mDatabase.checkProduct(productSelected)) {
 
-                int sum = 0;
-                for(int i = 0; i < mDatabase.listQty().size(); i++)
-                    sum += mDatabase.listQty().get(i);
-
-                Log.i("qty  ", String.valueOf(mDatabase.getQty(productSelected)));
-                Log.i("all  ", String.valueOf(mDatabase.listProducts().size()));
-                Log.i("all 1  ", String.valueOf(mDatabase.listQty()));
-                Log.i("all 2  ", String.valueOf(mDatabase.listQty().size()));
-
-
-                Log.i("all 3  ", String.valueOf(sum));
 
                 mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + 1);
-                currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+
+                //  Log.d("total cart", String.valueOf(mDatabase.listQty().size()));
+
+                //  if (mDatabase.listAll().size()  == 0 ) {
+
+                //     textCartItemCount.setVisibility(View.VISIBLE);
+
+                //  sum = sum +1;
+
+
+                //   } else {
+
+                //       Log.d("3", String.valueOf(sum));
+
+
+                //  }
 
                 setupBadge();
+
+                // currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
 
 
             } else {
@@ -98,16 +120,29 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                 setupBadge();
 
-                Toast.makeText(this, "added", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "added", Toast.LENGTH_LONG).show();
+
+            //   mCartItemCount = sum;
+
             }
         } catch (Exception error) {
             error.printStackTrace();
         }
     }
 
+
+
+
+
     public void removeItem(View view) {
 
         try {
+
+
+            mDatabase = new SqliteDatabase(this);
+
+
+
 
             if (mDatabase.checkProduct(productSelected)) {
 
@@ -115,20 +150,36 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                     mDatabase.deleteProduct(productSelected);
 
-                    currentQty.setText(0);
+                   // currentQty.setText(0);
+
+                    int sum = 0;
+
+                    for (int i = 0; i < mDatabase.listAll().size(); i++)
+                        sum += storeCart.get(i);
+//
+
+                    //  textCartItemCount.setVisibility(View.VISIBLE);
+                    //   cartBadgeIcon.setVisibility(View.VISIBLE);
+                    textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
+
+                    if (mDatabase.listAll().size() == 0 ){
+
+                        cartBadgeIcon.setVisibility(View.INVISIBLE);
+                        textCartItemCount.setVisibility(View.INVISIBLE);
+                    }
 
 
-                    setupBadge();
-                } else if (mDatabase.getQty(productSelected) > 1) {
+                } else {
 
                     mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) - 1);
 
-                    currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
+                   // currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
 
                     Toast.makeText(this, mDatabase.getQty(productSelected), Toast.LENGTH_LONG).show();
 
-                    setupBadge();
+
                 }
+
             } else {
                 Toast.makeText(this, ("Item selected not in cart " + mDatabase.getQty(productSelected)), Toast.LENGTH_LONG).show();
             }
@@ -150,9 +201,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             Toast.makeText(this, "cleared", Toast.LENGTH_LONG).show();
 
-            setupBadge();
 
-            currentQty.setText(String.valueOf(0));
+               cartBadgeIcon.setVisibility(View.INVISIBLE);
+               textCartItemCount.setVisibility(View.INVISIBLE);
+
+
 
         } catch (Exception error) {
 
@@ -196,7 +249,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
                 mDatabase = new SqliteDatabase(this);
 
-                mCartItemCount = 0;
+               setupBadge();
 
 
                 Bundle extras = getIntent().getExtras();
@@ -223,13 +276,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
 
 
-              //  Log.i("all DB ", String.valueOf(mDatabase.listAll().size()));
+                Log.i("all qty ", String.valueOf(mDatabase.listQty()));
 
 
                 //Log.i("i ", String.valueOf(mDatabase.getQty(productSelected)));
 
 
-                pIDs = mDatabase.listProducts();
+                pIDs = mDatabase.listProductIds();
 
                 qty = mDatabase.listQty();
 
@@ -272,7 +325,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -289,9 +341,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
         // View signoutView = menuSignOut.getActionView();
 
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
+        cartBadgeIcon = actionView.findViewById(R.id.cartBadgeIcon);
 
 
-        mCartItemCount = mDatabase.listAll().size();
+        textCartItemCount.setVisibility(View.INVISIBLE);
+        cartBadgeIcon.setVisibility(View.INVISIBLE);
+
+
+      //  mCartItemCount = mDatabase.listAll().size();
         setupBadge();
 
         actionView.setOnClickListener(new View.OnClickListener() {
@@ -300,10 +357,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
                 intent = new Intent(getApplicationContext(), CheckoutActivity.class);
-
-                intent.putExtra("cameFromActivity", "ProductDetailsActivity");
-
-                intent.putExtra("area", intent.getStringExtra("area"));
+                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
 
@@ -311,6 +365,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         });
 
         if(ParseUser.getCurrentUser() != null) {
+
+
 
             MenuItem item = menu.findItem(R.id.signInMenu);
             item.setVisible(false);//
@@ -328,8 +384,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         }
         return true;
+
+
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -344,16 +403,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 // do something
 
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.putExtra("cameFromActivity", "ProductDetailsActivity");
+                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
                 break;
 
-
-
             case R.id.signOutInMenu:
 
                 ParseUser.logOut();
+
+                logout.setVisibility(View.INVISIBLE);
+
+                login.setVisibility(View.VISIBLE);
 
                 signoutMenu.setVisible(false);
                 // show the menu item
@@ -364,82 +425,59 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         }
 
-
         return super.onOptionsItemSelected(item);
     }
     private void setupBadge() {
 
-        if (textCartItemCount != null) {
+        if (mDatabase.listAll().size() > 0  ) {
 
-            Log.d("here", "1");
-            if (mCartItemCount == 0) {
-                Log.d("here", "1-1");
-                if (textCartItemCount.getVisibility() != View.GONE) {
-                    textCartItemCount.setVisibility(View.GONE);
+            if (textCartItemCount != null) {
 
-                    Log.d("here", "1-2");
-                    textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-                }
-            } else {
+              //  if (mCartItemCount == 0) {
 
-                Log.d("here", "2-1" + mDatabase.listAll().size());
-                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-                if (textCartItemCount.getVisibility() != View.VISIBLE) {
-                    textCartItemCount.setVisibility(View.VISIBLE);
+                   // if (textCartItemCount.getVisibility() != View.GONE) {
 
-                    Log.d("here", "2-2"+ mDatabase.listAll().size());
-                    mDatabase.listAll().size();
-                    textCartItemCount.setText(mDatabase.listAll().size());
-                }
-            }
-        }
-
-        /*
-        Log.d("here", "1");
-        if (textCartItemCount != null) {
-            Log.d("here", "2");
-            if (mCartItemCount == 0) {
-                Log.d("here", "3");
-                if (textCartItemCount.getVisibility() != View.GONE) {
-                    textCartItemCount.setVisibility(View.GONE);
-                    Log.d("here", "4");
-                }
-            }
-        } else {
-            Log.d("here", "5");
-            textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-            if (textCartItemCount.getVisibility() != View.VISIBLE) {
-                textCartItemCount.setVisibility(View.VISIBLE);
-                Log.d("here", "6");
-            }
-        }
-   */ }
-
-    private void updateBadge() {
-
-        if (textCartItemCount != null) {
+                    //    textCartItemCount.setVisibility(View.GONE);
+              //   }
+           //   } else {
+            cartBadgeIcon.setVisibility(View.VISIBLE);
+            textCartItemCount.setVisibility(View.VISIBLE);
 
 
-            if (mCartItemCount == 0) {
 
-                if (textCartItemCount.getVisibility() != View.GONE) {
-                    textCartItemCount.setVisibility(View.GONE);
+//           if (textCartItemCount.getVisibility() != View.VISIBLE) {
+
+                storeCart = mDatabase.listQty();
+
+                int sum = 0;
+
+                for (int i = 0; i < mDatabase.listAll().size(); i++)
+                sum += storeCart.get(i);
+//
+
+            //  textCartItemCount.setVisibility(View.VISIBLE);
+           //   cartBadgeIcon.setVisibility(View.VISIBLE);
+           textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
+
+         //       }
+
+             }
+    /*    } else if (mDatabase.listAll().size() > 1) {
+
+            for (int i = 0; i < mDatabase.listAll().size(); i++)
+                sum += mDatabase.listQty().get(i);
+//
+
+            textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
 
 
-                    textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-                }
-            } else {
 
+*/
 
-                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-                if (textCartItemCount.getVisibility() != View.VISIBLE) {
-                    textCartItemCount.setVisibility(View.VISIBLE);
-
-
-                    mDatabase.listAll().size();
-
-                }
-            }
         }
     }
+
+
 }
+
+
