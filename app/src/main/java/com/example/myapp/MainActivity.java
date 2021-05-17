@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity  {
 
         } else {
 
-            intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+            intent = new Intent(getApplicationContext(), PayTabActivity.class);
 
             Log.d("area", area);
           //  intent.putExtra("area", area);
@@ -549,5 +549,21 @@ public class MainActivity extends AppCompatActivity  {
 
 }
 
+/*
+implementation ('androidx.fragment:fragment-ktx:1.3.1') {
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-jvm'
+    }
 
+    {
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-jvm'
+    }
+
+    {
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-jvm'
+    }
+
+
+
+jcenter()
+ */
 

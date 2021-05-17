@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +57,10 @@ public class CategoriesActivity extends AppCompatActivity {
 
     private MenuItem sigInMenu;
     private MenuItem signoutMenu;
+
+    ImageView cartBadgeIcon;
+
+    TextView login, logout;
 
 
 
@@ -94,7 +102,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
 
-                    setupBadge();
+//                    setupBadge();
 
 
 
@@ -152,6 +160,7 @@ public class CategoriesActivity extends AppCompatActivity {
                             }
 
 
+                            
 
                             adapter = new CategoriesAdapter(CategoriesActivity.this, url, title, id, area);
 
@@ -210,6 +219,11 @@ public class CategoriesActivity extends AppCompatActivity {
         // View signoutView = menuSignOut.getActionView();
 
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
+        cartBadgeIcon = actionView.findViewById(R.id.cartBadgeIcon);
+
+
+        cartBadgeIcon.setVisibility(View.GONE);
+        textCartItemCount.setVisibility(View.GONE);
 
         mCartItemCount = mDatabase.listAll().size();
         setupBadge();
@@ -220,7 +234,7 @@ public class CategoriesActivity extends AppCompatActivity {
 
 
                 intent = new Intent(getApplicationContext(), CheckoutActivity.class);
-                intent.putExtra("cameFromActivity", "CategoriesActivity");
+                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
 
@@ -247,8 +261,11 @@ public class CategoriesActivity extends AppCompatActivity {
 
         }
         return true;
+
+
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -263,7 +280,7 @@ public class CategoriesActivity extends AppCompatActivity {
                 // do something
 
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.putExtra("cameFromActivity", "CategoriesActivity");
+                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
                 break;
@@ -271,6 +288,10 @@ public class CategoriesActivity extends AppCompatActivity {
             case R.id.signOutInMenu:
 
                 ParseUser.logOut();
+
+                logout.setVisibility(View.INVISIBLE);
+
+                login.setVisibility(View.VISIBLE);
 
                 signoutMenu.setVisible(false);
                 // show the menu item
@@ -285,20 +306,34 @@ public class CategoriesActivity extends AppCompatActivity {
     }
     private void setupBadge() {
 
-        if (textCartItemCount != null) {
-            if (mCartItemCount == 0) {
-                if (textCartItemCount.getVisibility() != View.GONE) {
-                    textCartItemCount.setVisibility(View.GONE);
-                }
-            } else {
-                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-                if (textCartItemCount.getVisibility() != View.VISIBLE) {
-                    textCartItemCount.setVisibility(View.VISIBLE);
-                }
-            }
+        if (mDatabase.listAll().size() > 0) {
+
+            //    if (textCartItemCount != null) {
+            //  if (mCartItemCount == 0) {
+            //      if (textCartItemCount.getVisibility() != View.GONE) {
+            //    textCartItemCount.setVisibility(View.GONE);
+            //     }
+            //  } else {
+
+            cartBadgeIcon.setVisibility(View.VISIBLE);
+            textCartItemCount.setVisibility(View.VISIBLE);
+
+
+            int sum = 0;
+            for (int i = 0; i < mDatabase.listAll().size(); i++)
+                sum += mDatabase.listQty().get(i);
+            textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
+            // if (textCartItemCount.getVisibility() != View.VISIBLE) {
+            //   textCartItemCount.setVisibility(View.VISIBLE);
+            //     }
+
+            //   }
+        } else {
+            cartBadgeIcon.setVisibility(View.GONE);
+            textCartItemCount.setVisibility(View.GONE);
+
         }
     }
+
+
 }
-
-
-

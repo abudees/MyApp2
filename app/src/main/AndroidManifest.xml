@@ -28,7 +28,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PasswordActivity"></activity>
+        <activity android:name=".PayTabActivity"></activity>
+        <activity android:name=".CardsActivity" />
+        <activity android:name=".CardDetailsActivity" />
+        <activity android:name=".PasswordActivity" />
         <activity android:name=".OTPActivity" />
         <activity android:name=".VerifyActivity" />
         <activity android:name=".RecipentsDetailsActivity" />

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -21,6 +22,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +64,11 @@ public class ProductsActivity extends AppCompatActivity {
     final List<Integer> ptoductId = new ArrayList<>();
 
 
-    TextView textCartItemCount;
+  //  final List<String> stock = new ArrayList<>();
+  //  final List<String> preStock = new ArrayList<>();
+
+
+    TextView textCartItemCount, login, logout;
 
     private SqliteDatabase mDatabase;
 
@@ -74,6 +82,10 @@ public class ProductsActivity extends AppCompatActivity {
     String area;
 
      String currency;
+
+     ImageView cartBadgeIcon;
+
+
 
 
 
@@ -131,15 +143,20 @@ public class ProductsActivity extends AppCompatActivity {
                 if (ParseUser.getCurrentUser() != null) {
 
 
-                    setupBadge();
+//                    setupBadge();
 
                 }
 
 
+
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Products");
                 query.whereEqualTo("categoryNo", categoryNumber);
-                query.orderByAscending("productNo");
+                query.whereGreaterThanOrEqualTo("stock", 0.5);
+                query.whereGreaterThanOrEqualTo("preOrder", 0.5);
               //  query.whereEqualTo("status", true);
+
+                query.orderByAscending("productNo");
+
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> objects, ParseException e) {
@@ -150,6 +167,7 @@ public class ProductsActivity extends AppCompatActivity {
 
                                 url.add(object.getString("imageURL"));
                                 title.add(object.getString("title"));
+
 
                                 if (currency.matches("SDG")) {
 
@@ -186,6 +204,7 @@ public class ProductsActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -202,6 +221,11 @@ public class ProductsActivity extends AppCompatActivity {
         // View signoutView = menuSignOut.getActionView();
 
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
+        cartBadgeIcon = actionView.findViewById(R.id.cartBadgeIcon);
+
+
+        cartBadgeIcon.setVisibility(View.GONE);
+        textCartItemCount.setVisibility(View.GONE);
 
         mCartItemCount = mDatabase.listAll().size();
         setupBadge();
@@ -212,7 +236,7 @@ public class ProductsActivity extends AppCompatActivity {
 
 
                 intent = new Intent(getApplicationContext(), CheckoutActivity.class);
-                intent.putExtra("cameFromActivity", "ProductsActivity");
+                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
 
@@ -239,8 +263,11 @@ public class ProductsActivity extends AppCompatActivity {
 
         }
         return true;
+
+
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -255,7 +282,7 @@ public class ProductsActivity extends AppCompatActivity {
                 // do something
 
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.putExtra("cameFromActivity", "ProductsActivity");
+                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
                 break;
@@ -263,6 +290,10 @@ public class ProductsActivity extends AppCompatActivity {
             case R.id.signOutInMenu:
 
                 ParseUser.logOut();
+
+                logout.setVisibility(View.INVISIBLE);
+
+                login.setVisibility(View.VISIBLE);
 
                 signoutMenu.setVisible(false);
                 // show the menu item
@@ -277,17 +308,34 @@ public class ProductsActivity extends AppCompatActivity {
     }
     private void setupBadge() {
 
-        if (textCartItemCount != null) {
-            if (mCartItemCount == 0) {
-                if (textCartItemCount.getVisibility() != View.GONE) {
-                    textCartItemCount.setVisibility(View.GONE);
-                }
-            } else {
-                textCartItemCount.setText(String.valueOf(Math.min(mCartItemCount, 99)));
-                if (textCartItemCount.getVisibility() != View.VISIBLE) {
-                    textCartItemCount.setVisibility(View.VISIBLE);
-                }
-            }
+        if (mDatabase.listAll().size() > 0) {
+
+            //    if (textCartItemCount != null) {
+            //  if (mCartItemCount == 0) {
+            //      if (textCartItemCount.getVisibility() != View.GONE) {
+            //    textCartItemCount.setVisibility(View.GONE);
+            //     }
+            //  } else {
+
+            cartBadgeIcon.setVisibility(View.VISIBLE);
+            textCartItemCount.setVisibility(View.VISIBLE);
+
+
+            int sum = 0;
+            for (int i = 0; i < mDatabase.listAll().size(); i++)
+                sum += mDatabase.listQty().get(i);
+            textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
+            // if (textCartItemCount.getVisibility() != View.VISIBLE) {
+            //   textCartItemCount.setVisibility(View.VISIBLE);
+            //     }
+
+            //   }
+        } else {
+            cartBadgeIcon.setVisibility(View.GONE);
+            textCartItemCount.setVisibility(View.GONE);
+
         }
     }
+
+
 }

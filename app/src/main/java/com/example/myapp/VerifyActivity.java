@@ -220,9 +220,23 @@ public class VerifyActivity extends AppCompatActivity {
                                             Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
                                             break;
 
+                                        case "CheckoutActivity":
 
-                                            // copy all activities
+
+
+                                            intent = new Intent(getApplicationContext(), RecipentsDetailsActivity.class);
+
+                                            startActivity(intent);
+
+
+                                            Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+                                            break;
+
+
+
+                                        // copy all activities
                                         default:
+                                            Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
 
 
                                             break;

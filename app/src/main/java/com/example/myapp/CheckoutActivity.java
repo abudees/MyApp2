@@ -106,11 +106,32 @@ public class CheckoutActivity extends AppCompatActivity {
 
     int productSelected;
 
-    TextView currentQty;
+    TextView currentQty, emptyMessage;
 
     int categoryNumber;
 
 
+    public void clear(View view) {
+
+        try {
+
+            mDatabase.clearCart();
+
+            Toast.makeText(this, "cleared", Toast.LENGTH_LONG).show();
+
+            cartView.setVisibility(View.GONE);
+
+            emptyMessage.setVisibility(View.VISIBLE);
+
+
+
+
+
+        } catch (Exception error) {
+
+            error.printStackTrace();
+        }
+    }
 
 
 
@@ -253,6 +274,7 @@ public class CheckoutActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
             startActivity(intent);
         }
     }
@@ -305,6 +327,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 cartView.setHasFixedSize(true);
                 cartView.getRecycledViewPool().setMaxRecycledViews(0, 0);
                 totalText = findViewById(R.id.textView2);
+                emptyMessage = findViewById(R.id.textView9);
 
 
                 url = new ArrayList<>();
@@ -382,7 +405,7 @@ public class CheckoutActivity extends AppCompatActivity {
                     area = extras.getString("area");
                 }
 
-                Log.d("area5: ", area);
+//                Log.d("area5: ", area);
 
 
                 Log.d("products in cart are: ", String.valueOf(pIDs));
