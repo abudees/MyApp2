@@ -565,5 +565,23 @@ implementation ('androidx.fragment:fragment-ktx:1.3.1') {
 
 
 jcenter()
+
+
+
+//
+
+
+    implementation ('com.paytabs:payment-sdk:6.0.5')
+
+
+
+
+
+    // example
+    implementation('log4j:log4j:1.2.15') {
+        exclude group: 'javax.jms', module: 'jms'
+    }
+
+
  */
 
