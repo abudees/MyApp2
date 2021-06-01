@@ -4,7 +4,7 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality.
+         location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -28,17 +28,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PayTabActivity"></activity>
-        <activity android:name=".CardsActivity" />
-        <activity android:name=".CardDetailsActivity" />
-        <activity android:name=".PasswordActivity" />
-        <activity android:name=".OTPActivity" />
-        <activity android:name=".VerifyActivity" />
-        <activity android:name=".RecipentsDetailsActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".EmailRegistration" />
-        <activity android:name=".PaymentActivity" />
-        <activity android:name=".OrderConfirmationActivity" />
+        <activity android:name=".PayPal"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -50,6 +40,19 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity android:name=".PayTabActivity" />
+        <activity android:name=".CardsActivity" />
+        <activity android:name=".CardDetailsActivity" />
+        <activity android:name=".PasswordActivity" />
+        <activity android:name=".OTPActivity" />
+        <activity android:name=".VerifyActivity" />
+        <activity android:name=".RecipentsDetailsActivity" />
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".EmailRegistration" />
+        <activity android:name=".PaymentActivity" />
+        <activity android:name=".OrderConfirmationActivity" />
+
         <meta-data
             android:name="com.parse.SERVER_URL"
             android:value="@string/back4app_server_url" />

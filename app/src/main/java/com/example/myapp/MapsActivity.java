@@ -1,5 +1,6 @@
 package com.example.myapp;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,115 +8,59 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
+import java.util.Map;
+
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.helper.widget.Layer;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.Settings;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.webkit.PermissionRequest;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import java.security.acl.Permission;
-import java.util.Arrays;
-import java.util.Locale;
-import static android.view.View.VISIBLE;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import java.util.Arrays;
-import java.util.List;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    TextView selectedAddress;
+
+    Intent intent;
+
+    String area,  cameFromActivity;
+
+    List<String>  allPoints= new ArrayList<>();
+
+    Double areaLatitude , arealongitude, selectedLatitude, selectedLongitude ;
+
+    Geocoder geoCoder ;
+    List<Address> matches ;
+    Address bestMatch;
+
+
+    private SupportMapFragment mMapFragment;
+
+
+
+
+
+
+
+
+
 
   //  LocationManager locationManager;
    // LocationListener locationListener;
@@ -124,12 +69,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
   //  private TextView mTapTextView;
-    List<String>  allPoints= new ArrayList<>();
+
    // Context context;
 
 
     public void selectArea(View view){
 
+
+
+
+        if (selectedLatitude != null && selectedLongitude != null) {
+
+            Log.i("newFriends", String.valueOf(selectedLatitude + selectedLongitude));
+
+            intent = new Intent(getApplicationContext(), OrderConfirmationActivity.class);
+
+            intent.putExtra("selectedLatitude", selectedLatitude);
+            intent.putExtra("selectedLongitude", selectedLongitude);
+
+            startActivity(intent);
+        } else {
+
+
+
+            Toast.makeText(MapsActivity.this, "Please select Area", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
 
@@ -137,6 +102,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        mMapFragment = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map));
+
+
+
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -146,12 +119,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
      //   setUpMapIfNeeded();
 
-
+        selectedAddress = findViewById(R.id.textView10);
 
         SharedPreferences sharedPreferences = this.getSharedPreferences("com.example.myapp", Context.MODE_PRIVATE);
 
-
         ArrayList<String> newFriends = new ArrayList<>();
+
+
+
+      //  map = findViewById(R.id.map);
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+
+            if (extras == null) {
+
+                cameFromActivity ="";
+            } else {
+
+                cameFromActivity = extras.getString("cameFromActivity");
+            }
+        }
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+
+            if (extras == null) {
+
+                area ="";
+
+            } else {
+
+                area = extras.getString("area");
+            }
+        }
+
 
         try {
 
@@ -162,7 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
 
-        Log.i("newFriends", newFriends.toString());
+
 
     }
 
@@ -174,47 +176,93 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(15.6476, 32.4807);
-      //  mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-        float zoomLevel = 15.5f; //This goes up to 21
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, zoomLevel));
 
 
-        // Enable the zoom controls for the map
-        mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        ParseQuery<ParseObject> query = new ParseQuery<>("Area");
+
+        query.whereEqualTo("areaName", area);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+
             @Override
-            public void onMapClick(LatLng latLng) {
+            public void done(List<ParseObject> objects, ParseException e) {
 
-                MarkerOptions marker = new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).title("New Marker");
-                googleMap.addMarker(marker);
-                System.out.println(latLng.latitude+"---"+ latLng.longitude);
+                if (e == null) {
 
-                allPoints.add(String.valueOf(latLng));
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(latLng));
+                    for (ParseObject object : objects) {
 
-                Log.d("are:", latLng.latitude+"---"+ latLng.longitude);
+                        areaLatitude = object.getDouble("centerLatitude");
 
-
-                try {
-
-                    Geocoder geoCoder = new Geocoder(MapsActivity.this);
-                    List<Address> matches = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                    Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
+                        arealongitude = object.getDouble("centerLongitude");
+                    }
 
 
-                    Log.d("are:", String.valueOf(bestMatch));
+                    Log.d("latitude", String.valueOf(areaLatitude));
+                    Log.d("longitude", String.valueOf(arealongitude));
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    // Add a marker in Sydney and move the camera
+                    LatLng areaMap = new LatLng(areaLatitude, arealongitude);
+
+
+                    //  mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(areaMap));
+
+                    float zoomLevel = 15.5f; //This goes up to 21
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(areaMap, zoomLevel));
+
+
+                    // Enable the zoom controls for the map
+                    mMap.getUiSettings().setZoomControlsEnabled(true);
+
+                    mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                        @Override
+                        public void onMapClick(LatLng latLng) {
+
+                            MarkerOptions marker = new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).title("New Marker");
+                            googleMap.addMarker(marker);
+                            //System.out.println(latLng.latitude+"---"+ latLng.longitude);
+
+                            allPoints.add(String.valueOf(latLng));
+                            mMap.clear();
+                            mMap.addMarker(new MarkerOptions().position(latLng));
+
+                            Log.d("are1:", latLng.latitude+"---"+ latLng.longitude);
+
+                            selectedLatitude = latLng.latitude;
+                            selectedLongitude = latLng.longitude;
+
+
+                            try {
+
+                                 geoCoder = new Geocoder(MapsActivity.this);
+                                 matches = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                                 bestMatch = (matches.isEmpty() ? null : matches.get(0));
+
+                                String address = matches.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                                String city = matches.get(0).getLocality();
+                                String state = matches.get(0).getAdminArea();
+                                String country = matches.get(0).getCountryName();
+                                String postalCode = matches.get(0).getPostalCode();
+                                String knownName = matches.get(0).getFeatureName(); // Only if available else return NULL
+
+                                selectedAddress.setText(address + ", " + city + ", " + state + ", " + country + ", " + knownName);
+
+                                Log.d("are2:", String.valueOf(bestMatch));
+
+
+
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
                 }
             }
         });
+
 
 
 

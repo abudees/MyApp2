@@ -1,74 +1,69 @@
 package com.example.myapp;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
-import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseAnalytics;
-import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 public class OrderConfirmationActivity extends AppCompatActivity {
 
 
-    public void showDatePickerDialog(View v) {
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "datePicker");
-    }
 
 
-    private TextView dateText;
-
-    int orderNo;
-
-    int mobile ;
-
-    List<String> callingC ;
+   // List<String> callingC ;
 
     Date myDate;
 
     ParseGeoPoint location;
 
-    int totalQty = 2;
+    int minOrderDate = 0;
 
     SqliteDatabase mDatabase ;
 
-    int[] cartProducts = new int[]{1,22};
-    int[] cartQty = new int[]{5654,545};
+    Intent intent;
 
-    Button btnGet ;
+    TextView pickDate, dateSelected;
+
+    EditText recipentName, recipentMobile;
+
+    DatePickerDialog datePicker;
+
+    // initialising the calender
+    final Calendar calendar = Calendar.getInstance();
+
+    // initialising the layout
+    //  editText = findViewById(R.id.editext);
+    final int day = calendar.get(Calendar.DAY_OF_MONTH);
+    final int year = calendar.get(Calendar.YEAR);
+    final int month = calendar.get(Calendar.MONTH);
 
 
-    String g;
+    String area ;
 
-    public int y;
-    public int m;
-    public int d;
+
+    View guideLine;
+
+
+    String cameFromActivity;
+
+
 
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
@@ -77,8 +72,6 @@ public class OrderConfirmationActivity extends AppCompatActivity {
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
-
-
 
 
     public void clearsharedPreferences (){
@@ -101,148 +94,145 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
 
 
-    public void createOrder(View view){
-
-        if (ParseUser.getCurrentUser() != null) {
-
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Orders");
-            query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-                    if (e == null && objects.size() > 0) {
 
 
 
-                        String username = ParseUser.getCurrentUser().getUsername();
+    public void createOrder (View view){
 
-                        username = username.replaceAll("\\D", "");
-                        mobile = 0;
-
-                        mobile = Integer.parseInt(username) ;
-
-                        orderNo = mobile + 11112222  + objects.size();
-                        //  if (cart.size() > 0) {
-
-                        ParseObject newOrder = new ParseObject("Orders");
-                        newOrder.put("orderNo", orderNo);
-                        newOrder.put("username", ParseUser.getCurrentUser().getUsername());
-                        newOrder.put("deliveryDate", myDate);
-                        //  newOrder.put("total", );
-                        newOrder.put("exchangeRate", 1);
-                        newOrder.put("deliveryLocation", location);
-                        newOrder.put("totalQty", mDatabase.listAll().size());
-                        newOrder.put("status", "n");
-                        newOrder.put("recipientMobile", 655656565);
-
-                        //  placeOrder.put("message", 1337);
-                        //   placeOrder.put("voucher", 1337);
-
-                        newOrder.saveInBackground();
+        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
 
 
-                        for (int i = 0; i < cartProducts.length; i++) {
+      //  newOrder.put("deliveryDate", myDate);
+        //  newOrder.put("total", );
+      //  newOrder.put("exchangeRate", 1);
+      //  newOrder.put("deliveryLocation", location);
+       // newOrder.put("totalQty", mDatabase.listAll().size());
+      //  newOrder.put("status", "n");
+      //  newOrder.put("recipientMobile", 655656565);
 
-                            ParseObject newOrderItem = new ParseObject("OrdersDetails");
-
-                            int a = cartProducts[i];
-                            int b = cartQty[i];
-                            newOrderItem.put("orderNo", orderNo);
-                            newOrderItem.put("productNo", a);
-                            newOrderItem.put("qty", b);
-
-                            newOrderItem.saveInBackground();
-                        }
-
-                    } else {
-
-                        String username = ParseUser.getCurrentUser().getUsername();
-
-                        username = username.replaceAll("\\D", "");
-                        mobile = 0;
-
-                        mobile = Integer.parseInt(username) + 11112222;
-
-                        orderNo = mobile + 11112222;
+        //  placeOrder.put("message", 1337);
+        //   placeOrder.put("voucher", 1337);
 
 
-                        //  if (cart.size() > 0) {
+        startActivity(intent);
 
-
-                        ParseObject newOrder = new ParseObject("Orders");
-                        newOrder.put("orderNo", orderNo);
-                        newOrder.put("username", ParseUser.getCurrentUser().getUsername());
-                        newOrder.put("deliveryDate", myDate);
-                        //  newOrder.put("total", );
-                        newOrder.put("exchangeRate", 1);
-                        newOrder.put("deliveryLocation", location);
-                        newOrder.put("totalQty", mDatabase.listAll().size());
-                        newOrder.put("status", "n");
-                        newOrder.put("recipientMobile", 655656565);
-
-                        //  placeOrder.put("message", 1337);
-                        //   placeOrder.put("voucher", 1337);
-
-                        newOrder.saveInBackground();
-
-
-                        for (int i = 0; i < cartProducts.length; i++) {
-
-                            ParseObject newOrderItem = new ParseObject("OrdersDetails");
-
-                            int a = cartProducts[i];
-                            int b = cartQty[i];
-                            newOrderItem.put("orderNo", orderNo);
-                            newOrderItem.put("productNo", a);
-                            newOrderItem.put("qty", b);
-
-                            newOrderItem.saveInBackground();
-                        }
-
-                    }
-                }
-            });
+    }
 
 
 
 
+  /*  DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
 
-            // }
+        @Override
+        public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+            Log.d("hooo", "" + i2 + "/" + (i1 + 1) + "/" + i);
+        }
+    };
+*/
+
+      /*  @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+            Log.d("date", dayOfMonth + "/" + monthOfYear + "/" + year);
+        }
+
+    };
+
+*/
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+
+
+
+    public void showDatePickerDialog(View v) {
+
+
+
+        // initialising the datepickerdialog
+        datePicker = new DatePickerDialog(OrderConfirmationActivity.this);
+
+
+        datePicker = new DatePickerDialog(OrderConfirmationActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
+                // adding the selected date in the edittext
+
+
+                Log.d("kkkk", dayOfMonth + "/" + (month + 1) + "/" + year);
+
+                dateSelected.setVisibility(View.VISIBLE);
+                dateSelected.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+            }
+        }, year, month, day);
+
+
+
+
+        Log.d("gggg", String.valueOf(calendar.getTime() ));
+
+
+        datePicker.getDatePicker().setMinDate(calendar.getTimeInMillis()+(86400000 * minOrderDate));
+
+        // show the dialog
+        datePicker.show();
+
+
+    }
+
+
+
+
+    public void selectAddress (View view){
+
+
+
+        intent = new Intent(getApplicationContext(), MapsActivity.class);
+
+        intent.putExtra("area", area);
+
+        startActivity(intent);
+
+    }
+
+
+    public void confirmRecipentName (View view){
+
+        if (recipentName.getText() != null) {
+
+
+            recipentName.setTextColor(Color.parseColor("#669933"));
+            recipentName.setTypeface(recipentName.getTypeface(), Typeface.BOLD);
+
+            recipentName.setBackgroundResource(android.R.color.transparent);
         }
     }
 
-    public void pay () {
-        Intent in = new Intent(OrderConfirmationActivity.this, CheckoutActivity.class);
-        in.putExtra("pt_merchant_email", "merchant@myapp.com"); //this a demo account for testing the sdk
-        in.putExtra("pt_secret_key",
-                "oIUhj8mssa9rTWRAqHg4P9ECOcfs35lsOgJ7p6ARgJjaFbK6S1aIbOlZ1As5GNxu4hCtnclEWEOCPzIIBSrMGMMImeN22kx6C9zZ");//Add your Secret Key Here
-        in.putExtra("pt_transaction_title", "Mr. John Doe");
-        in.putExtra("pt_amount", "1");
-        in.putExtra("pt_currency_code", "USD"); //Use Standard 3 character ISO
-        in.putExtra("pt_shared_prefs_name", "myapp_shared"); // write a name of the shared folder between your App and PayTabs SDK
-        in.putExtra("pt_customer_email", "test@example.com");
-        in.putExtra("pt_customer_phone_number", "0097300001");
-        in.putExtra("pt_order_id", "1234567");
-        in.putExtra("pt_product_name", "Samsung Galaxy S6");
-        in.putExtra("pt_timeout_in_seconds", "300"); //Optional
 
-        // Billing Address
-        in.putExtra("pt_address_billing", "Flat 1,Building 123, Road 2345");
-        in.putExtra("pt_city_billing", "Juffair");
-        in.putExtra("pt_state_billing", "Manama");
-        in.putExtra("pt_country_billing", "Bahrain");
-        in.putExtra("pt_postal_code_billing", "00973"); //Put Country Phone code if Postal code not available '00973'//
+    public void confirmRecipentMobile (View view){
 
-        // Shipping Address
-        in.putExtra("pt_address_shipping", "Flat 1,Building 123, Road 2345");
-        in.putExtra("pt_city_shipping", "Juffair");
-        in.putExtra("pt_state_shipping", "Manama");
-        in.putExtra("pt_country_shipping", "Bahrain");
-        in.putExtra("pt_postal_code_shipping", "00973"); //Put Country Phone code if Postalcode not available '00973'
-        int requestCode = 0;
-        startActivityForResult(in, requestCode);
+        if (recipentName.getText() != null) {
+
+
+            recipentName.setTextColor(Color.parseColor("#669933"));
+            recipentName.setTypeface(recipentName.getTypeface(), Typeface.BOLD);
+
+            recipentName.setBackgroundResource(android.R.color.transparent);
+        }
     }
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,12 +241,29 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
    //     clearsharedPreferences();
 
+
         try {
 
 
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
 
             if (checkConnection.isNetwork()) {
+
+
+                if (savedInstanceState == null) {
+                    Bundle extras = getIntent().getExtras();
+
+                    if (extras == null) {
+
+                        cameFromActivity ="";
+                    } else {
+
+                        cameFromActivity = extras.getString("cameFromActivity");
+                    }
+                }
+
+
+
 
                 ParseAnalytics.trackAppOpenedInBackground(getIntent());
 
@@ -268,15 +275,32 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                  // cartQty = mDatabase.listQty();
 
 
-
-
                 myDate = new Date();
 
                 location = new ParseGeoPoint(40.0, -30.0);
 
 
+                pickDate = findViewById(R.id.textView11);
+                dateSelected = findViewById(R.id.textView12);
+
+                recipentName = findViewById(R.id.recipentName);
+                recipentMobile = findViewById(R.id.recipentName);
+                recipentName = findViewById(R.id.recipentName);
+                recipentName = findViewById(R.id.recipentName);
 
 
+                if (savedInstanceState == null) {
+                    Bundle extras = getIntent().getExtras();
+
+                    if (extras == null) {
+
+                        area = "riyadh";
+
+                    } else {
+
+                        area = extras.getString("area");
+                    }
+                }
 
                 //        mobile = Integer.parseInt(Objects.requireNonNull(ParseUser.getCurrentUser().getString("mobileNumber")));
 
@@ -293,7 +317,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
                 //     Log.d("numver: ", String.valueOf(newOrderNo));
 
-                dateText = findViewById(R.id.date_text);
+
 /*
                 findViewById(R.id.show_dialog).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -303,13 +327,22 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                 });
 */
 
+
+                 guideLine =  findViewById(R.id.guideline47);
+                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideLine.getLayoutParams();
+
+
+
+               //  params.guidePercent = 0.77f; // 45% // range: 0 <-> 1
+              //  guideLine.setLayoutParams(params);
+
+
+
             }
 
-
-
-            } catch (InterruptedException | IOException e) {
+        } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
 
-            }
         }
     }
+}

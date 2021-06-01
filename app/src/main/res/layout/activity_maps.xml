@@ -10,18 +10,6 @@
     tools:context=".MapsActivity">
 
 
-    <Button
-        android:id="@+id/go_to_picker_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/go_to_picker_activity"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline67" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline67"
         android:layout_width="wrap_content"
@@ -33,84 +21,107 @@
         android:id="@+id/editText8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="اكتب وصف للموقع"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/guideline67"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintStart_toStartOf="@+id/guideline66" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline69"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".1" />
+        app:layout_constraintGuide_percent=".75" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline68"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".8" />
+        app:layout_constraintGuide_percent=".82" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/guideline68"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline69"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline69">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".MapsActivity">
 
 
-        <ListView
-            android:id="@+id/listPlaces"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/guideline68"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline66"></ListView>
-
-
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="421dp"
-            android:layout_height="525dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline66"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:context=".MapsActivity">
-
-
-        </fragment>
-
-    </LinearLayout>
+    </fragment>
 
     <Button
         android:id="@+id/buttonPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="selectArea"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="تآكيد"
+        app:layout_constraintBottom_toTopOf="@+id/guideline67"
+        app:layout_constraintEnd_toStartOf="@+id/guideline66"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guideline68" />
 
-    <TextView
-        android:id="@+id/tap_text"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline66"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.35"
+        mapbox:layout_constraintGuide_begin="194dp" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:text="TextView"
-        mapbox:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="49dp" />
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline67"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline66"
+        app:layout_constraintTop_toTopOf="@+id/guideline68" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="#FFFFFF"
+        android:text="اختار موقع التوصيل من الخريطة"
+        android:textAlignment="center"
+        android:textColor="#090909"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline69"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:text="او اكتب وصف للموقع"
+        android:textColor="#020202"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline69" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

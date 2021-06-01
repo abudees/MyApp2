@@ -26,13 +26,15 @@ android {
     }
 
 
-    configurations {
-        all*.exclude group: 'com.android.volley'
 
 
+    configurations.all {
 
+        exclude group: 'com.android.volley'
+        resolutionStrategy {
+            exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
+        }
     }
-
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -44,6 +46,9 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
         exclude("META-INF/*.kotlin_module")
+    }
+    buildFeatures {
+        viewBinding true
     }
 
 }
@@ -105,8 +110,12 @@ dependencies {
 
 
     //app/build.gradle
-    implementation ('com.squareup.retrofit2:retrofit:2.9.0') 
-    implementation ('com.squareup.retrofit2:converter-moshi:2.4.0') 
+    implementation ('com.squareup.retrofit2:retrofit:2.9.0')  {
+        exclude group: "com.squareup.okhttp3"
+    }
+    implementation ('com.squareup.retrofit2:converter-moshi:2.4.0')  {
+        exclude group: "com.squareup.okhttp3"
+    }
     implementation ('com.squareup.okhttp3:logging-interceptor:4.9.0') 
 
 
@@ -131,7 +140,8 @@ dependencies {
 
 
 
-    implementation ('com.paytabs:payment-sdk:6.0.5'){ exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-jvm'}
+    implementation ('com.paytabs:payment-sdk:6.0.5')
+    implementation('com.paypal.sdk:paypal-android-sdk:2.14.1')
 
 
 
@@ -139,15 +149,5 @@ dependencies {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+    
 }
