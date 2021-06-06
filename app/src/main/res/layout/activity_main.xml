@@ -32,6 +32,7 @@
         android:onClick="redirect"
         android:text="Welcome"
         android:textColor="#030100"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toStartOf="@+id/guideline11"
@@ -94,10 +95,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:autoSizeTextType="uniform"
         android:onClick="login"
         android:text="Login"
         android:textColor="#030100"
-        android:autoSizeTextType="uniform"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline27"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toEndOf="@+id/guideline11" />
@@ -110,42 +112,18 @@
         app:layout_constraintGuide_percent=".85" />
 
     <TextView
-        android:id="@+id/languageTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="عربي"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline11"
-        app:layout_constraintStart_toStartOf="@+id/guideline18"
-        app:layout_constraintTop_toTopOf="@+id/guideline27" />
-
-    <TextView
         android:id="@+id/logout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="logout"
         android:text="Logout"
+        android:textSize="16sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toEndOf="@+id/guideline11"
         app:layout_constraintTop_toBottomOf="@+id/guideline27"
         app:layout_constraintVertical_bias="0.65999997" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/guideline16"
-        app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintStart_toStartOf="@+id/guideline18"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
@@ -160,7 +138,7 @@
         android:layout_height="wrap_content"
         android:clickable="false"
         android:text="TextView"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"

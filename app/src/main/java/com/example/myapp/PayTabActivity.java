@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +38,7 @@ import java.util.List;
 public class PayTabActivity extends AppCompatActivity  implements CallbackPaymentInterface {
 
 
+    Intent intent;
 
     int mobile , orderNo;
     SqliteDatabase mDatabase ;
@@ -131,6 +133,23 @@ public class PayTabActivity extends AppCompatActivity  implements CallbackPaymen
     public void onPaymentFinish(@NonNull PaymentSdkTransactionDetails paymentSdkTransactionDetails) {
 
         Log.d("here", "alhamdullilah");
+
+        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+
+
+        //  newOrder.put("deliveryDate", myDate);
+        //  newOrder.put("total", );
+        //  newOrder.put("exchangeRate", 1);
+        //  newOrder.put("deliveryLocation", location);
+       //  newOrder.put("totalQty", mDatabase.listAll().size());
+       //   newOrder.put("status", "n");
+        //  newOrder.put("recipientMobile", 655656565);
+
+        //  placeOrder.put("message", 1337);
+        //   placeOrder.put("voucher", 1337);
+
+
+        startActivity(intent);
 
     }
 

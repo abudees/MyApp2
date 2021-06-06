@@ -99,22 +99,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
     public void createOrder (View view){
 
-        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
 
-
-      //  newOrder.put("deliveryDate", myDate);
-        //  newOrder.put("total", );
-      //  newOrder.put("exchangeRate", 1);
-      //  newOrder.put("deliveryLocation", location);
-       // newOrder.put("totalQty", mDatabase.listAll().size());
-      //  newOrder.put("status", "n");
-      //  newOrder.put("recipientMobile", 655656565);
-
-        //  placeOrder.put("message", 1337);
-        //   placeOrder.put("voucher", 1337);
-
-
-        startActivity(intent);
 
     }
 

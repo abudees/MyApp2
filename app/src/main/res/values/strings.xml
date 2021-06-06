@@ -19,9 +19,6 @@
     <string name="title_activity_maps2">Map</string>
     <string name="mobileno">MobileNo</string>
     <string name="welcome">"Welcome, "</string>
-    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
-    <string name="back4app_app_id">JmRRaWGOY81URMVf9mwQS1Pm48NV3bIxf7UXQInr</string>
-    <string name="back4app_client_key">Bo3IKZ2OgPUmaoopGWFnj4tmUfH3BusBYAs84VEe</string>
     <string name="pick_time" />
     <string name="pick_date" />
     <string name="mail" />
@@ -409,5 +406,9 @@
     <string name="show_merchant_logo" />
     <string name="complete_billing_info" />
     <string name="force_shipping_validation" />
+
+    <string name="back4app_app_id">"2rFotUdeSKUw5zCUPS8JzMH8O8IaFKTZeZvpU8fb"</string>
+    <string name="back4app_client_key">"0uRtNDNFESrtazoWBSMlUpHTbJ59hLa3ziupa7Yy"</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
 
 </resources>

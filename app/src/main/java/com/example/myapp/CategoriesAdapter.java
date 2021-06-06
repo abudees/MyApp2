@@ -2,39 +2,32 @@ package com.example.myapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
 
 public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
 
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
 
-    private List<String> url;
+    private final List<String> url;
 
-    private List<String> title;
+    private final List<String> title;
 
-    private List<Integer> id;
+    private final List<Integer> id;
 
-    private Context context;
+    private final Context context;
 
-    private String area;
+    private final String area;
 
-
+    CategoriesAdapter.ViewHolder holder ;
 
 
 
@@ -46,12 +39,7 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
         this.id = id;
         this.area = area;
         this.context = context;
-
-
     }
-
-
-
 
 
     @NonNull
@@ -60,13 +48,10 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
 
         View view = inflater.inflate(R.layout.category_card, viewGroup, false);
 
-        CategoriesAdapter.ViewHolder holder = new CategoriesAdapter.ViewHolder(view);
+        holder = new CategoriesAdapter.ViewHolder(view);
 
         return holder;
     }
-
-
-
 
 
 
@@ -74,14 +59,12 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
     public void onBindViewHolder(final com.example.myapp.CategoriesAdapter.ViewHolder holder, final int position) {
 
         String currentURL = url.get(position);
-        final String currenTitle = title.get(position);
 
+        final String currenTitle = title.get(position);
 
         Picasso.with(context).load(currentURL).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).into(holder.imageView);
 
         holder.categoryTitle.setText(currenTitle);
-
-
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -97,11 +80,8 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
                 intent.putExtra("area", area);
 
                 c.startActivity(intent);
-
             }
-
         });
-
     }
 
     @Override
@@ -110,22 +90,18 @@ public class CategoriesAdapter extends  RecyclerView.Adapter<CategoriesAdapter.V
     }
 
 
-
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
+
         TextView categoryTitle;
-
-
 
         private ViewHolder(View itemView) {
             super(itemView);
 
-
             imageView = itemView.findViewById(R.id.categoryImage);
             categoryTitle = itemView.findViewById(R.id.title);
         }
-
     }
 }
 

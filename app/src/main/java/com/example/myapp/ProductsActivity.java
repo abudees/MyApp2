@@ -49,11 +49,12 @@ import java.util.Objects;
 
 public class ProductsActivity extends AppCompatActivity {
 
+
     private ProductsAdapter adapter;
 
     private RecyclerView recyclerView;
 
-    int categoryNumber;
+    int categoryNumber, mCartItemCount;
 
     final List<String> url = new ArrayList<>();
 
@@ -63,27 +64,18 @@ public class ProductsActivity extends AppCompatActivity {
 
     final List<Integer> ptoductId = new ArrayList<>();
 
-
-  //  final List<String> stock = new ArrayList<>();
-  //  final List<String> preStock = new ArrayList<>();
-
-
     TextView textCartItemCount, login, logout;
 
     private SqliteDatabase mDatabase;
-
-    int mCartItemCount;
 
     Intent intent;
 
     private MenuItem sigInMenu;
     private MenuItem signoutMenu;
 
-    String area;
+    String area, currency;
 
-     String currency;
-
-     ImageView cartBadgeIcon;
+    ImageView cartBadgeIcon;
 
 
 
@@ -103,8 +95,11 @@ public class ProductsActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             if (extras == null) {
                 categoryNumber = 0;
+                area = "";
             } else {
                 categoryNumber = extras.getInt("categoryNumber");
+                area = extras.getString("area", area);
+
             }
         } else {
             categoryNumber = (int) savedInstanceState.getSerializable("categoryNumber");
@@ -117,7 +112,7 @@ public class ProductsActivity extends AppCompatActivity {
         String countryCode = tm.getSimCountryIso();
         String lang = Locale.getDefault().getDisplayLanguage();
         Locale locale = new Locale(lang, countryCode);
-        /*final String*/ currency = Currency.getInstance(locale).getCurrencyCode();
+        currency = Currency.getInstance(locale).getCurrencyCode();
 
 
         recyclerView = findViewById(R.id.recyclerview1);
@@ -149,21 +144,27 @@ public class ProductsActivity extends AppCompatActivity {
 
 
 
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Products");
-                query.whereEqualTo("categoryNo", categoryNumber);
-                query.whereGreaterThanOrEqualTo("stock", 0.5);
-                query.whereGreaterThanOrEqualTo("preOrder", 0.5);
+
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
+             //   query.whereEqualTo("categoryNo", categoryNumber);
+             //   query.whereGreaterThanOrEqualTo("stock", 0.5);
+             //   query.whereGreaterThanOrEqualTo("preOrder", 0.5);
               //  query.whereEqualTo("status", true);
 
-                query.orderByAscending("productNo");
+             //   query.orderByAscending("productNo");
 
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> objects, ParseException e) {
+
+
                         if (e == null && objects.size() > 0) {
+
+                            Log.d("ahaaa", String.valueOf("ghghg"));
+
                             for (ParseObject object : objects) {
 
-                                Log.d("ahaaa", String.valueOf(categoryNumber));
+
 
                                 url.add(object.getString("imageURL"));
                                 title.add(object.getString("title"));
@@ -336,6 +337,4 @@ public class ProductsActivity extends AppCompatActivity {
 
         }
     }
-
-
 }
