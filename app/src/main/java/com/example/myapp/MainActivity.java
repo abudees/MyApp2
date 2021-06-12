@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,12 +22,20 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
-
+import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 
 
 public class MainActivity extends AppCompatActivity  {
@@ -55,6 +64,11 @@ public class MainActivity extends AppCompatActivity  {
     int mCartItemCount;
 
 
+
+    public static long getDifferenceDays(Date d1, Date d2) {
+        long diff = d2.getTime() - d1.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
 
 
     public void logout (View view){
@@ -113,6 +127,7 @@ public class MainActivity extends AppCompatActivity  {
                     for (ParseObject object : objects) {
 
                         areaList.add(object.getString("areaName"));
+
                     }
 
                     adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,
@@ -122,6 +137,8 @@ public class MainActivity extends AppCompatActivity  {
                     spinner.setAdapter(adapter);
 
                     spinner.setOnItemSelectedListener(new mySpinnerListener());
+
+
                 }
             }
         });
@@ -158,12 +175,22 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+
+
+
+
                 Map<String, String> dimensions = new HashMap<String, String>();
                 // Define ranges to bucket data points into meaningful segments
                 dimensions.put("area", "omdur");
 
                 // Send the dimensions to Parse along with the event
                 ParseAnalytics.trackEventInBackground("myEventName", dimensions);
+
+
+
+
+
+
 
 
 

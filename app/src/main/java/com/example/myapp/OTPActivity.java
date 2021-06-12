@@ -62,20 +62,22 @@ public class OTPActivity extends AppCompatActivity {
 
             Random random = new Random();
             randomNumber = random.nextInt(999999);
-            message = /*"<#>" +*/ randomNumber + "_is_yourYazSeed";
+
+            //check avilabilty of sudan cart
+            message = "<#>" + randomNumber + "_is_yourYazSeed";
 
             if (mobileNumber.startsWith("+249")) {
 
                 try {
                     // Construct data
 
-                    String user = "user=" + apiKey;
+                    String user = apiKey;
                     String pass = "&pwd=" + token;
                     String text1 = "&smstext=" + message;
-                    String sender2 = "%20&Sender=" + sender;
+                    String sender2 = "&Sender=" + sender;
                     String numbers = "&Nums=" + mobileNumber.replace("+","");
                     // Send data
-                    HttpURLConnection conn = (HttpURLConnection) new URL(url1 + user + pass + text1 + sender2 + numbers + "").openConnection();
+                    HttpURLConnection conn = (HttpURLConnection) new URL("http://www.airtel.sd/BulkSMS/webacc.aspx?user=" + user + pass + text1 + sender2 + numbers + "").openConnection();
                     String data = user + pass + text1 + sender2 + numbers;
                     conn.setDoOutput(true);
                     conn.setRequestMethod("POST");
@@ -86,14 +88,10 @@ public class OTPActivity extends AppCompatActivity {
                     //  String line;
 
 
-
-
-
                     if ((conn.getResponseMessage().matches("OK"))){
 
                         //  if (line.matches("OK")) {
                         intent = new Intent(getApplicationContext(), VerifyActivity.class);
-
 
                         intent.putExtra("randomNumber", randomNumber);
 
@@ -102,7 +100,6 @@ public class OTPActivity extends AppCompatActivity {
 
                         Log.d("here", "here");
                         //  }
-
                     }
                     //  Log.d("line" = rd.readLine()) != null) {
                     //     stringBuffer.append(line);
@@ -120,16 +117,17 @@ public class OTPActivity extends AppCompatActivity {
 
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("Error SMS " + e);
                 }
 
 
                 Intent intent2 = new Intent(getApplicationContext(), VerifyActivity.class);
 
-
                 intent2.putExtra("randomNumber", randomNumber);
 
                 intent2.putExtra("mobileNumber", mobileNumber);
+
                 intent2.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
             } else {

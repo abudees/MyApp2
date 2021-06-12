@@ -178,11 +178,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                                             for (ParseObject object : objects) {
 
-                                                                apiKey = object.getString("accountSID");
-                                                                token = object.getString("authToken");
+                                                                apiKey = object.getString("apiKey2  VC");
+                                                                token = object.getString("password");
                                                                 url = object.getString("url");
                                                                 url2 = object.getString("url2");
-                                                                sender = object.getString("sender");
+                                                                sender = object.getString("apiKey2");
                                                             }
 
                                                             intent = new Intent(getApplicationContext(), OTPActivity.class);
@@ -212,10 +212,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                                             for (ParseObject object : objects) {
 
-                                                                apiKey = object.getString("accountSID");
-                                                                token = object.getString("authToken");
+                                                                apiKey = object.getString("apiKey1");
+                                                                token = object.getString("password");
                                                                 url1 = object.getString("url");
-                                                                url2 = object.getString("url2");
+                                                                url2 = object.getString("apiKey2");
                                                             }
                                                         }
                                                         intent = new Intent(getApplicationContext(), OTPActivity.class);

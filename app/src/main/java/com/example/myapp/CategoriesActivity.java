@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -103,6 +105,8 @@ public class CategoriesActivity extends AppCompatActivity {
                                 title.add(object.getString("categoryName"));
 
                                 id.add(object.getInt("categoryNo"));
+                                Log.d("date", String.valueOf(Calendar.getInstance().getTime().compareTo(object.getUpdatedAt())));
+
                             }
 
                             Bundle extras = getIntent().getExtras();
