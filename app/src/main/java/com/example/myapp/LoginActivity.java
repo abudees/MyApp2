@@ -178,10 +178,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                                             for (ParseObject object : objects) {
 
-                                                                apiKey = object.getString("apiKey2  VC");
+                                                                apiKey = object.getString("apiKey1");
                                                                 token = object.getString("password");
                                                                 url = object.getString("url");
-                                                                url2 = object.getString("url2");
+                                                             //   url2 = object.getString("url2");
                                                                 sender = object.getString("apiKey2");
                                                             }
 
@@ -190,10 +190,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                             intent.putExtra("mobileNumber", username);
                                                             intent.putExtra("apiKey", apiKey);
                                                             intent.putExtra("token", token);
-                                                            intent.putExtra("url1", url1);
+                                                            intent.putExtra("url", url);
                                                             intent.putExtra("sender", sender);
                                                             intent.putExtra("cameFromActivity", cameFromActivity);
-                                                            intent.putExtra("sudanOr", sudanOr);
+                                                          //  intent.putExtra("sudanOr", sudanOr);
 
                                                             startActivity(intent);
                                                         }
@@ -214,7 +214,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                                                 apiKey = object.getString("apiKey1");
                                                                 token = object.getString("password");
-                                                                url1 = object.getString("url");
+                                                                url = object.getString("url");
                                                                 url2 = object.getString("apiKey2");
                                                             }
                                                         }
@@ -223,7 +223,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                         intent.putExtra("mobileNumber", username);
                                                         intent.putExtra("apiKey", apiKey);
                                                         intent.putExtra("token", token);
-                                                        intent.putExtra("url1", url1);
+                                                        intent.putExtra("url", url);
                                                         intent.putExtra("url2", url2);
                                                         intent.putExtra("cameFromActivity", cameFromActivity);
                                                         intent.putExtra("sudanOr", sudanOr);

@@ -38,9 +38,17 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -95,54 +103,51 @@ public class ProductsActivity extends AppCompatActivity {
 
 
         try {
-            // Construct data
-          //  Log.d("respo","here");
             String apiKey = "ab050eb24ddc479087a57f4945571e46";
-          //  String pass = "&pwd=" + token;
-          //  String text1 = "&smstext=" + message;
-          //  String sender2 = "&Sender=" + sender;
-         //   String numbers = "&Nums=" + mobileNumber.replace("+","");
-             //Send data;
-            HttpURLConnection conn = (HttpURLConnection) new URL("https://api.currencyfreaks.com/latest?apikey=" + apiKey ).openConnection();
-            String data = apiKey ;
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-            conn.getOutputStream().write(data.getBytes("UTF-8"));
-
-             BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-         //    StringBuffer stringBuffer = new StringBuffer();
 
 
 
-          //  String result = EntityUtils.toString(resp_entity);
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response = httpclient.execute(new HttpGet("https://api.currencyfreaks.com/latest?apikey=" + apiKey));
+            StatusLine statusLine = response.getStatusLine();
+            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                response.getEntity().writeTo(out);
+                String responseString = out.toString();
+                Log.d("respo",responseString);
+
+
+                //  String response = "31.578369901154527 74.35708886792317";
+                String[] responseParts = responseString.split(":" );
+
+                List<String>  responseParts1 = new ArrayList<>();
+
+              //  for (int x=0; x < responseParts.length; x++) {
+                //    responseParts1.add( responseParts.split(":"));
 
 
 
-          //  if ((conn.getResponseMessage().matches("OK"))){
+              //  }
 
-                //  if (line.matches("OK")) {
-            //    intent = new Intent(getApplicationContext(), VerifyActivity.class);
-
-              //  intent.putExtra("randomNumber", randomNumber);
-
-             //   intent.putExtra("mobileNumber", mobileNumber);
-             //   intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
-
-             //   Log.d("here", "here");
-                //  }
-
-            //  Log.d("line" = rd.readLine()) != null) {
-            //     stringBuffer.append(line);
-            //    Log.d("line", line);
-            //  }
+                //Log.d("SPLIT RESPONSE", "first: "+responseString.("SDG"));
+                Log.d("SPLIT RESPONSE1", responseParts[7].trim());
 
 
 
-            Log.d("respo",conn.getResponseMessage().toString());
 
 
-            rd.close();
+
+
+
+
+
+                out.close();
+                //..more logic
+            } else{
+                //Closes the connection.
+                response.getEntity().getContent().close();
+                throw new IOException(statusLine.getReasonPhrase());
+            }
 
         } catch (Exception e) {
             System.out.println("Error SMS " + e);

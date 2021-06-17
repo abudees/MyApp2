@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,7 @@ public class OTPActivity extends AppCompatActivity {
 
     int randomNumber;
 
-    String  message, mobileNumber, sender, cameFromActivity, sudanOr, apiKey, token, url1, url2;
+    String  message, mobileNumber, sender, cameFromActivity, sudanOr, apiKey, token, url, url2;
 
 
     private void sendSms(){
@@ -64,25 +65,34 @@ public class OTPActivity extends AppCompatActivity {
             randomNumber = random.nextInt(999999);
 
             //check avilabilty of sudan cart
-            message = "<#>" + randomNumber + "_is_yourYazSeed";
+            message ="<#> Your verification code is " + randomNumber ;
 
             if (mobileNumber.startsWith("+249")) {
 
                 try {
                     // Construct data
 
-                    String user = apiKey;
+
+                    String user = "?user=" + apiKey;
                     String pass = "&pwd=" + token;
                     String text1 = "&smstext=" + message;
                     String sender2 = "&Sender=" + sender;
                     String numbers = "&Nums=" + mobileNumber.replace("+","");
-                    // Send data
-                    HttpURLConnection conn = (HttpURLConnection) new URL("http://www.airtel.sd/BulkSMS/webacc.aspx?user=" + user + pass + text1 + sender2 + numbers + "").openConnection();
+
+
+                   // String url = "http://212.0.129.229/bulksms/webacc.aspx";
+                   // String encodedurl = URLEncoder.encode(url,"UTF-8");
+
+                    HttpURLConnection conn = (HttpURLConnection) new URL("http://212.0.129.229/bulksms/webacc.aspx" +  user + pass + text1 + sender2 + numbers + "").openConnection();
+
+                  //  URLEncoder.encode("http://212.0.129.229/bulksms/webacc.aspx", "utf-8");
                     String data = user + pass + text1 + sender2 + numbers;
                     conn.setDoOutput(true);
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-                    conn.getOutputStream().write(data.getBytes("UTF-8"));
+
+                   conn.getOutputStream().write(data.getBytes("UTF-8"));
+
                     //   final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     //  final StringBuffer stringBuffer = new StringBuffer();
                     //  String line;
@@ -99,15 +109,15 @@ public class OTPActivity extends AppCompatActivity {
                         intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                         Log.d("here", "here");
-                        //  }
-                    }
+                         }
+
                     //  Log.d("line" = rd.readLine()) != null) {
                     //     stringBuffer.append(line);
                     //    Log.d("line", line);
 
 
 
-                    //  }
+
 
 
 
@@ -135,7 +145,7 @@ public class OTPActivity extends AppCompatActivity {
 
                 OkHttpClient client = new OkHttpClient();
 
-                String apiUrl = url1 + apiKey + url2;
+                String apiUrl = url + apiKey + url2;
 
                 String base64EncodedCredentials = "Basic " + Base64.encodeToString((apiKey + ":" + token).getBytes(), Base64.NO_WRAP);
 
@@ -165,7 +175,7 @@ public class OTPActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "OTP SEND SUCCESSFULLY", Toast.LENGTH_LONG).show();
 
 
-            }
+           }
         } catch (Exception e) {
 
             //System.out.println("Error SMS "+e);
@@ -206,7 +216,7 @@ public class OTPActivity extends AppCompatActivity {
                         mobileNumber ="";
                         apiKey = "";
                         token = "";
-                        url1 = "";
+                        url = "";
                         url2 = "";
                         sender = "";
                         cameFromActivity = "";
@@ -217,7 +227,7 @@ public class OTPActivity extends AppCompatActivity {
                         cameFromActivity = extras.getString("cameFromActivity");
                         apiKey = extras.getString("apiKey");
                         token = extras.getString("token");
-                        url1 = extras.getString("url1");
+                        url = extras.getString("url");
                         url2 = extras.getString("url2");
                         sender = extras.getString("sender");
                         sudanOr = extras.getString("sudanOr");
