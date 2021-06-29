@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -43,8 +44,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -56,10 +59,15 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class ProductsActivity extends AppCompatActivity {
@@ -78,7 +86,7 @@ public class ProductsActivity extends AppCompatActivity {
     final List<Integer> price = new ArrayList<>();
     final List<Integer> rate = new ArrayList<>();
 
-    final List<Integer> finalPrice = new ArrayList<>();
+    final List<Integer> sudanPrice = new ArrayList<>();
 
     final List<Integer> ptoductId = new ArrayList<>();
 
@@ -97,64 +105,94 @@ public class ProductsActivity extends AppCompatActivity {
 
     int exchange =0;
 
+    Double protein;
 
-
-    public void requestRate(){
-
-
-        try {
-            String apiKey = "ab050eb24ddc479087a57f4945571e46";
+    String yourCurruncy = "SAR";
 
 
 
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpResponse response = httpclient.execute(new HttpGet("https://api.currencyfreaks.com/latest?apikey=" + apiKey));
-            StatusLine statusLine = response.getStatusLine();
-            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                response.getEntity().writeTo(out);
-                String responseString = out.toString();
-                Log.d("respo",responseString);
-
-
-                //  String response = "31.578369901154527 74.35708886792317";
-                String[] responseParts = responseString.split(":" );
-
-                List<String>  responseParts1 = new ArrayList<>();
-
-              //  for (int x=0; x < responseParts.length; x++) {
-                //    responseParts1.add( responseParts.split(":"));
-
-
-
-              //  }
-
-                //Log.d("SPLIT RESPONSE", "first: "+responseString.("SDG"));
-                Log.d("SPLIT RESPONSE1", responseParts[7].trim());
+    final ArrayList<String> apiKey = new ArrayList<>();
+    final ArrayList<String> apiKeyURL = new ArrayList<>();
 
 
 
 
 
+    public void updateRate(){
 
 
 
+        ParseQuery<ParseObject> query = new ParseQuery<>("APIs");
+        query.whereEqualTo("type", "currency");
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                if (e == null) {
+
+                    for (ParseObject object : objects) {
+
+                        apiKey.add(object.getString("apiKey1"));
+                        apiKeyURL.add(object.getString("url"));
+                    }
+
+                    try {
+
+                        HttpClient httpclient = new DefaultHttpClient();
+                        HttpResponse response = httpclient.execute(new HttpGet(apiKeyURL.get(0) + apiKey.get(0)));
+                        StatusLine statusLine = response.getStatusLine();
+                        if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                            response.getEntity().writeTo(out);
+                            String responseString = out.toString();
+
+                            String[] separated = responseString.split(currency);
+
+                            String textGot = separated[1].substring(3);
+
+                            String[] separatedFinal = textGot.split("\"");
 
 
-                out.close();
-                //..more logic
-            } else{
-                //Closes the connection.
-                response.getEntity().getContent().close();
-                throw new IOException(statusLine.getReasonPhrase());
+                            try {
+
+                                protein = Double.parseDouble(separatedFinal[0]); // Make use of autoboxing.  It's also easier to read.
+
+
+                            } catch (NumberFormatException err) {
+                                System.out.println(err);
+                            }
+
+
+                            ParseObject rate = new ParseObject("CurrencyRate");
+                            rate.put("currency", currency);
+                            rate.put("exchangeRate", protein);
+                            rate.saveInBackground();
+
+                            out.close();
+
+                            requestExchangeRate();
+
+                        } else {
+                            //Closes the connection.
+                            response.getEntity().getContent().close();
+                            throw new IOException(statusLine.getReasonPhrase());
+                        }
+                    } catch (Exception er) {
+                        System.out.println(er);
+                    }
+                }
+
             }
+        });
 
-        } catch (Exception e) {
-            System.out.println("Error SMS " + e);
-        }
+
     }
 
-    public void requestProducts(){
+
+
+    public void requestProducts(int eRate){
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Product");
 
@@ -171,22 +209,24 @@ public class ProductsActivity extends AppCompatActivity {
                     for (ParseObject object : objects) {
                         url.add(object.getString("imageURL"));
                         title.add(object.getString("productTitle"));
+                        ptoductId.add(object.getInt("productNo"));
                         Log.d("updated at", String.valueOf(object.getUpdatedAt()));
+
                         if (currency.matches("SDG")) {
-                            Log.i("customer in sudan", String.valueOf(price));
-                            price.add(object.getInt("priceSDG"));
-                            rate.add(object.getInt("rateSDG"));
-                            for (int i = 0; i < objects.size(); i++) {
-                                finalPrice.add(price.get(i) * rate.get(i));
-                            }
+
+                            price.add((object.getInt("priceSDG")) * (object.getInt("rateSDG")));
+
+
                         } else {
 
-
-                            price.add((int) (object.getInt("priceUSD") * 1.12 * exchange));
-                            Log.i("customer in sudan", "not in sudan");
+                            price.add((int) (object.getInt("priceUSD") * 1.12 * eRate));
                         }
-                        ptoductId.add(object.getInt("productNo"));
-                    }
+
+
+
+                        }
+
+
                     String area = "";
                     Bundle extras = getIntent().getExtras();
                     if (extras != null) {
@@ -205,6 +245,9 @@ public class ProductsActivity extends AppCompatActivity {
 
     }
 
+    public void requestExchangeRate(){
+
+    }
 
 
 
@@ -239,8 +282,9 @@ public class ProductsActivity extends AppCompatActivity {
         String countryCode = tm.getSimCountryIso();
         String lang = Locale.getDefault().getDisplayLanguage();
         Locale locale = new Locale(lang, countryCode);
-        currency = Currency.getInstance(locale).getCurrencyCode();
+       // currency = Currency.getInstance(locale).getCurrencyCode();
 
+        currency = "SDG";
 
         recyclerView = findViewById(R.id.recyclerview1);
         recyclerView.setHasFixedSize(true);
@@ -260,7 +304,7 @@ public class ProductsActivity extends AppCompatActivity {
 
 
 
-                mDatabase = new SqliteDatabase(this);
+
 
                 ParseQuery<ParseObject> query1 = ParseQuery.getQuery("CurrencyRate");
                 query1.whereEqualTo("currency", currency);
@@ -290,26 +334,40 @@ public class ProductsActivity extends AppCompatActivity {
                                     long diff;
                                     diff = (date5.getTime() - date6.getTime()) / 1000 / 60 / 60 / 24;
 
+
+                                    exchange = object1.getInt("exchangeRate");
+
+
                                     if (!currency.equals("SDG")  && diff <= 30) {
+
                                         Log.d("diffrent", String.valueOf(diff));
-
-                                        exchange = object1.getInt("exchangeRate");
-
-                                        requestProducts();
+                                        requestProducts(exchange);
 
                                     } else {
-                                        requestRate();
+                                        updateRate();
+                                        requestProducts(exchange);
                                     }
                                 } catch (java.text.ParseException parseException) {
                                     parseException.printStackTrace();
                                 }
                             }
+
                         } else {
-                            requestRate();
-                            requestProducts();
+                            updateRate();
+                          //  requestProducts(exchange);
+
                         }
                     }
                 });
+
+
+                Log.d("exchang", String.valueOf(exchange));
+
+                mDatabase = new SqliteDatabase(this);
+
+                requestExchangeRate();
+
+
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();

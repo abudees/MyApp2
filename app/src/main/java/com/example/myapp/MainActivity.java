@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.StrictMode;
@@ -15,12 +16,17 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.SupportMapFragment;
+
 import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -62,6 +68,8 @@ public class MainActivity extends AppCompatActivity  {
     private SqliteDatabase mDatabase;
 
     int mCartItemCount;
+
+
 
 
 
@@ -136,7 +144,15 @@ public class MainActivity extends AppCompatActivity  {
                     // Apply the adapter to the spinner
                     spinner.setAdapter(adapter);
 
-                    spinner.setOnItemSelectedListener(new mySpinnerListener());
+                    spinner.setOnItemSelectedListener(new mySpinnerListener(
+
+
+
+                    ));
+
+
+
+
 
 
                 }
@@ -179,9 +195,24 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
                 Map<String, String> dimensions = new HashMap<String, String>();
+
                 // Define ranges to bucket data points into meaningful segments
-                dimensions.put("area", "omdur");
+                dimensions.put("areaName", "omdur");
+               // dimensions.put("professional", "John");
 
                 // Send the dimensions to Parse along with the event
                 ParseAnalytics.trackEventInBackground("myEventName", dimensions);
@@ -241,6 +272,15 @@ public class MainActivity extends AppCompatActivity  {
 
             // TODO Auto-generated method stub
             area = parent.getItemAtPosition(position).toString();
+
+
+            HashMap<String, String> dimensions = new HashMap<String, String>();
+
+            // Define ranges to bucket data points into meaningful segments
+            dimensions.put("areaName", "omdur");
+
+            // Send the dimensions to Parse along with the event
+            ParseAnalytics.trackEventInBackground("myEventName", dimensions);
         }
 
         @Override

@@ -29,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent=".3" />
+                    app:layout_constraintGuide_percent=".7" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline35"
@@ -54,12 +54,10 @@
                     android:id="@+id/title"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginStart="8dp"
-
+                    android:autoSizeTextType="uniform"
                     android:text="Title"
-                    android:textAlignment="textStart"
+                    android:textAlignment="center"
                     android:textColor="#030100"
-                    android:textSize="24sp"
                     app:layout_constraintBottom_toTopOf="@+id/guideline89"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -69,10 +67,10 @@
                     android:id="@+id/price"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
                     android:autoSizeTextType="uniform"
                     android:text="99"
-                    android:textAlignment="textStart"
+                    android:textAlignment="center"
                     android:textColor="#030100"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +81,7 @@
                     android:id="@+id/currency"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
                     android:autoSizeTextType="uniform"
                     android:text="SDG"
                     android:textAlignment="center"
