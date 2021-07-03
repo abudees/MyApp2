@@ -183,11 +183,8 @@ public class ProductsActivity extends AppCompatActivity {
                         System.out.println(er);
                     }
                 }
-
             }
         });
-
-
     }
 
 
@@ -216,15 +213,11 @@ public class ProductsActivity extends AppCompatActivity {
 
                             price.add((object.getInt("priceSDG")) * (object.getInt("rateSDG")));
 
-
                         } else {
 
                             price.add((int) (object.getInt("priceUSD") * 1.12 * eRate));
                         }
-
-
-
-                        }
+                    }
 
 
                     String area = "";

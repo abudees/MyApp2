@@ -44,6 +44,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -76,7 +77,58 @@ public class VerifyActivity extends AppCompatActivity {
 
     Boolean counterValid = true;
 
-    String cameFromActivity,  mobileNumber;
+    String cameFromActivity,  mobileNumber, name;
+
+
+    public void logInSwitch (){
+        switch (cameFromActivity) {
+
+
+            case "CategoriesActivity":
+
+                intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+
+                startActivity(intent);
+                Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+                break;
+
+            case "MainActivity":
+
+                intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                startActivity(intent);
+                Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+                break;
+
+            case "ProductsActivity":
+
+                intent = new Intent(getApplicationContext(), ProductsActivity.class);
+
+                startActivity(intent);
+                Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+                break;
+
+            case "CheckoutActivity":
+
+                intent = new Intent(getApplicationContext(), RecipentsDetailsActivity.class);
+
+                startActivity(intent);
+
+
+                Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
+                break;
+
+
+
+            // copy all activities
+            default:
+                Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+
+
+                break;
+        }
+
+    }
 
     private void counterRun(){
 
@@ -153,11 +205,13 @@ public class VerifyActivity extends AppCompatActivity {
                 randomNumber = 0;
                 cameFromActivity ="";
                 mobileNumber ="";
+                name = "";
             } else {
                 randomNumber = extras.getInt("randomNumber");
-                cameFromActivity = extras.getString("cameFromActivity");
-
+                cameFromActivity = extras.getString("activityName");
                 mobileNumber = extras.getString("mobileNumber");
+                name = extras.getString("name");
+
             }
         } else {
             randomNumber = (int) savedInstanceState.getSerializable("randomNumber");
@@ -179,7 +233,7 @@ public class VerifyActivity extends AppCompatActivity {
 
 
 
-        new CountDownTimer(60000, 1000) {
+        new CountDownTimer(90000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
@@ -200,15 +254,17 @@ public class VerifyActivity extends AppCompatActivity {
 
 
 
+
         _btnVerOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (counterValid) {
+                    //int random = Integer.getInteger());
 
-                    if (randomNumber == Integer.parseInt(_txtVerOTP.getText().toString())) {
+                    if (String.valueOf(randomNumber).equals(String.valueOf(_txtVerOTP.getText()))) {
 
-                        Log.d("came from", cameFromActivity);
+                      //  Log.d("came from", cameFromActivity);
 
                         _txtVerOTP.setVisibility(View.INVISIBLE);
 
@@ -222,62 +278,46 @@ public class VerifyActivity extends AppCompatActivity {
 
 
 
+                                    logInSwitch();
 
 
-                                    switch (cameFromActivity) {
-
-
-                                        case "CategoriesActivity":
-
-                                            intent = new Intent(getApplicationContext(), CategoriesActivity.class);
-
-                                            startActivity(intent);
-                                            Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
-                                            break;
-
-                                        case "MainActivity":
-
-                                            intent = new Intent(getApplicationContext(), MainActivity.class);
-
-                                            startActivity(intent);
-                                            Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
-                                            break;
-
-                                        case "ProductsActivity":
-
-                                            intent = new Intent(getApplicationContext(), ProductsActivity.class);
-
-                                            startActivity(intent);
-                                            Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
-                                            break;
-
-                                        case "CheckoutActivity":
-
-
-
-                                            intent = new Intent(getApplicationContext(), RecipentsDetailsActivity.class);
-
-                                            startActivity(intent);
-
-
-                                            Toast.makeText(getApplicationContext(), "You are logined successfully", Toast.LENGTH_LONG).show();
-                                            break;
-
-
-
-                                        // copy all activities
-                                        default:
-                                            Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
-
-
-                                            break;
-                                    }                    // Hooray! The user is logged in.
+                                                      // Hooray! The user is logged in.
                                 } else {
                                     // Signup failed. Look at the ParseException to see what happened.
-                                    Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
+                                   // Toast.makeText(getApplicationContext(), "Please try again", Toast.LENGTH_LONG).show();
 
+                                    ParseUser user1 = new ParseUser();
+                                    user1.setUsername(mobileNumber);
+                                    user1.setPassword("000000");
+                                    user1.put("name", name);
+                                    user1.put("userType", "n");
+
+                                    user1.signUpInBackground(new SignUpCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+
+                                            if (e == null) {
+
+                                                ParseUser.logInInBackground(mobileNumber, "000000",
+                                                        new LogInCallback() {
+                                                            public void done(ParseUser user, ParseException error) {
+                                                                if (error == null) {
+
+                                                                    logInSwitch();
+                                                                }
+                                                            }
+                                                        }
+                                                );
+                                            } else {
+                                                Toast.makeText(VerifyActivity.this, "signup error " +
+                                                        e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                    });
+                                                                }
                                 }
-                            }
+
                         });
 
                     } else {

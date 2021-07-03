@@ -141,12 +141,12 @@ public class PayTabActivity extends AppCompatActivity  implements CallbackPaymen
         //  newOrder.put("total", );
         //  newOrder.put("exchangeRate", 1);
         //  newOrder.put("deliveryLocation", location);
-       //  newOrder.put("totalQty", mDatabase.listAll().size());
-       //   newOrder.put("status", "n");
+        //  newOrder.put("totalQty", mDatabase.listAll().size());
+        //  newOrder.put("status", "n");
         //  newOrder.put("recipientMobile", 655656565);
 
-        //  placeOrder.put("message", 1337);
-        //   placeOrder.put("voucher", 1337);
+         // placeOrder.put("message", 1337);
+         // placeOrder.put("voucher", 1337);
 
 
         startActivity(intent);
@@ -167,7 +167,7 @@ public class PayTabActivity extends AppCompatActivity  implements CallbackPaymen
 
         payee();
 
-/*
+
         if (ParseUser.getCurrentUser() != null) {
 
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Orders");
@@ -270,6 +270,6 @@ public class PayTabActivity extends AppCompatActivity  implements CallbackPaymen
 
             // }
         }
-*/
+
     }
 }

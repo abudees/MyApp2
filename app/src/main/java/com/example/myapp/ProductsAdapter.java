@@ -91,6 +91,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
                 intent.putExtra("area", area);
 
+                intent.putExtra("price", price.get(position));
+                intent.putExtra("currency", currency);
+
                 c.startActivity(intent);
 
             }

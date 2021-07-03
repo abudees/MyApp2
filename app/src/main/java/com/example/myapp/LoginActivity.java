@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     String callingCode= "";
 
-    TextView numberConfirmation;
+    TextView numberConfirmation, message;
 
     Button signUpButton;
 
@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if (numberConfirmed.equals("t")) {
 
-                Log.d("username ya man", username);
+               // Log.d("username ya man", username);
 
                 ParseQuery<ParseUser> query = ParseUser.getQuery();
 
@@ -192,7 +192,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                             intent.putExtra("token", token);
                                                             intent.putExtra("url", url);
                                                             intent.putExtra("sender", sender);
-                                                            intent.putExtra("cameFromActivity", cameFromActivity);
+                                                            intent.putExtra("activityName", cameFromActivity);
                                                           //  intent.putExtra("sudanOr", sudanOr);
 
                                                             startActivity(intent);
@@ -225,7 +225,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                         intent.putExtra("token", token);
                                                         intent.putExtra("url", url);
                                                         intent.putExtra("url2", url2);
-                                                        intent.putExtra("cameFromActivity", cameFromActivity);
+                                                        intent.putExtra("activityName", cameFromActivity);
                                                         intent.putExtra("sudanOr", sudanOr);
 
                                                         startActivity(intent);
@@ -249,6 +249,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                             break;
 
+                                        case "n":
+
+                                            Toast.makeText(LoginActivity.this, "حبابك تطبيقنا لسه ما انطلق وان شاء قريب بنبلغك", Toast.LENGTH_LONG).show();
+
+                                            mobileEditText.setVisibility(View.INVISIBLE);
+                                            signUpButton.setVisibility(View.INVISIBLE);
+                                            editButton1.setVisibility(View.INVISIBLE);
+                                            spinner.setVisibility(View.INVISIBLE);
+                                            numberConfirmation.setVisibility(View.INVISIBLE);
+
+                                            message.setVisibility(View.VISIBLE);
+                                            message.setText("حبابك تطبيقنا لسه ما انطلق وان شاء قريب بنبلغك");
+
                                         default:
 
 
@@ -257,14 +270,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                     Log.d("here", "4");
 
-                                } else {
+                                } else  {
                                     Log.d("here", "10");
-                                    intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                                  //  intent = new Intent(getApplicationContext(), SignUpActivity.class);
 
-                                    intent.putExtra("mobileNumber", username);
-                                    intent.putExtra("cameFromActivity", cameFromActivity);
+                                 //   intent.putExtra("mobileNumber", username);
+                                 //   intent.putExtra("activityName", cameFromActivity);
 
-                                    startActivity(intent);
+                                 //   startActivity(intent);
                                 }
                             }
                         }
@@ -320,7 +333,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         getSupportActionBar().hide(); //hide the title bar
 
-        spinner = findViewById(R.id.spinner);
+
 
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
@@ -336,7 +349,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         cameFromActivity ="";
                     } else {
 
-                        cameFromActivity = extras.getString("cameFromActivity");
+                        cameFromActivity = extras.getString("activityName");
                     }
                 }
 
@@ -354,6 +367,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 numberConfirmation = findViewById(R.id.numberConfirmation);
 
                 editButton1 = findViewById(R.id.editButton1);
+
+                spinner = findViewById(R.id.spinner);
+
+                message = findViewById(R.id.textView17);
 
                 userNames = new ArrayList<>();
 

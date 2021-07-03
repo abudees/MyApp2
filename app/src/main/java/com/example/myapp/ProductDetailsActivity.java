@@ -34,23 +34,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ProductDetailsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class ProductDetailsActivity extends AppCompatActivity
+        implements AdapterView.OnItemSelectedListener {
 
 
 
     ImageView productDetailImage;
 
-    int productSelected;
+    int productSelected, price;
 
     TextView productTitle, productDescription, productPrice;
 
     private SqliteDatabase mDatabase;
-
-    ArrayList<Integer> pIDs;
-
-    ArrayList<Integer> qty;
-
-   // TextView currentQty;
 
     Integer spinnerQty;
 
@@ -59,9 +54,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
     Intent intent;
 
     String area = "";
-
-    ArrayList<Integer> g = new ArrayList<>();
-
+    String currency = "";
 
     private MenuItem sigInMenu;
     private MenuItem signoutMenu;
@@ -72,11 +65,13 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
     Spinner spinner;
 
-   // int sum = 0;
-
-
     ArrayList<Integer> storeCart = new ArrayList<>();
 
+    // int sum = 0;
+    // ArrayList<Integer> g = new ArrayList<>();
+    //  ArrayList<Integer> pIDs;
+    //  ArrayList<Integer> qty;
+    // TextView currentQty;
 
 
     public void addItemToCart(View view) {
@@ -85,66 +80,31 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
             mDatabase = new SqliteDatabase(this);
 
-
-            Log.d("spinner", String.valueOf(spinnerQty));
-            Log.i("all qty ", String.valueOf(mDatabase.listQty()));
-
-
-//            Log.d("1", String.valueOf(sum));
-
             if (mDatabase.checkProduct(productSelected)) {
-
-                Log.d("3", String.valueOf(mDatabase.getQty(productSelected)));
 
 
                 if (mDatabase.getQty(productSelected) <= 10 && mDatabase.getQty(productSelected) + spinnerQty <= 10) {
                     mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + spinnerQty);
 
-                    //  Log.d("total cart", String.valueOf(mDatabase.listQty().size()));
-
-                    //  if (mDatabase.listAll().size()  == 0 ) {
-
-                    //     textCartItemCount.setVisibility(View.VISIBLE);
-
-                    //  sum = sum +1;
-
-
-                    //   } else {
-
-                    //       Log.d("3", String.valueOf(sum));
-
-
-                    //  }
-
                     setupBadge();
-
-                    // currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
-
                 } else  {
 
                     Toast.makeText(this, "You can get more than 10!", Toast.LENGTH_LONG).show();
-
                 }
             } else {
-
-
 
                     Products newProduct = new Products(productSelected);
 
                     mDatabase.addProduct(newProduct);
+
                 if (spinnerQty > 1) {
 
                     mDatabase.updateQty(productSelected, (mDatabase.getQty(productSelected)) + spinnerQty-1);
-
-
-
                 }
 
                 setupBadge();
 
             Toast.makeText(this, "added", Toast.LENGTH_LONG).show();
-
-            //   mCartItemCount = sum;
 
             }
         } catch (Exception error) {
@@ -155,7 +115,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
 
 
-
+/*
     public void removeItem(View view) {
 
         try {
@@ -227,7 +187,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
         }
     }
 
-
     public void checkOut2(View view) {
 
         if (mDatabase.listAll() != null) {
@@ -240,6 +199,9 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
         }
     }
+*/
+
+
 
 
     @Override
@@ -253,87 +215,50 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
             if (checkConnection.isNetwork()) {
 
-                //retrive selected product
+
+                spinner = findViewById(R.id.spinner2);
+                productDetailImage = findViewById(R.id.productDetailImage);
+                productTitle = findViewById(R.id.productTitle);
+                productDescription = findViewById(R.id.productDescription);
+                productPrice = findViewById(R.id.productPrice);
+
+                spinner.setOnItemSelectedListener(this);
+                mDatabase = new SqliteDatabase(this);
+                Bundle extras = getIntent().getExtras();
+                Integer[] items = new Integer[]{1,2,3,4,5,6,7,8,9,10};
+
                 if (savedInstanceState == null) {
-                    Bundle extras = getIntent().getExtras();
+                     extras = getIntent().getExtras();
                     if (extras == null) {
                         productSelected = 0;
+                        price =0;
                     } else {
                         productSelected = extras.getInt("productId");
+                        price = extras.getInt("price");
+
+                        area = extras.getString("area");
+                        currency = extras.getString("currency");
                     }
                 } else {
                     productSelected = (int) savedInstanceState.getSerializable("productId");
                 }
 
-                mDatabase = new SqliteDatabase(this);
-
-               setupBadge();
 
 
-                Bundle extras = getIntent().getExtras();
-                if (extras != null) {
-                    area = extras.getString("area");
-                }
+                setupBadge();
 
-                spinner = findViewById(R.id.spinner2);
-
-
-
-                Integer[] items = new Integer[]{1,2,3,4,5,6,7,8,9,10};
-                ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, items);
+                ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,
+                        android.R.layout.simple_spinner_item, items);
                 spinner.setAdapter(adapter);
 
-
-               /* ArrayAdapter<Integer> spinnerCountShoesArrayAdapter = new ArrayAdapter<Integer>(
-                        this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        getResources().getIntArray(R.array.addToCartQuantities));
-                spinner.setAdapter(spinnerCountShoesArrayAdapter);*/
-
-                spinner.setOnItemSelectedListener(this);
-
-                //let spinner stops on user country code
                 int spinnerPosition = adapter.getPosition(spinnerQty);
                 // set the default according to value
                 spinner.setSelection(spinnerPosition);
 
-
-                Log.d("spinner", String.valueOf(spinnerQty));
-
-                setupBadge();
-                productDetailImage = findViewById(R.id.productDetailImage);
-                productTitle = findViewById(R.id.productTitle);
-                productDescription = findViewById(R.id.productDescription);
-                productPrice = findViewById(R.id.productPrice);
-                //  updateTextView(String.valueOf(mDatabase.getQty(productSelected)));
-
-              //  currentQty = findViewById(R.id.currentQty);
-
-             //   if (mDatabase.checkProduct(productSelected)) {
-
-               //     currentQty.setText(String.valueOf(mDatabase.getQty(productSelected)));
-              //  }
-
-
-                Log.i("all qty ", String.valueOf(mDatabase.listQty()));
-
-
-                //Log.i("i ", String.valueOf(mDatabase.getQty(productSelected)));
-
-
-                pIDs = mDatabase.listProductIds();
-
-                qty = mDatabase.listQty();
-
-
-                Log.i("pIDs", String.valueOf(pIDs));
-
-                Log.i("qty", String.valueOf(qty));
-
-
-                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Products");
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Product");
 
                 query.whereEqualTo("productNo", productSelected);
+                Log.d("is     ", String.valueOf(productSelected));
 
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
@@ -345,14 +270,18 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
                                 for (ParseObject object : objects) {
 
-                                    productTitle.setText(object.getString("title"));
+                                    productTitle.setText(object.getString("productTitle"));
+
 
                                     Glide.with(ProductDetailsActivity.this).load(object.getString("imageURL"))
                                             .centerInside().into(productDetailImage);
+                                    String priceText = currency + "  " + String.valueOf(price);
 
+                                    productPrice.setText(priceText);
 
-                                    productPrice.setText(String.valueOf(object.getInt("price")));
                                 }
+
+
                             }
                         }
                     }
@@ -375,37 +304,25 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
         sigInMenu = menu.findItem(R.id.signInMenu);
         signoutMenu = menu.findItem(R.id.signOutInMenu);
-        // View signInActionView = menuSignIn.getActionView();
-
-        // View signoutView = menuSignOut.getActionView();
-
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
         cartBadgeIcon = actionView.findViewById(R.id.cartBadgeIcon);
-
-
         textCartItemCount.setVisibility(View.INVISIBLE);
         cartBadgeIcon.setVisibility(View.INVISIBLE);
 
-
-      //  mCartItemCount = mDatabase.listAll().size();
         setupBadge();
 
         actionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
                 intent = new Intent(getApplicationContext(), CheckoutActivity.class);
                 intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 
                 startActivity(intent);
-
             }
         });
 
         if(ParseUser.getCurrentUser() != null) {
-
-
 
             MenuItem item = menu.findItem(R.id.signInMenu);
             item.setVisible(false);//
@@ -419,12 +336,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
             item.setVisible(true);//
             MenuItem item1 = menu.findItem(R.id.signOutInMenu);
             item1.setVisible(false);
-
-
         }
         return true;
-
-
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -461,7 +374,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
 
                 break;
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -472,47 +384,19 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
 
             if (textCartItemCount != null) {
 
-              //  if (mCartItemCount == 0) {
 
-                   // if (textCartItemCount.getVisibility() != View.GONE) {
-
-                    //    textCartItemCount.setVisibility(View.GONE);
-              //   }
-           //   } else {
-            cartBadgeIcon.setVisibility(View.VISIBLE);
-            textCartItemCount.setVisibility(View.VISIBLE);
-
-
-
-//           if (textCartItemCount.getVisibility() != View.VISIBLE) {
+                cartBadgeIcon.setVisibility(View.VISIBLE);
+                textCartItemCount.setVisibility(View.VISIBLE);
 
                 storeCart = mDatabase.listQty();
 
                 int sum = 0;
 
                 for (int i = 0; i < mDatabase.listAll().size(); i++)
-                sum += storeCart.get(i);
-//
+                    sum += storeCart.get(i);
 
-            //  textCartItemCount.setVisibility(View.VISIBLE);
-           //   cartBadgeIcon.setVisibility(View.VISIBLE);
-           textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
-
-         //       }
-
-             }
-    /*    } else if (mDatabase.listAll().size() > 1) {
-
-            for (int i = 0; i < mDatabase.listAll().size(); i++)
-                sum += mDatabase.listQty().get(i);
-//
-
-            textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
-
-
-
-*/
-
+                textCartItemCount.setText(String.valueOf(Math.min(sum, 99)));
+            }
         }
     }
 
@@ -520,13 +404,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Adapter
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-
-      //  String c = parent.getItemAtPosition(position).toString();
-       // spinnerQty =  Arrays.asList(c.split(" - "));
-
         spinnerQty = (Integer) parent.getItemAtPosition(position);
-
-        Log.d("thoooose: ", String.valueOf(spinnerQty));
     }
 
     @Override

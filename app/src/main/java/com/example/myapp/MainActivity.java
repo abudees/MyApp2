@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity  {
 
     ImageView cartBadgeIcon;
 
-    String area;
+    String area, userType;
 
     Intent intent;
 
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity  {
     private SqliteDatabase mDatabase;
 
     int mCartItemCount;
+
 
 
 
@@ -110,7 +112,7 @@ public class MainActivity extends AppCompatActivity  {
 
        intent = new Intent(getApplicationContext(), LoginActivity.class);
 
-       intent.putExtra("cameFromActivity", "MainActivity");
+       intent.putExtra("activityName", this.getClass().getSimpleName());
 
        startActivity(intent);
     }
@@ -146,15 +148,7 @@ public class MainActivity extends AppCompatActivity  {
 
                     spinner.setOnItemSelectedListener(new mySpinnerListener(
 
-
-
                     ));
-
-
-
-
-
-
                 }
             }
         });
@@ -171,83 +165,70 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
 
+
         spinner = findViewById(R.id.areaSelect);
         login = findViewById(R.id.redirectToLogin);
         logout = findViewById(R.id.logout1);
         welcomeText = findViewById(R.id.welcomeText);
         welcomeText.setText(welcomeMessage);
 
+        mDatabase = new SqliteDatabase(this);
+
 
         try {
             IsNetworkAvailable checkConnection = new IsNetworkAvailable();
             if (checkConnection.isNetwork()) {
 
-
-                mDatabase = new SqliteDatabase(this);
-
-                areaList();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                Map<String, String> dimensions = new HashMap<String, String>();
-
-                // Define ranges to bucket data points into meaningful segments
-                dimensions.put("areaName", "omdur");
-               // dimensions.put("professional", "John");
-
-                // Send the dimensions to Parse along with the event
-                ParseAnalytics.trackEventInBackground("myEventName", dimensions);
-
-
-
-
-
-
-
-
-
-
-
-
-
                 if (ParseUser.getCurrentUser() != null) {
 
-                    welcomeText.setVisibility(View.VISIBLE);
 
-                    welcomeMessage = "Welcome " + ParseUser.getCurrentUser().getString("name");
+                    switch (Objects.requireNonNull(ParseUser.getCurrentUser().getString("userType"))) {
 
-                    welcomeText.setText(welcomeMessage);
 
-                    login.setVisibility(View.INVISIBLE);
+                        case "c":
 
-                    logout.setVisibility(View.VISIBLE);
+                            areaList();
 
-                    areaList();
+                            welcomeText.setVisibility(View.VISIBLE);
 
+                            welcomeMessage = "Welcome " + ParseUser.getCurrentUser().getString("name");
+
+                            welcomeText.setText(welcomeMessage);
+
+                            //   login.setVisibility(View.INVISIBLE);
+
+                            //  logout.setVisibility(View.VISIBLE);
+                            break;
+
+
+                        case "d":
+
+                            break;
+
+                        case "m":
+                            intent = new Intent(getApplicationContext(), PasswordActivity.class);
+
+                            // intent.putExtra("mobileNumber", username);
+                            intent.putExtra("userType", userType);
+                            startActivity(intent);
+
+                            break;
+
+                        default:
+
+                            break;
+
+                    }
                 } else {
 
-                    logout.setVisibility(View.INVISIBLE);
-                }
+                   // logout.setVisibility(View.INVISIBLE);
 
+                    intent = new Intent(getApplicationContext(), LoginActivity.class);
+
+                    intent.putExtra("activityName", this.getClass().getSimpleName());
+
+                    startActivity(intent);
+                }
             } else {
                 //do something, net is not connected
                 intent = new Intent(getApplicationContext(), InternetFailActivity.class);
@@ -321,7 +302,7 @@ public class MainActivity extends AppCompatActivity  {
 
                 intent = new Intent(getApplicationContext(), CheckoutActivity.class);
 
-                intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
+                intent.putExtra("activityName", this.getClass().getSimpleName());
 
                 startActivity(intent);
             }
@@ -340,7 +321,7 @@ public class MainActivity extends AppCompatActivity  {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
+/*
         switch (id) {
 
             case R.id.signInMenu:
@@ -363,7 +344,7 @@ public class MainActivity extends AppCompatActivity  {
                 login.setVisibility(View.VISIBLE);
 
                 break;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

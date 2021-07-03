@@ -41,8 +41,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class CardDetailsActivity extends AppCompatActivity implements TextWatcher{
-
+public class CardDetailsActivity extends AppCompatActivity/* implements TextWatcher*/{
+/*
 
 
     EditText cardNumberEditText, cardDateEditText;
@@ -168,14 +168,14 @@ public class CardDetailsActivity extends AppCompatActivity implements TextWatche
 
 
 
-
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_details);
 
-
+/*
         cardNumberEditText = findViewById(R.id.cardNumberEditText);
 
         cardDateEditText = findViewById(R.id.cardDateEditText);
@@ -266,7 +266,7 @@ public class CardDetailsActivity extends AppCompatActivity implements TextWatche
 
 
 
-
+*/
 
     }
 }

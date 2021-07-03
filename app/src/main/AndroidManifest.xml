@@ -29,7 +29,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".RatingActivity"></activity>
-        <activity android:name=".PayPal" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -43,7 +42,6 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".PayTabActivity" />
-        <activity android:name=".CardsActivity" />
         <activity android:name=".CardDetailsActivity" />
         <activity android:name=".PasswordActivity" />
         <activity android:name=".OTPActivity" />
@@ -51,7 +49,6 @@
         <activity android:name=".RecipentsDetailsActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".EmailRegistration" />
-        <activity android:name=".PaymentActivity" />
         <activity android:name=".OrderConfirmationActivity" />
 
         <meta-data

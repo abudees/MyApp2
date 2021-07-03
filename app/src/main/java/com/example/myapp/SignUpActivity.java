@@ -44,12 +44,12 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void signUp() {
 
-
+/*
         ParseUser user = new ParseUser();
         user.setUsername(mobileNumber);
         user.setPassword("000000");
         user.put("name", nameEditText.getText().toString());
-        user.put("userType", "c");
+        user.put("userType", "n");
 
         user.signUpInBackground(new SignUpCallback() {
             @Override
@@ -61,75 +61,79 @@ public class SignUpActivity extends AppCompatActivity {
                             new LogInCallback() {
                                 public void done(ParseUser user, ParseException error) {
                                     if (error == null) {
+*/
+        ParseQuery<ParseObject> queryAPIs = new ParseQuery<>("APIs");
+        if (mobileNumber.startsWith("+249")) {
+            // api for Sudan numbers
 
-                                        ParseQuery<ParseObject> queryAPIs = new ParseQuery<>("APIs");
-                                        if (mobileNumber.startsWith("+249")) {
-                                            // api for Sudan numbers
+            queryAPIs.whereEqualTo("name", "smsSudan");
 
-                                            queryAPIs.whereEqualTo("name", "smsSudan");
+            queryAPIs.findInBackground(new FindCallback<ParseObject>() {
 
-                                            queryAPIs.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
 
-                                                @Override
-                                                public void done(List<ParseObject> objects, ParseException e) {
+                    if (e == null) {
 
-                                                    if (e == null) {
+                        for (ParseObject object : objects) {
 
-                                                        for (ParseObject object : objects) {
+                            apiKey = object.getString("apiKey1");
+                            token = object.getString("password");
+                            url = object.getString("url");
+                            //   url2 = object.getString("url2");
+                            sender = object.getString("apiKey2");
+                        }
 
-                                                            apiKey = object.getString("accountSID");
-                                                            token = object.getString("authToken");
-                                                            url = object.getString("url");
-                                                            url2 = object.getString("url2");
-                                                            sender = object.getString("sender");
-                                                        }
-                                                        intent = new Intent(getApplicationContext(), OTPActivity.class);
+                        intent = new Intent(getApplicationContext(), OTPActivity.class);
 
-                                                        intent.putExtra("mobileNumber", username);
-                                                        intent.putExtra("apiKey", apiKey);
-                                                        intent.putExtra("token", token);
-                                                        intent.putExtra("url1", url1);
-                                                        intent.putExtra("sender", sender);
-                                                        intent.putExtra("cameFromActivity", cameFromActivity);
-                                                        intent.putExtra("sudanOr",sudanOr);
-                                                        startActivity(intent);
-                                                    }
-                                                }
-                                            });
-                                        } else {
+                        intent.putExtra("mobileNumber", mobileNumber);
+                        intent.putExtra("apiKey", apiKey);
+                        intent.putExtra("token", token);
+                        intent.putExtra("url", url);
+                        intent.putExtra("sender", sender);
+                        intent.putExtra("activityName", cameFromActivity);
+                        intent.putExtra("name", nameEditText.getText().toString());
+                        //  intent.putExtra("sudanOr", sudanOr);
 
-                                            queryAPIs.whereEqualTo("name", "sms");
+                        startActivity(intent);
+                    }
+                }
+            });
+        } else {
 
-                                            queryAPIs.findInBackground(new FindCallback<ParseObject>() {
+            queryAPIs.whereEqualTo("name", "sms");
 
-                                                @Override
-                                                public void done(List<ParseObject> objects, ParseException e) {
+            queryAPIs.findInBackground(new FindCallback<ParseObject>() {
 
-                                                    if (e == null) {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
 
-                                                        for (ParseObject object : objects) {
+                    if (e == null) {
 
-                                                            apiKey = object.getString("accountSID");
-                                                            token = object.getString("authToken");
-                                                            url1 = object.getString("url");
-                                                            url2 = object.getString("url2");
-                                                        }
-                                                    }
-                                                    intent = new Intent(getApplicationContext(), OTPActivity.class);
+                        for (ParseObject object : objects) {
 
-                                                    intent.putExtra("mobileNumber", username);
-                                                    intent.putExtra("apiKey", apiKey);
-                                                    intent.putExtra("token", token);
-                                                    intent.putExtra("url1", url1);
-                                                    intent.putExtra("url2", url2);
-                                                    intent.putExtra("cameFromActivity", cameFromActivity);
-                                                    intent.putExtra("sudanOr",sudanOr);
+                            apiKey = object.getString("apiKey1");
+                            token = object.getString("password");
+                            url = object.getString("url");
+                            url2 = object.getString("apiKey2");
+                        }
+                    }
+                    intent = new Intent(getApplicationContext(), OTPActivity.class);
 
-                                                    startActivity(intent);
-                                                }
-                                            });
-                                        }
-                                    }
+                    intent.putExtra("mobileNumber", mobileNumber);
+                    intent.putExtra("apiKey", apiKey);
+                    intent.putExtra("token", token);
+                    intent.putExtra("url", url);
+                    intent.putExtra("url2", url2);
+                    intent.putExtra("activityName", cameFromActivity);
+                    intent.putExtra("sudanOr", sudanOr);
+                    intent.putExtra("name", nameEditText.getText().toString());
+
+                    startActivity(intent);
+                }
+            });
+        }
+       /*                             }
                                 }
                             }
                     );
@@ -140,7 +144,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
         });
-
+*/
 
     }
 
@@ -167,13 +171,13 @@ public class SignUpActivity extends AppCompatActivity {
                     if (extras == null) {
 
                         mobileNumber ="";
+                        cameFromActivity = "";
                     } else {
 
                         mobileNumber = extras.getString("mobileNumber");
+                        cameFromActivity = extras.getString("activityName");
                     }
                 }
-
-
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();

@@ -54,7 +54,7 @@ public class OTPActivity extends AppCompatActivity {
 
     int randomNumber;
 
-    String  message, mobileNumber, sender, cameFromActivity, sudanOr, apiKey, token, url, url2;
+    String  message, mobileNumber, sender, cameFromActivity, sudanOr, apiKey, token, url, url2, name;
 
 
     private void sendSms(){
@@ -114,13 +114,6 @@ public class OTPActivity extends AppCompatActivity {
                     //  Log.d("line" = rd.readLine()) != null) {
                     //     stringBuffer.append(line);
                     //    Log.d("line", line);
-
-
-
-
-
-
-
                     //  rd.close();
                     Log.d("respo",conn.getResponseMessage().toString());
 
@@ -171,7 +164,6 @@ public class OTPActivity extends AppCompatActivity {
                     ioException.printStackTrace();
                 }
 
-
                 Toast.makeText(getApplicationContext(), "OTP SEND SUCCESSFULLY", Toast.LENGTH_LONG).show();
 
 
@@ -221,16 +213,18 @@ public class OTPActivity extends AppCompatActivity {
                         sender = "";
                         cameFromActivity = "";
                         sudanOr = "";
+                        name = "";
 
                     } else {
                         mobileNumber = extras.getString("mobileNumber");
-                        cameFromActivity = extras.getString("cameFromActivity");
+                        cameFromActivity = extras.getString("activityName");
                         apiKey = extras.getString("apiKey");
                         token = extras.getString("token");
                         url = extras.getString("url");
                         url2 = extras.getString("url2");
                         sender = extras.getString("sender");
                         sudanOr = extras.getString("sudanOr");
+                        name = extras.getString("name");
                     }
                 }
 
@@ -242,7 +236,8 @@ public class OTPActivity extends AppCompatActivity {
 
                 intent.putExtra("randomNumber", randomNumber);
                 intent.putExtra("mobileNumber", mobileNumber);
-                intent.putExtra("cameFromActivity", cameFromActivity);
+                intent.putExtra("activityName", cameFromActivity);
+                intent.putExtra("name", name);
 
                 startActivity(intent);
             }
