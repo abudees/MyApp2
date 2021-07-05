@@ -329,4 +329,13 @@
         app:layout_constraintTop_toTopOf="@+id/guideline86"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/message" />
+
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="buy"
+        android:text="Button"
+        tools:layout_editor_absoluteX="162dp"
+        tools:layout_editor_absoluteY="659dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

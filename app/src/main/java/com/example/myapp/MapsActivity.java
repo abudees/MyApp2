@@ -128,7 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
       //  map = findViewById(R.id.map);
-
+/*
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
 
@@ -140,7 +140,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 cameFromActivity = extras.getString("cameFromActivity");
             }
         }
-
+*/
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
 
@@ -157,7 +157,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         try {
 
-            newFriends = (ArrayList<String>)  ObjectSerializer.deserialize(sharedPreferences.getString("friends", ObjectSerializer.serialize(new ArrayList<String>())));
+            newFriends = (ArrayList<String>)  ObjectSerializer.deserialize(sharedPreferences.getString("friends",
+                    ObjectSerializer.serialize(new ArrayList<String>())));
 
 
         } catch (IOException e) {
@@ -235,9 +236,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             try {
 
-                                 geoCoder = new Geocoder(MapsActivity.this);
-                                 matches = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                                 bestMatch = (matches.isEmpty() ? null : matches.get(0));
+                                geoCoder = new Geocoder(MapsActivity.this);
+                                matches = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                                bestMatch = (matches.isEmpty() ? null : matches.get(0));
 
                                 String address = matches.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                                 String city = matches.get(0).getLocality();
@@ -249,8 +250,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 selectedAddress.setText(address + ", " + city + ", " + state + ", " + country + ", " + knownName);
 
                                 Log.d("are2:", String.valueOf(bestMatch));
-
-
 
 
                             } catch (IOException e) {

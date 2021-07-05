@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -44,22 +45,17 @@ public class PayTabActivity extends AppCompatActivity  implements CallbackPaymen
     SqliteDatabase mDatabase ;
     ParseGeoPoint location;
     int[] cartProducts = new int[]{1,22};
-    Date myDate;
+    String myDate;
     int[] cartQty = new int[]{5654,545};
 
-
-
-
-    public void payee() {
-    String profileId = "67603";
-    String serverKey = "SKJNRLZL62-JBMHH6KLGR-22TMZBMWKN";
-    String clientKey = "CQKM6M-GQBM62-NHHGKB-VNPRVB";
+    String profileId , serverKey, clientKey , recipientMobile;
     PaymentSdkLanguageCode locale = PaymentSdkLanguageCode.EN;
     String screenTitle = "Test SDK";
     String cartId = "123456";
     String cartDesc = "cart description";
     String currency = "USD";
     double amount = 20.0;
+
 
     PaymentSdkTokenise tokeniseType;
 
@@ -73,44 +69,12 @@ public class PayTabActivity extends AppCompatActivity  implements CallbackPaymen
 
     PaymentSdkConfigurationDetails configData;
 
-    tokeniseType = PaymentSdkTokenise.NONE; // tokenise is off
-
-    transType = PaymentSdkTransactionType.SALE;
-
-    tokenFormat = new PaymentSdkTokenFormat.Hex32Format();
+    String username = ParseUser.getCurrentUser().getUsername();
 
 
-    billingData = new PaymentSdkBillingDetails(
-                "Dammam",
-                        "SA",
-                        "abudees@gmail.com",
-                        "ahmed ali",
-                        "00966547414030", "eastern",
-                        "street 6", "31432"
-    );
 
-    shippingData = new PaymentSdkShippingDetails(
-                "Dammam",
-                        "SA",
-                        "abudees@gmail.com",
-                        "ahmed ali",
-                        "00966547414030", "eastern",
-                        "street 6", "31432"
-    );
-    configData = new PaymentSdkConfigBuilder(profileId, serverKey, clientKey, amount, currency)
-                .setCartDescription(cartDesc)
-                .setLanguageCode(locale)
-                .setBillingData(billingData)
-                .setMerchantCountryCode("SD") // ISO alpha 2
-                .setShippingData(shippingData)
-                .setCartId(cartId)
-                .setTransactionType(transType)
-                .showBillingInfo(false)
-                .showShippingInfo(true)
-                .forceShippingInfo(true)
-                .setScreenTitle(screenTitle)
-                .build();
-        PaymentSdkActivity.startCardPayment(this, configData, PayTabActivity.this);
+
+    public void payee() {
 
 }
 
@@ -134,23 +98,107 @@ public class PayTabActivity extends AppCompatActivity  implements CallbackPaymen
 
         Log.d("here", "alhamdullilah");
 
-        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Orders");
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
 
 
-        //  newOrder.put("deliveryDate", myDate);
-        //  newOrder.put("total", );
-        //  newOrder.put("exchangeRate", 1);
-        //  newOrder.put("deliveryLocation", location);
-        //  newOrder.put("totalQty", mDatabase.listAll().size());
-        //  newOrder.put("status", "n");
-        //  newOrder.put("recipientMobile", 655656565);
-
-         // placeOrder.put("message", 1337);
-         // placeOrder.put("voucher", 1337);
 
 
-        startActivity(intent);
 
+                    username = username.replaceAll("\\D", "");
+                    mobile = 0;
+
+                    mobile = Integer.parseInt(username) ;
+
+                    orderNo = mobile + 11112222  + objects.size();
+                    //  if (cart.size() > 0) {
+
+                    ParseObject newOrder = new ParseObject("Orders");
+                    newOrder.put("orderNo", orderNo);
+                    newOrder.put("username", ParseUser.getCurrentUser().getUsername());
+                    newOrder.put("deliveryDate", myDate);
+                    //  newOrder.put("total", );
+                    newOrder.put("exchangeRate", 1);
+                    newOrder.put("deliveryLocation", location);
+                    newOrder.put("totalQty", mDatabase.listAll().size());
+                    newOrder.put("status", "n");
+                    newOrder.put("recipientMobile", 655656565);
+                    newOrder.put("voucher", 1337);
+
+                    //  placeOrder.put("message", 1337);
+                    //   placeOrder.put("voucher", 1337);
+
+                    newOrder.saveInBackground();
+
+
+                    for (int i = 0; i < cartProducts.length; i++) {
+
+                        ParseObject newOrderItem = new ParseObject("OrdersDetails");
+
+                        int a = cartProducts[i];
+                        int b = cartQty[i];
+                        newOrderItem.put("orderNo", orderNo);
+                        newOrderItem.put("productNo", a);
+                        newOrderItem.put("qty", b);
+
+                        newOrderItem.saveInBackground();
+                    }
+
+                } else {
+
+                    String username = ParseUser.getCurrentUser().getUsername();
+
+                    username = username.replaceAll("\\D", "");
+                    mobile = 0;
+
+                    mobile = Integer.parseInt(username) + 11112222;
+
+                    orderNo = mobile + 11112222;
+
+
+
+
+
+                    ParseObject newOrder = new ParseObject("Orders");
+                    newOrder.put("orderNo", orderNo);
+                    newOrder.put("username", ParseUser.getCurrentUser().getUsername());
+                    newOrder.put("deliveryDate", myDate);
+                    //  newOrder.put("total", );
+                    newOrder.put("exchangeRate", 1);
+                    newOrder.put("deliveryLocation", location);
+                    newOrder.put("totalQty", mDatabase.listAll().size());
+                    newOrder.put("status", "n");
+                    newOrder.put("recipientMobile", 655656565);
+
+
+
+
+                    for (int i = 0; i < cartProducts.length; i++) {
+
+                        ParseObject newOrderItem = new ParseObject("OrdersDetails");
+
+                        int a = cartProducts[i];
+                        int b = cartQty[i];
+                        newOrderItem.put("orderNo", orderNo);
+                        newOrderItem.put("productNo", a);
+                        newOrderItem.put("qty", b);
+
+                        newOrderItem.saveInBackground();
+
+                        intent = new Intent(getApplicationContext(), CategoriesActivity.class);
+
+
+                        intent.putExtra("orderNo", orderNo);
+
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
     }
 
 
@@ -163,113 +211,84 @@ public class PayTabActivity extends AppCompatActivity  implements CallbackPaymen
         setContentView(R.layout.activity_pay_tab);
 
 
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
 
+            if (extras == null) {
+                myDate = "";
 
-        payee();
+            } else {
+
+                myDate = extras.getString("myDate");
+            }
+        }
+
 
 
         if (ParseUser.getCurrentUser() != null) {
 
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Orders");
-            query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+            ParseQuery<ParseObject> query = new ParseQuery<>("APIs");
+
+            query.whereEqualTo("name", "PayTabs");
+
             query.findInBackground(new FindCallback<ParseObject>() {
+
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
-                    if (e == null && objects.size() > 0) {
 
+                    if (e == null) {
 
+                        for (ParseObject object : objects) {
 
-                        String username = ParseUser.getCurrentUser().getUsername();
-
-                        username = username.replaceAll("\\D", "");
-                        mobile = 0;
-
-                        mobile = Integer.parseInt(username) ;
-
-                        orderNo = mobile + 11112222  + objects.size();
-                        //  if (cart.size() > 0) {
-
-                        ParseObject newOrder = new ParseObject("Orders");
-                        newOrder.put("orderNo", orderNo);
-                        newOrder.put("username", ParseUser.getCurrentUser().getUsername());
-                        newOrder.put("deliveryDate", myDate);
-                        //  newOrder.put("total", );
-                        newOrder.put("exchangeRate", 1);
-                        newOrder.put("deliveryLocation", location);
-                        newOrder.put("totalQty", mDatabase.listAll().size());
-                        newOrder.put("status", "n");
-                        newOrder.put("recipientMobile", 655656565);
-
-                        //  placeOrder.put("message", 1337);
-                        //   placeOrder.put("voucher", 1337);
-
-                        newOrder.saveInBackground();
-
-
-                        for (int i = 0; i < cartProducts.length; i++) {
-
-                            ParseObject newOrderItem = new ParseObject("OrdersDetails");
-
-                            int a = cartProducts[i];
-                            int b = cartQty[i];
-                            newOrderItem.put("orderNo", orderNo);
-                            newOrderItem.put("productNo", a);
-                            newOrderItem.put("qty", b);
-
-                            newOrderItem.saveInBackground();
+                            profileId = object.getString("apiKey1");
+                            serverKey = object.getString("apiKey2");
+                            clientKey = object.getString("password");
                         }
 
-                    } else {
 
-                        String username = ParseUser.getCurrentUser().getUsername();
+                        tokeniseType = PaymentSdkTokenise.NONE; // tokenise is off
 
-                        username = username.replaceAll("\\D", "");
-                        mobile = 0;
+                        transType = PaymentSdkTransactionType.SALE;
 
-                        mobile = Integer.parseInt(username) + 11112222;
-
-                        orderNo = mobile + 11112222;
+                        tokenFormat = new PaymentSdkTokenFormat.Hex32Format();
 
 
-                        //  if (cart.size() > 0) {
+                        billingData = new PaymentSdkBillingDetails(
+                                "Dammam",
+                                "SA",
+                                "abudees@gmail.com",
+                                "ahmed ali",
+                                username, "eastern",
+                                "street 6", "31432"
+                        );
 
+                        shippingData = new PaymentSdkShippingDetails(
+                                "Khartoum",
+                                "SD",
+                                "abudees@gmail.com",
+                                "ahmed ali",
+                                recipientMobile, "eastern",
+                                "street 6", "31432"
+                        );
+                        configData = new PaymentSdkConfigBuilder(profileId, serverKey, clientKey, amount, currency)
+                                .setCartDescription(cartDesc)
+                                .setLanguageCode(locale)
+                                .setBillingData(billingData)
+                                .setMerchantCountryCode("SD") // ISO alpha 2
+                                .setShippingData(shippingData)
+                                .setCartId(cartId)
+                                .setTransactionType(transType)
+                                .showBillingInfo(false)
+                                .showShippingInfo(true)
+                                .forceShippingInfo(true)
+                                .setScreenTitle(screenTitle)
+                                .build();
+                        PaymentSdkActivity.startCardPayment(PayTabActivity.this, configData, PayTabActivity.this);
 
-                        ParseObject newOrder = new ParseObject("Orders");
-                        newOrder.put("orderNo", orderNo);
-                        newOrder.put("username", ParseUser.getCurrentUser().getUsername());
-                        newOrder.put("deliveryDate", myDate);
-                        //  newOrder.put("total", );
-                        newOrder.put("exchangeRate", 1);
-                        newOrder.put("deliveryLocation", location);
-                        newOrder.put("totalQty", mDatabase.listAll().size());
-                        newOrder.put("status", "n");
-                        newOrder.put("recipientMobile", 655656565);
-
-                        //  placeOrder.put("message", 1337);
-                        //   placeOrder.put("voucher", 1337);
-
-                        newOrder.saveInBackground();
-
-
-                        for (int i = 0; i < cartProducts.length; i++) {
-
-                            ParseObject newOrderItem = new ParseObject("OrdersDetails");
-
-                            int a = cartProducts[i];
-                            int b = cartQty[i];
-                            newOrderItem.put("orderNo", orderNo);
-                            newOrderItem.put("productNo", a);
-                            newOrderItem.put("qty", b);
-
-                            newOrderItem.saveInBackground();
-                        }
 
                     }
                 }
             });
-
-            // }
         }
-
     }
 }

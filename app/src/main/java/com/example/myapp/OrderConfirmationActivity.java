@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.ParseAnalytics;
 import com.parse.ParseGeoPoint;
@@ -29,7 +30,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
    // List<String> callingC ;
 
-    Date myDate;
+    String myDate, recipient;
 
     ParseGeoPoint location;
 
@@ -63,6 +64,8 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
     String cameFromActivity;
 
+    Double selectedLongitude, selectedLatitude;
+
 
 
     private double deg2rad(double deg) {
@@ -73,6 +76,26 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         return (rad * 180.0 / Math.PI);
     }
 
+
+    public void buy (View view) {
+
+
+        if (selectedLongitude != null && selectedLatitude != null && recipient != null ) {
+
+
+            intent = new Intent(getApplicationContext(), PayTabActivity.class);
+
+            intent.putExtra("selectedLongitude", selectedLongitude);
+            intent.putExtra("selectedLatitude", selectedLatitude);
+            intent.putExtra("recipient", recipient);
+
+            intent.putExtra("myDate", myDate);
+            intent.putExtra("myDate", myDate);
+            intent.putExtra("myDate", myDate);
+
+            startActivity(intent);
+        }
+    }
 
     public void clearsharedPreferences (){
 
@@ -95,13 +118,6 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
 
 
-
-
-    public void createOrder (View view){
-
-
-
-    }
 
 
 
@@ -140,37 +156,41 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
     public void showDatePickerDialog(View v) {
 
+        if (myDate == null ) {
+
+            // initialising the datepickerdialog
+            datePicker = new DatePickerDialog(OrderConfirmationActivity.this);
 
 
-        // initialising the datepickerdialog
-        datePicker = new DatePickerDialog(OrderConfirmationActivity.this);
+            datePicker = new DatePickerDialog(OrderConfirmationActivity.this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
+                    // adding the selected date in the edittext
 
 
-        datePicker = new DatePickerDialog(OrderConfirmationActivity.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
-                // adding the selected date in the edittext
+                    Log.d("kkkk", dayOfMonth + "/" + (month + 1) + "/" + year);
+
+                    myDate = dayOfMonth + "/" + (month + 1) + "/" + year;
 
 
-                Log.d("kkkk", dayOfMonth + "/" + (month + 1) + "/" + year);
-
-                dateSelected.setVisibility(View.VISIBLE);
-                dateSelected.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-            }
-        }, year, month, day);
+                    dateSelected.setVisibility(View.VISIBLE);
+                    dateSelected.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                }
+            }, year, month, day);
 
 
+            Log.d("gggg", String.valueOf(calendar.getTime()));
 
 
-        Log.d("gggg", String.valueOf(calendar.getTime() ));
+            datePicker.getDatePicker().setMinDate(calendar.getTimeInMillis() + (86400000 * minOrderDate));
 
+            // show the dialog
+            datePicker.show();
 
-        datePicker.getDatePicker().setMinDate(calendar.getTimeInMillis()+(86400000 * minOrderDate));
+        } else {
+            Toast.makeText(this, myDate+"التاديخ الاخترتو ", Toast.LENGTH_SHORT).show();
 
-        // show the dialog
-        datePicker.show();
-
-
+        }
     }
 
 
@@ -178,14 +198,16 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
     public void selectAddress (View view){
 
+        if (selectedLongitude != null && selectedLatitude != null ) {
 
 
-        intent = new Intent(getApplicationContext(), MapsActivity.class);
+            intent = new Intent(getApplicationContext(), MapsActivity.class);
 
-        intent.putExtra("area", area);
+            intent.putExtra("area", area);
 
-        startActivity(intent);
 
+            startActivity(intent);
+        }
     }
 
 
@@ -193,6 +215,8 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
         if (recipentName.getText() != null) {
 
+
+            recipient = recipentName.getText().toString();
 
             recipentName.setTextColor(Color.parseColor("#669933"));
             recipentName.setTypeface(recipentName.getTypeface(), Typeface.BOLD);
@@ -241,9 +265,14 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                     if (extras == null) {
 
                         cameFromActivity ="";
+                        selectedLatitude = Double.valueOf("");
+                        selectedLongitude = Double.valueOf("");
+
                     } else {
 
                         cameFromActivity = extras.getString("cameFromActivity");
+                        selectedLatitude = extras.getDouble("selectedLatitude");
+                        selectedLongitude = extras.getDouble("selectedLongitude");
                     }
                 }
 
@@ -260,7 +289,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                  // cartQty = mDatabase.listQty();
 
 
-                myDate = new Date();
+              //  myDate = new Date();
 
                 location = new ParseGeoPoint(40.0, -30.0);
 

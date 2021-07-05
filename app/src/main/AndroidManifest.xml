@@ -28,7 +28,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".RatingActivity"></activity>
+        <activity android:name=".CustomerMainActivity"></activity>
+        <activity android:name=".RatingActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -46,7 +47,6 @@
         <activity android:name=".PasswordActivity" />
         <activity android:name=".OTPActivity" />
         <activity android:name=".VerifyActivity" />
-        <activity android:name=".RecipentsDetailsActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".EmailRegistration" />
         <activity android:name=".OrderConfirmationActivity" />
@@ -61,7 +61,6 @@
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/back4app_client_key" />
 
-        <activity android:name=".DeliveryDetailsActivity" />
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
@@ -71,7 +70,6 @@
         <activity android:name=".ProductDetailsActivity" />
         <activity android:name=".PreparingCheckListActivity" />
         <activity android:name=".ManagerActivity" />
-        <activity android:name=".LoginActivity" />
         <activity android:name=".InventoryActivity" />
         <activity android:name=".DriverLocationActivity" />
         <activity android:name=".DriverBarcodeActivity" />

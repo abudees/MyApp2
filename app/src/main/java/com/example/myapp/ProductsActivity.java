@@ -438,7 +438,7 @@ public class ProductsActivity extends AppCompatActivity {
             case R.id.signInMenu:
                 // do something
 
-                intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent = new Intent(getApplicationContext(), MainActivity.class);
 
                 intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
 

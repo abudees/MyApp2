@@ -269,11 +269,11 @@ public class CheckoutActivity extends AppCompatActivity {
     public void checkOut (View view){
         if (ParseUser.getCurrentUser() != null) {
 
-            intent = new Intent(getApplicationContext(), RecipentsDetailsActivity.class);
+            intent = new Intent(getApplicationContext(), OrderConfirmationActivity.class);
 
             startActivity(intent);
         } else {
-            intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.putExtra("cameFromActivity", this.getClass().getSimpleName());
             startActivity(intent);
         }

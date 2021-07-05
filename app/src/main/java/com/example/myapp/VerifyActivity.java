@@ -110,7 +110,7 @@ public class VerifyActivity extends AppCompatActivity {
 
             case "CheckoutActivity":
 
-                intent = new Intent(getApplicationContext(), RecipentsDetailsActivity.class);
+                intent = new Intent(getApplicationContext(), CheckoutActivity.class);
 
                 startActivity(intent);
 
